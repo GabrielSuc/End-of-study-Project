@@ -1,0 +1,215 @@
+					Filters Efficiency Comparison
+
+
+------------------------------------------------ IIR ----------------------------------------------
+ans = 
+
+  struct with fields:
+
+                  NumCoefficients: 16
+                        NumStates: 12
+    MultiplicationsPerInputSample: 16
+          AdditionsPerInputSample: 12
+
+
+ans =
+
+  6×58 char array
+
+    'Discrete-Time IIR Filter (real)                           '
+    '-------------------------------                           '
+    'Filter Structure    : Direct-Form I, Second-Order Sections'
+    'Number of Sections  : 3                                   '
+    'Stable              : Yes                                 '
+    'Linear Phase        : No                                  '
+
+----------------------------------------------------------------
+
+ans = 
+
+  struct with fields:
+
+                  NumCoefficients: 17
+                        NumStates: 6
+    MultiplicationsPerInputSample: 17
+          AdditionsPerInputSample: 12
+
+
+ans =
+
+  6×59 char array
+
+    'Discrete-Time IIR Filter (real)                            '
+    '-------------------------------                            '
+    'Filter Structure    : Direct-Form II, Second-Order Sections'
+    'Number of Sections  : 3                                    '
+    'Stable              : Yes                                  '
+    'Linear Phase        : No                                   '
+
+----------------------------------------------------------------
+
+ans = 
+
+  struct with fields:
+
+                  NumCoefficients: 17
+                        NumStates: 12
+    MultiplicationsPerInputSample: 17
+          AdditionsPerInputSample: 12
+
+
+ans =
+
+  6×69 char array
+
+    'Discrete-Time IIR Filter (real)                                      '
+    '-------------------------------                                      '
+    'Filter Structure    : Direct-Form I Transposed, Second-Order Sections'
+    'Number of Sections  : 3                                              '
+    'Stable              : Yes                                            '
+    'Linear Phase        : No                                             '
+
+---------------------------------------------------------------------------
+
+ans = 
+
+  struct with fields:
+
+                  NumCoefficients: 16
+                        NumStates: 6
+    MultiplicationsPerInputSample: 16
+          AdditionsPerInputSample: 12
+
+
+ans =
+
+  6×70 char array
+
+    'Discrete-Time IIR Filter (real)                                       '
+    '-------------------------------                                       '
+    'Filter Structure    : Direct-Form II Transposed, Second-Order Sections'
+    'Number of Sections  : 3                                               '
+    'Stable              : Yes                                             '
+    'Linear Phase        : No                                              '
+
+----------------------------------------------------------------------------
+
+ans = 
+
+  struct with fields:
+
+                  NumCoefficients: 8
+                        NumStates: 14
+    MultiplicationsPerInputSample: 8
+          AdditionsPerInputSample: 15
+
+
+ans =
+
+  6×31 char array
+
+    'Discrete-Time IIR Filter (real)'
+    '-------------------------------'
+    'Filter Structure  : Cascade    '
+    'Number of Stages  : 2          '
+    'Stable            : Yes        '
+    'Linear Phase      : No         '
+
+-------------------------------------
+
+ans = 
+
+  struct with fields:
+
+                  NumCoefficients: 8
+                        NumStates: 7
+    MultiplicationsPerInputSample: 8
+          AdditionsPerInputSample: 22
+
+
+ans =
+
+  6×31 char array
+
+    'Discrete-Time IIR Filter (real)'
+    '-------------------------------'
+    'Filter Structure  : Cascade    '
+    'Number of Stages  : 2          '
+    'Stable            : Yes        '
+    'Linear Phase      : No         '
+
+-------------------------------------
+
+------------------------------------------------ FIR ----------------------------------------------
+
+ans = 
+
+Number of Multipliers            : 2394
+Number of Adders                 : 2393
+Number of States                 : 2393
+Multiplications per Input Sample : 2394
+Additions per Input Sample       : 2393
+Discrete-Time FIR Filter (real)    
+-------------------------------    
+Filter Structure  : Direct-Form FIR
+Filter Length     : 2394           
+Stable            : Yes            
+Linear Phase      : Yes (Type 2)   
+
+-------------------------------------------------------
+
+ans = 
+
+Number of Multipliers            : 2394
+Number of Adders                 : 2393
+Number of States                 : 2393
+Multiplications per Input Sample : 2394
+Additions per Input Sample       : 2393
+Discrete-Time FIR Filter (real)               
+-------------------------------               
+Filter Structure  : Direct-Form FIR Transposed
+Filter Length     : 2394                      
+Stable            : Yes                       
+Linear Phase      : Yes (Type 2)              
+
+-------------------------------------------------------
+
+ans = 
+
+Number of Multipliers            : 1197
+Number of Adders                 : 2393
+Number of States                 : 2393
+Multiplications per Input Sample : 1197
+Additions per Input Sample       : 2393
+Discrete-Time FIR Filter (real)              
+-------------------------------              
+Filter Structure  : Direct-Form Symmetric FIR
+Filter Length     : 2394                     
+Stable            : Yes                      
+Liprintnear Phase      : Yes (Type 2)          
+
+-------------------------------------------------------   
+
+ans = 
+
+Number of Multipliers            : 1197
+Number of Adders                 : 2393
+Number of States                 : 2393
+Multiplications per Input Sample : 1197
+Additions per Input Sample       : 2393
+Discrete-Time FIR Filter (real)                  
+-------------------------------                  
+Filter Structure  : Direct-Form Antisymmetric FIR
+Filter Length     : 2394                         
+Stable            : Yes                          
+Linear Phase      : Yes (Type 4) 
+
+
+-------------------------------------------------------
+
+Overlapp
+
+BlockLength			 : 24.0
+Numerator			 : 2394
+Number of States                 : 2393
+

@@ -1,0 +1,215 @@
+Cost of dsp.FIRRateConverter for different implementations of IIR/FIR filters for L = 160, M = 147,
+Rp = 1dB, Rs = 50 dB for conversion from 44.1 kHz to 48 kHz
+
+------------------------------------------ IIR ----------------------------------------------
+
+ans = Direct-form I SOS
+
+  struct with fields:
+
+                  NumCoefficients: 17144
+                        NumStates: 107
+    MultiplicationsPerInputSample: 116.6259
+          AdditionsPerInputSample: 115.5374
+
+SRC with noticeable flaws
+Interferences
+-------------------------------------------
+
+ans = Direct-form II SOS
+
+  struct with fields:
+
+                  NumCoefficients: 17144
+                        NumStates: 107
+    MultiplicationsPerInputSample: 116.6259
+          AdditionsPerInputSample: 115.5374
+
+SRC with noticeable flaws
+Interferences
+-------------------------------------------
+
+ans = Direct-forn I transposed 
+
+  struct with fields:
+
+                  NumCoefficients: 17144
+                        NumStates: 107
+    MultiplicationsPerInputSample: 116.6259
+          AdditionsPerInputSample: 115.5374
+
+SRC with noticeable flaws
+Interferences
+-------------------------------------------
+
+ans = Direct-form II transposed
+
+  struct with fields:
+
+                  NumCoefficients: 17144
+                        NumStates: 107
+    MultiplicationsPerInputSample: 116.6259
+          AdditionsPerInputSample: 115.5374
+
+SRC with noticeable flaws
+Interferences
+-------------------------------------------
+
+ans = Cascade minimum-multiplier allpass 
+
+  struct with fields:
+
+                  NumCoefficients: 8729
+                        NumStates: 54
+    MultiplicationsPerInputSample: 59.3810
+          AdditionsPerInputSample: 58.2925
+
+Good SRC
+Slight audible high frequencies, crackling, sort of reverb effect
+-------------------------------------------
+
+ans = Cascade wave digital filter allpass  
+
+  struct with fields:
+
+                  NumCoefficients: 8729
+                        NumStates: 54
+    MultiplicationsPerInputSample: 59.3810
+          AdditionsPerInputSample: 58.2925
+
+Good SRC
+Slight audible high frequencies, crackling, sort of reverb effect
+------------------------------------------ FIR ----------------------------------------------
+
+ans = Direct-form FIR
+
+  struct with fields:
+
+                  NumCoefficients: 2394
+                        NumStates: 14
+    MultiplicationsPerInputSample: 16.2857
+          AdditionsPerInputSample: 15.1973
+
+
+SRC with noticeable flaws
+Interferences
+-------------------------------------------
+
+
+ans = Direct-form FIR transposed
+
+  ans = 
+
+  struct with fields:
+
+                  NumCoefficients: 2394
+                        NumStates: 14
+    MultiplicationsPerInputSample: 16.2857
+          AdditionsPerInputSample: 15.1973
+
+SRC with noticeable flaws
+Interferences
+-------------------------------------------
+
+ans = Direct-form symmetric FIR
+
+ struct with fields:
+
+                  NumCoefficients: 2394
+                        NumStates: 14
+    MultiplicationsPerInputSample: 16.2857
+          AdditionsPerInputSample: 15.1973
+
+SRC with noticeable flaws
+Interferences
+-------------------------------------------
+
+ans = Direct-form antisymmetric FIR 
+
+  struct with fields:
+
+                  NumCoefficients: 2394
+                        NumStates: 14
+    MultiplicationsPerInputSample: 16.2857
+          AdditionsPerInputSample: 15.1973
+
+Bad SRC
+-------------------------------------------
+
+ans = Overlap-add FIR
+
+  struct with fields:
+
+                  NumCoefficients: 2394
+                        NumStates: 14
+    MultiplicationsPerInputSample: 16.2857
+          AdditionsPerInputSample: 15.1973
+
+SRC with noticeable flaws
+Interferences
+-------------------------------------------
+
+ans = Overlap-Save FIR (convol(Hd,b2))
+
+struct with fields:
+
+                  NumCoefficients: 40958
+                        NumStates: 281
+    MultiplicationsPerInputSample: 278.6259
+          AdditionsPerInputSample: 277.5374
+
+Don't know the gain, little bit delayed
+
+-------------------------------------------
+
+ans = Sync Filter
+
+  struct with fields:
+
+                  NumCoefficients: 3840
+                        NumStates: 23
+    MultiplicationsPerInputSample: 26.1224
+          AdditionsPerInputSample: 25.0340
+
+Good SRC
+
+-------------------------------------------
+
+ans = With FarrowRateConverter
+
+  struct with fields:
+
+                  NumCoefficients: 16
+                        NumStates: 3
+    MultiplicationsPerInputSample: 14.1497
+          AdditionsPerInputSample: 11.9728
+
+Good SRC
+Really good audio finish
+--------------------------------------------
+
+ans = With Classic SRC
+
+  struct with fields:
+
+                  NumCoefficients: 1598
+                        NumStates: 10
+    MultiplicationsPerInputSample: 10.8707
+          AdditionsPerInputSample: 9.7891
+
+Good SRC
+Really good audio finish
+
+--------------------------------------------
+
+ans = 2 stages with Proakis' method
+
+  struct with fields:
+
+                  NumCoefficients: 500
+                        NumStates: 3
+    MultiplicationsPerInputSample: 3.4014
+          AdditionsPerInputSample: 2.3129
+
+Not that bad finish
+High frequencies cracling (aliasing?)
