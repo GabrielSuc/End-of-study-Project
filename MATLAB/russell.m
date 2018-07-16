@@ -1,4 +1,4 @@
-function [output_russell] =  russell(z1,p1,k1,L,M,Nl,Nm,xin)
+function [output_russell, flag] =  russell(z1,p1,k1,L,M,Nl,Nm,xin)
 
 %Takes an IIR filter under the zero-pole-gain form (z,p,k) as input and 
 %returns a decomposed version of it according to Russell's method
@@ -154,8 +154,15 @@ if length(Coeff_num) ~= (Nz + Nl*(L-1) + Nm*(M-1) + 1)
     error('Problem order numerator FIR')
 end    
 
+% This technique might sometimes not be possible, so we will have to perform
+% a direct implementation of the filter
 
-
+if L*M > length(Coeff_num)
+    
+    flag = 1; %create a flag
+    output_russell = xin;
+    return
+end
 
 %--------------------------------------------------------------------------
 % <THIRD FILTER - SPLIT THE POLES BY Nm - Allpolefilter indice M
@@ -207,7 +214,7 @@ disp(X)
 disp('-------------------------------------------------------------------')
 
 %Now need the LM polyphase components ek of hn
-
+    
 ek = myPolyphase(Coeff_num,1,L,M,'2');
 
 %Have to filter xin through each branch 
@@ -220,21 +227,22 @@ for i = (L*M):-1:1 %Starting from the LM-1 branch
     downsamp = downsample(delayedBy_a,M);
     filter_polyphase = filter(ek(i,:),1,downsamp);
     upsamp = upsample(filter_polyphase,L); 
-    
+
     %Sum 
-    
+
     sumBranch = sumBranch + upsamp;
-    
+
     if i > 1
         sumBranch = delayseq(sumBranch,b);
     end
-    
+
 end
 
 %--------------------------------------------------------------------------
 %                           Through Hl(z)
 %--------------------------------------------------------------------------
 
+flag = 0; %no problem, no flag needed
 output_russell = filter(1,PoleM,sumBranch);
 
 end

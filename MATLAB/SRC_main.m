@@ -41,12 +41,12 @@ Fsout = 48e3; % 2*Fsin; %
 Rp = 0.1; %in dB
 
 % Maximum stopband gain i.e. stopband attenuation
-Rs = 80; %in dB
+Rs = 140; %in dB
 
 %Desired Transition Width
 %Represent how close we want the passband frequency to be from the stopband
 %frequency.
-TW = 0.95; %in percent of the stopband freqeuncy;
+TW = 0.99; %in percent of the stopband freqeuncy;
 
 %Cutoff frequency
 %Also defined the stopband frequency i.e. Fstop
@@ -81,7 +81,7 @@ for bit_depth = [16 24]
     audio_channels = 2;         % channels
     f_start = 20;               % Hz
     f_stop = fs/2 * (20000/22050);          % Hz (forces fmax to be 20k @ 44.1 kHz)
-    duration_in_seconds = 60/2;   % seconds
+    duration_in_seconds = 60;   % seconds
     bitrate = 256;              % AAC bitrate - options: 64, 96, 128, 160, 192, 256, 320 kbps
     for level_dBFS = [0 -1]    % dB
         
@@ -387,11 +387,10 @@ for i = 1:length(cosine_sweeps)
 
 signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep,bestPerm,manual);
 
-max(signal)
-min(signal)
+signal = signal/max(abs(signal(:)));
 
 %Writting the resulting signal as an audio file
-audiowrite(['~/Documents/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
+audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
     signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
 

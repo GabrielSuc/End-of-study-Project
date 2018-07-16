@@ -44,7 +44,7 @@ elseif str == '2' %Russel's case
     
     if a == 1 
         N = length(b);
-        if N > L*M
+        if N >= L*M
             if rem(N,L) ~= 0
                 PolyMatrix = [vec2mat(b,fix(N/(L*M))+1);zeros(L*M-(fix(N/(fix(N/(L*M))+1)) +1)...
                 ,fix(N/(L*M))+1)]; %Need to concatenate to have a L*(fix(N/L)+1) matrix

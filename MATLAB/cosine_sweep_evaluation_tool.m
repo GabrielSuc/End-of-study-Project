@@ -152,7 +152,7 @@ elseif tool == 3
           upper_frequency_limit = 0;
     end
     
-    sweep_length_in_seconds = 60;   % length of audio signal to analyse. Set to 0 for automatic
+    sweep_length_in_seconds = 0;   % length of audio signal to analyse. Set to 0 for automatic
     trigger_threshold_in_dB = -20;  % level below peak value that signals the start of the sweep
     
     

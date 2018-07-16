@@ -77,8 +77,9 @@ if manual == 1
                     a = a + 1;
                     b = (FL(1,i)*a - 1)/FM(1,i);
                 end   
-            
-                ek = myPolyphase(firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2');
+                
+                %Compensate gain
+                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2');
 
                 %Have to filter xin through each branch 
                 signal = 0;
@@ -103,7 +104,7 @@ if manual == 1
             else
                 
                 % Creating the filter
-                Filter = dfilt.dfsymfir(firpm(Order,fo,ao,w));
+                Filter = dfilt.dfsymfir(FL(1,i)*firpm(Order,fo,ao,w));
                
                 %Upsampling
                 signal = upsample(input_signal,FL(1,i));
@@ -121,11 +122,133 @@ if manual == 1
             
     end         
 
-    signal = signal/max(signal); %_To prevent data from clipping when writing file
+    %signal = signal;%/max(signal); %_To prevent data from clipping when writing file
     
     
 % Elliptic    
 elseif manual == 2
+    
+    % ---------------------------------------------------------------------
+    %                          Filters' parameters
+    % ---------------------------------------------------------------------
+    
+    %Need to adapt the ripple in the passband
+    Rp = Rp/length(FL);    
+    
+    % Ask if we want to use polyphase
+    ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
+     
+    for i = 1:length(FL)
+
+            % Frequency bands
+            Fmax = Fs*FL(1,i);
+            pass_bands = Fpass/Fmax;
+            if FL(1,i) > FM(1,i)
+                stop_bands = (Fs - Fstop)/Fmax;
+            else
+                stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/Fmax;
+            end   
+
+            % Getting the order of the filters
+            [Order,Wp] = ellipord(pass_bands,stop_bands,Rp,Rs);
+            [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
+            
+            % Polyphase decomposition    
+            if isempty(ispolyphase)
+                 ispolyphase = 1;
+            end
+            
+            if ispolyphase
+                
+                %Russell
+
+                Np = length(p_ellip); %Number of poles
+
+                %Have to choose Nl and Nm -> put a munual stuff directly inside function 
+                %The gain in efficiency is the same regarless of how many poles of H(z)
+                %areassigned to Hl(z) ans how many bto Hm(z). However, complex-conjugate
+                %pole pairs should not be separated since this would make the filtr
+                %coefficients complex. Therefore, choose Nl even and Nm odd if length
+                %filter odd.
+
+                if rem(Np,2) ~=0
+                
+                disp(['Np = ', num2str(Np)])    
+                        
+                Nl = input('Choose even number of pole Nl < Np to be assigned to coefficient L: ');
+
+                    if isempty(Nl)
+                          error('Choose Nl');
+
+                    elseif Nl > Np
+                        error('Nl has to be smaller than Np')
+
+                    elseif rem(Nl,2) ~= 0
+                        error('Nl has to be even')
+                    end
+
+                else
+
+                    disp(['Np = ', num2str(Np)])    
+                        
+                    Nl = input('Choose even number of pole Nl < Np to be assigned to coefficient L: ');
+                    
+                    if isempty(Nl)
+                          error('Choose Nl');
+
+                    elseif Nl > Np
+                        error('Nl has to be smaller than Np')
+
+                    elseif rem(Nl,2) ~= 0
+                        error('Nl has to be even')
+                    end
+
+                end
+
+                Nm = Np - Nl;
+    
+                if i == 1 
+                    signal = input_signal; %true only for the first input
+                end
+                
+                [signal, flag] = russell(z_ellip,p_ellip,FL(1,i)*k_ellip,FL(1,i),FM(1,i),Nl,Nm,signal);
+
+                
+                %In case the above technique is not feasible 
+                if flag == 1
+                    
+                    %Creating the Elliptic Filters
+                    Filter = dfilt.df2sos(zp2sos(z_ellip,p_ellip,FL(1,i)*k_ellip));
+
+                    %Upsampling
+                    signal = upsample(signal,FL(1,i));
+                    %Filtering
+                    input_filtered = filter(Filter,signal);
+                    %Downsampling
+                    signal = downsample(input_filtered,FM(1,i));
+                    
+                end
+                
+            else
+                
+                %Creating the Elliptic Filters
+                Filter = dfilt.df2sos(zp2sos(z_ellip,p_ellip,FL(1,i)*k_ellip));
+               
+                %Upsampling
+                signal = upsample(input_signal,FL(1,i));
+                %Filtering
+                input_filtered = filter(Filter,signal);
+                %Downsampling
+                signal = downsample(input_filtered,FM(1,i));
+                
+            end    
+            
+         
+            %Need to adapt the input frequency after passing through each stage
+            Fs = (Fs * FL(1,i))/FM(1,i);
+            
+            
+    end
     
 % Schuessler    
 else
