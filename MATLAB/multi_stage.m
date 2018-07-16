@@ -1,5 +1,8 @@
 function [bestPerm,manual] = multi_stage(L,M,Fsin,Fsout,Fp,Rp,Rs)
 
+% This function returns the best combination of stages for different kind of filter: 
+% Parks-McClellan, Elliptic, Schuessler
+
 % Multistage decomposition used in the open-source project Smarc ParisTech
 % Method based on the paper "Optimum FIR Digital Filter Implementations for Decimation, 
 % Interpolation, and Narrow-Band Filtering" by Crochiere and Rabiner.
@@ -590,7 +593,7 @@ X = ['With a number of MPOS ', num2str(MPOS(index(i)))];
 disp(X)
 disp('-------------------------------------------------------------------')
 
-bestPerm = permutation(index(i),1:length(FL));
+bestPerm = permutation(index(i),:);
 end
 
 

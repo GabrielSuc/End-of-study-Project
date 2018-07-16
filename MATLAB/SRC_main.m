@@ -28,7 +28,7 @@ clear
 %Input frequency
 Fsin = 44.1e3; 
 %Output frequency
-Fsout = 2*Fsin; %48e3; %
+Fsout = 48e3; % 2*Fsin; %
 
 % Resampling Factors L/M
 [L,M] = getSRFactors(Fsin,Fsout); % Fsout = (L/M)*Fsin
@@ -370,6 +370,8 @@ end
 
 %% Multistage Implementation
 
+clc
+
 %Take one of the filter above and implement it as a multistage design
 
 %First, determine which combination is the best, for how many stages and
@@ -381,5 +383,17 @@ end
 
 [bestPerm,manual] = multi_stage(L,M,Fsin,Fsout,Fp,Rp,Rs);
 
+for i = 1:length(cosine_sweeps)
+
+signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep,bestPerm,manual);
+
+max(signal)
+min(signal)
+
+%Writting the resulting signal as an audio file
+audiowrite(['~/Documents/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
+    num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
+    signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
 
 
+end

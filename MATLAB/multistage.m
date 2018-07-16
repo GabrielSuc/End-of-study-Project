@@ -1,0 +1,150 @@
+function output = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,input_signal,bestPerm,manual)
+
+%Get the list of factors L & M for the different stages
+FL = bestPerm(1:length(bestPerm)/2);
+FM = bestPerm(length(bestPerm)/2 + 1:end);
+
+    
+%Have to inverse Fx and Fy considering the overall system as a decimator or an interpolator
+if M > L
+     [Fsout, Fsin] = deal(Fsin,Fsout);
+end
+
+%Defining the differents band-edge frequencies
+if Fsin < Fsout
+    Fstop = Fsin/2;
+else 
+    Fstop = Fsout/2;
+end
+
+Fpass = Fp;
+
+Fs = Fsin;
+
+% Filtering through the different kind of filters:
+% Parks-McClellan
+if manual == 1
+    
+    % ---------------------------------------------------------------------
+    %                          Filters' parameters
+    % ---------------------------------------------------------------------
+    
+    % Need of specific variables for the design
+    A = [1 0];
+
+    % Ripples
+    Delta1 = 10^(Rp/20); 
+    Delta2 = 10^(-Rs/20);           
+
+    % Deviation
+    % Reduce the passband ripple by factor of length(FL) so that passband
+    % ripple in the cascade of the length(FL) filters doesn't exeed Delta1
+    dev = [(Delta1 - 1)/(length(FL)*(Delta1 + 1)) Delta2]; 
+    
+    % Ask if we want to use polyphase
+    ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
+     
+    for i = 1:length(FL)
+
+            % Frequency bands
+            Fmax = Fs*FL(1,i);
+            pass_bands = Fpass/Fmax;
+            if FL(1,i) > FM(1,i)
+                stop_bands = (Fs - Fstop)/Fmax;
+            else
+                stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/Fmax;
+            end   
+
+
+            % Defining the limit frequencies for the design
+            f = [pass_bands stop_bands];
+
+            % Getting the order of the filters
+            [Order,fo,ao,w] = firpmord(f,A,dev);
+            
+            % Polyphase decomposition    
+            if isempty(ispolyphase)
+                 ispolyphase = 1;
+            end
+            
+            if ispolyphase
+                
+                %We need to have the coefficient a and b of the delays
+                a = 0;
+                b = 0.1;
+
+                while(rem(b,1)~=0)
+                    a = a + 1;
+                    b = (FL(1,i)*a - 1)/FM(1,i);
+                end   
+            
+                ek = myPolyphase(firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2');
+
+                %Have to filter xin through each branch 
+                signal = 0;
+                
+                for k = (FL(1,i)*FM(1,i)):-1:1 %Starting from the LM-1 branch
+                    %Creating the other branches before summation
+                    delayedBy_a = delayseq(input_signal,(k-1)*a); 
+                    downsamp = downsample(delayedBy_a,FM(1,i));
+                    %Implement polyphase components as folded structures
+                    filter_polyphase = filter(dfilt.dfsymfir(ek(k,:)),downsamp);
+                    upsamp = upsample(filter_polyphase,FL(1,i)); 
+
+                    %Sum 
+
+                    signal = signal + upsamp;
+
+                    if i > 1
+                        signal = delayseq(signal,b);
+                    end
+                end
+                
+            else
+                
+                % Creating the filter
+                Filter = dfilt.dfsymfir(firpm(Order,fo,ao,w));
+               
+                %Upsampling
+                signal = upsample(input_signal,FL(1,i));
+                %Filtering
+                input_filtered = filter(Filter,signal);
+                %Downsampling
+                signal = downsample(input_filtered,FM(1,i));
+                
+            end    
+            
+         
+            %Need to adapt the input frequency after passing through each stage
+            Fs = (Fs * FL(1,i))/FM(1,i);
+            
+            
+    end         
+
+    signal = signal/max(signal); %_To prevent data from clipping when writing file
+    
+    
+% Elliptic    
+elseif manual == 2
+    
+% Schuessler    
+else
+
+
+
+
+
+
+
+
+end
+
+
+
+
+output = signal;
+
+
+
+
+end
