@@ -130,7 +130,7 @@ function [FM,FL] = getListStages(L,M)
     
 if L == 160 && M == 147  % 44.1 -> 48 / 88.2 -> 96 / 176.4 -> 192 
     
-    FM = [7,7,3,1];   %Try to change these lists and see the impact
+    FM = [7,7,1,3];   %Try to change these lists and see the impact
     FL = [5,4,4,2];   %order, longer(inserting 1s)
     
 elseif L == 2 && M == 1 % 44.1 -> 88.2 / 48 -> 96 / 88.2 -> 176.4     

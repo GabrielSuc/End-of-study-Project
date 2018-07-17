@@ -25,17 +25,17 @@ if str == '1' %FIR/IIR case
        error('Length of filter is smaller than L')   
        end 
     else      % IIR    
-       N = length(a);
-       if N > L
-        if rem(N,L) ~= 0
-            PolyMatrix = [vec2mat(a,fix(N/L)+1);zeros(L-(fix(N/(fix(N/L)+1)) +1)...
-                ,fix(N/L)+1)]; %Need to concatenate to have a L*(fix(N/L)+1) matrix
-        else                                                                                                      
-            PolyMatrix = vec2mat(a,fix(N/L));
-        end
-       else
-           error('Length of filter is smaller than L')   
-       end    
+%        N = length(a);
+%        if N > L
+%         if rem(N,L) ~= 0
+%             PolyMatrix = [vec2mat(a,fix(N/L)+1);zeros(L-(fix(N/(fix(N/L)+1)) +1)...
+%                 ,fix(N/L)+1)]; %Need to concatenate to have a L*(fix(N/L)+1) matrix
+%         else                                                                                                      
+%             PolyMatrix = vec2mat(a,fix(N/L));
+%         end
+%        else
+%            error('Length of filter is smaller than L')   
+%        end    
     end
     
 elseif str == '2' %Russel's case

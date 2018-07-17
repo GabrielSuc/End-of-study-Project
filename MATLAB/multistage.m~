@@ -44,23 +44,36 @@ if manual == 1
     % Ask if we want to use polyphase
     ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
      
-    for i = 1:length(FL)
+    for i = 1:2%length(FL)
 
-            % Frequency bands
-            Fmax = Fs*FL(1,i);
-            pass_bands = Fpass/Fmax;
+%             % Frequency bands
+%             Fmax = Fs*FL(1,i);
+%             pass_bands = Fpass/Fmax;
+%             if FL(1,i) > FM(1,i)
+%                 stop_bands = (Fs - Fstop)/Fmax;
+%             else
+%                 stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/Fmax;
+%             end   
+% 
+%             
+%             
+% 
+%             % Defining the limit frequencies for the design
+%             f = [pass_bands stop_bands];
+% 
+%             % Getting the order of the filters
+%             [Order,fo,ao,w] = firpmord(f,A,dev);
+
             if FL(1,i) > FM(1,i)
-                stop_bands = (Fs - Fstop)/Fmax;
+                Fcutoff = min(Fs/(2*FL(1,i)),Fs/(2*FM(1,i)));
             else
-                stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/Fmax;
-            end   
+                Fcutoff = min(Fs/(2*FL(1,i)),Fs/(2*FM(1,i)));
+            end
+            
+            f = [Fpass Fcutoff];
 
+            [Order,fo,ao,w] = firpmord(f,A,dev,Fs);
 
-            % Defining the limit frequencies for the design
-            f = [pass_bands stop_bands];
-
-            % Getting the order of the filters
-            [Order,fo,ao,w] = firpmord(f,A,dev);
             
             % Polyphase decomposition    
             if isempty(ispolyphase)
@@ -82,11 +95,15 @@ if manual == 1
                 ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2');
 
                 %Have to filter xin through each branch 
-                signal = 0;
+                sumBranch = 0;
+                
+                if i == 1 
+                    signal = input_signal; %true only for the first input
+                end
                 
                 for k = (FL(1,i)*FM(1,i)):-1:1 %Starting from the LM-1 branch
                     %Creating the other branches before summation
-                    delayedBy_a = delayseq(input_signal,(k-1)*a); 
+                    delayedBy_a = delayseq(signal,(k-1)*a); 
                     downsamp = downsample(delayedBy_a,FM(1,i));
                     %Implement polyphase components as folded structures
                     filter_polyphase = filter(dfilt.dfsymfir(ek(k,:)),downsamp);
@@ -94,20 +111,26 @@ if manual == 1
 
                     %Sum 
 
-                    signal = signal + upsamp;
+                    sumBranch = sumBranch + upsamp;
 
                     if i > 1
-                        signal = delayseq(signal,b);
+                        sumBranch = delayseq(sumBranch,b);
                     end
                 end
+                
+                signal = sumBranch;
                 
             else
                 
                 % Creating the filter
                 Filter = dfilt.dfsymfir(FL(1,i)*firpm(Order,fo,ao,w));
                
+                if i == 1 
+                    signal = input_signal; %true only for the first input
+                end
+                
                 %Upsampling
-                signal = upsample(input_signal,FL(1,i));
+                signal = upsample(signal,FL(1,i));
                 %Filtering
                 input_filtered = filter(Filter,signal);
                 %Downsampling
@@ -133,24 +156,30 @@ elseif manual == 2
     % ---------------------------------------------------------------------
     
     %Need to adapt the ripple in the passband
-    Rp = Rp/length(FL);    
-    
+    Rp = Rp/length(FL);   
+        
+    Rs = Rs/15;
     % Ask if we want to use polyphase
     ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
      
     for i = 1:length(FL)
 
-            % Frequency bands
-            Fmax = Fs*FL(1,i);
-            pass_bands = Fpass/Fmax;
-            if FL(1,i) > FM(1,i)
-                stop_bands = (Fs - Fstop)/Fmax;
-            else
-                stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/Fmax;
-            end   
+%             % Frequency bands
+%             Fmax = Fs*FL(1,i);
+%             pass_bands = Fpass/Fmax;
+%             if FL(1,i) > FM(1,i)
+%                 stop_bands = (Fs - Fstop)/Fmax;
+%             else
+%                 stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/Fmax;
+%             end   
+          
 
+            Fcutoff = min(Fs/(2*FL(1,i)),Fs/(2*FM(1,i)));
+            
+            f = [Fpass Fcutoff];
+            
             % Getting the order of the filters
-            [Order,Wp] = ellipord(pass_bands,stop_bands,Rp,Rs);
+            [Order,Wp] = ellipord(Fpass/Fs,Fcutoff/Fs,Rp,Rs);
             [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
             
             % Polyphase decomposition    
@@ -208,7 +237,7 @@ elseif manual == 2
                 Nm = Np - Nl;
     
                 if i == 1 
-                    signal = input_signal; %true only for the first 
+                    signal = input_signal; %true only for the first input
                 end
                 
                 [signal, flag] = russell(z_ellip,p_ellip,FL(1,i)*k_ellip,FL(1,i),FM(1,i),Nl,Nm,signal);
@@ -234,12 +263,20 @@ elseif manual == 2
                 %Creating the Elliptic Filters
                 Filter = dfilt.df2sos(zp2sos(z_ellip,p_ellip,FL(1,i)*k_ellip));
                
+                if i == 1 
+                    signal = input_signal; %true only for the first input
+                end
+                
+                
                 %Upsampling
-                signal = upsample(input_signal,FL(1,i));
+                signal = upsample(signal,FL(1,i));
                 %Filtering
                 input_filtered = filter(Filter,signal);
                 %Downsampling
                 signal = downsample(input_filtered,FM(1,i));
+                
+%                 output = signal;
+%                 return
                 
             end    
             

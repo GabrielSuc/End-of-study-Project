@@ -38,10 +38,10 @@ Fsout = 48e3; % 2*Fsin; %
 %%  Lowpass Filter Specifications
 
 % Minimum passband gain i.e. passband ripple 
-Rp = 0.1; %in dB
+Rp = 5; %in dB
 
 % Maximum stopband gain i.e. stopband attenuation
-Rs = 140; %in dB
+Rs = 150; %in dB
 
 %Desired Transition Width
 %Represent how close we want the passband frequency to be from the stopband
@@ -157,7 +157,7 @@ for i = 1:length(cosine_sweeps)
     signal = signal/max(signal); %_To prevent data from clipping when writing file
     
     %Writting the resulting signal as an audio file
-    audiowrite(['~/Documents/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
+    audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
         num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
         signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
 end    
@@ -221,7 +221,7 @@ for i = 1:length(cosine_sweeps)
     signal = signal/max(signal); %_To prevent data from clipping when writing file
     
     %Writting the resulting signal as an audio file
-    audiowrite(['~/Documents/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
+    audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
         num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
         signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
 end      
@@ -292,7 +292,7 @@ for k = 1:length(cosine_sweeps)
     sumBranch = sumBranch/max(sumBranch); %_To prevent data from clipping when writing file
     
     %Writting the resulting signal as an audio file
-    audiowrite(['~/Documents/Sweeps/' num2str(round(cosine_sweeps(k).fs/1000)) 'k_' ...
+    audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(k).fs/1000)) 'k_' ...
         num2str(cosine_sweeps(k).bit_depth) '_' num2str(cosine_sweeps(k).level_dBFS) 'dBFS.wav'],...
         sumBranch, cosine_sweeps(k).fs, 'BitsperSample', cosine_sweeps(k).bit_depth)
     
@@ -312,52 +312,24 @@ end
 
 for i = 1:length(cosine_sweeps)
     
-    %Noble Identity of the nonrecursive part by L -> WHAT ABOUT IF M > L ?   
-    noble_iden = downsample(z_ellip_direct,L);
-    %Filter by the remaining coefficients
-    input_filtered_1st = filter(noble_iden,1,cosine_sweeps(i).sweep);
+    %Polyphase of the nonrecursive part 
+    poly_comp = myPolyphase(z_ellip_direct,1,L,M,'1');
+    %Filter by the polyphase components
+    input_filtered_1st = filter(dfilt.dfsymfir(poly_comp),cosine_sweeps(i).sweep);
     %Upsampling
     input_uped = upsample(input_filtered_1st,L);
     %Filter by the poles as folded structure
-    input_filtered_2nd = filter(dfilt.dfsymfir(p_ellip_direct),input_uped);
+    input_filtered_2nd = filter(1,p_ellip_direct,input_uped);
     %Downsampling
     signal = downsample(input_filtered_2nd,M);
 
     signal = signal/max(signal); %_To prevent data from clipping when writing file
     
     %Writting the resulting signal as an audio file
-    audiowrite(['~/Documents/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
+    audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
         num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
         signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
 end      
-
-%Then we can use Geoff's cosine sweep evaluation tool with tool = 3 and
-%process those files
-
-%If any problem occurs, go to SNR part down here to have a deeper look into
-%what's going on
-
-
-
-
-
-%% Filtering Part
-
-for i = 1:length(cosine_sweeps)
-    
-    %Upsampling
-    input_uped = upsample(cosine_sweeps{i,1},L);
-    %Filtering
-    input_filtered = sosfilt(Ellip_direct,input_uped);
-    %Downsampling
-    signal = downsample(input_filtered,M);
-    
-    signal = signal/max(signal); %_To prevent data from clipping when writing file
-    
-    %Writting the resulting signal as an audio file
-    audiowrite(['/home/gabriel/Documents/Sweeps/' num2str(round(fs/1000)) 'k_' num2str(bit_depth) '_' ...
-        num2str(level_dBFS) 'dBFS.wav'], signal, fs, 'BitsperSample', bit_depth)
-end    
 
 %Then we can use Geoff's cosine sweep evaluation tool with tool = 3 and
 %process those files
@@ -387,7 +359,9 @@ for i = 1:length(cosine_sweeps)
 
 signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep,bestPerm,manual);
 
-signal = signal/max(abs(signal(:)));
+signal = signal/max(abs(signal(:))); 
+
+%snr(signal(:,1), Fsin)
 
 %Writting the resulting signal as an audio file
 audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
@@ -396,3 +370,5 @@ audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_swee
 
 
 end
+
+

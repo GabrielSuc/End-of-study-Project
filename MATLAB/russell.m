@@ -22,21 +22,7 @@ for i =1:length(z1)
     Z1(i) = 1 - z1(i).*z^(-1);
     P1(i) = 1 - p1(i).*z^(-1);
     
-    %H(z) = (k1*Prod(Z1(i))/Prod(P(i))
-    
-    H(i) = (Z1(i)/P1(i));
-    
    
-    %P = sym2cell(P1);
-    %We now use the substitution
-%     for j = 1:L
-%         symsum((p1(j)^k)*(z^(-k)),k,0,L-1)
-%         H(j) = subs(Z1(j)/P1(j),P1(j),(1 - p1(j).*z^(-L))/symsum((p1(j)^k)*(z^(-k)),k,0,L-1));
-%     end
-%     
-%     for j = (L+1):(L+M-1)
-%         H(j) = subs(Z1(j)/P1(j),P1(j),(1 - p1(j).*z^(-M))/symsum((p1(j)^k)*(z^(-k)),k,0,M-1));
-%     end      
     
     
 end   
@@ -190,7 +176,7 @@ Hm = dfilt.df2sos(zp2sos(zeros(Nm,1),PoleM,1));
 %--------------------------------------------------------------------------
 
 
-xout_filterL = filter(1,PoleL,xin);
+xout_filterL = filter(Hl,xin);
 
 
 %--------------------------------------------------------------------------
@@ -243,6 +229,6 @@ end
 %--------------------------------------------------------------------------
 
 flag = 0; %no problem, no flag needed
-output_russell = filter(1,PoleM,sumBranch);
+output_russell = filter(Hm,sumBranch);
 
 end
