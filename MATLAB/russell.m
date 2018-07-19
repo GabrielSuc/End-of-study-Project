@@ -10,22 +10,6 @@ end
     
 syms z k l A
 
-Z1 = zeros(length(z1),1,'sym'); %zeros
-P1 = zeros(length(p1),1,'sym'); %poles
-
-H = zeros(length(z1),1,'sym');
-
-%Factorization in a different way
-for i =1:length(z1)
-    
-    
-    Z1(i) = 1 - z1(i).*z^(-1);
-    P1(i) = 1 - p1(i).*z^(-1);
-    
-   
-    
-    
-end   
     
 % Using the subtitution Russel does, we can create three different
 % filters. 
@@ -43,9 +27,9 @@ end
 
 
 % Implementing the filter as SOS structure
-Hl = dfilt.df2sos(zp2sos(zeros(Nl,1),PoleL,1));
+[bl,al] = zp2tf(zeros(Nl,1),PoleL,1);%dfilt.df2sos(zp2sos
 
-%fvtool(Hl)
+fvtool(bl,al)
 
 %--------------------------------------------------------------------------
 % Second filter FILTER - FIR filter composed of three factors
@@ -76,7 +60,7 @@ A1 = 0;
 
 for k = 1:Nl
     for l = 0:(L-1)
-        A1 = A1 + simplify((vpa(Pl(k))*z)^l);
+        A1 = A1 + simplify((vpa(Pl(k))*z).^l);
     end
     B1(k) = A1;
     
@@ -94,7 +78,7 @@ A2 = 0;
 
 for k = 1:Nm
     for m = 0:(M-1)
-        A2 = A2 + simplify((vpa(Pm(k))*z)^m);
+        A2 = A2 + simplify((vpa(Pm(k))*z).^m);
     end
     B2(k) = A2;
     
@@ -119,7 +103,7 @@ for i =1:length(z1)
 end 
 
 
-C3 = simplify(k1.*prod(Z1),'Steps',150);
+C3 = simplify(k1*prod(Z1),'Steps',150);
 
 
 %-------------------------- Final FIR (numerator) -------------------------
@@ -134,6 +118,8 @@ Nz = length(z1);
 
 %Get the order of the numerator
 Coeff_num = sym2poly(numFIR);
+
+fvtool(dfilt.dffir(Coeff_num))
 
 
 if length(Coeff_num) ~= (Nz + Nl*(L-1) + Nm*(M-1) + 1)
@@ -162,8 +148,13 @@ for i = (Nl + 1):Np
 end
 
 % Implementing the filter as SOS structure
-Hm = dfilt.df2sos(zp2sos(zeros(Nm,1),PoleM,1));
+[bm,am] = zp2tf(zeros(Nm,1),PoleM,1); %dfilt.df2sos(zp2sos())
 
+fvtool(bm,am)
+
+%Cascaded resulting filter
+Casc = dfilt.cascade(dfilt.df2(bl,al),dfilt.dffir(Coeff_num),dfilt.df2(bm,am));
+fvtool(Casc)
 
 %--------------------------------------------------------------------------
 %--------------------------------------------------------------------------
@@ -176,7 +167,7 @@ Hm = dfilt.df2sos(zp2sos(zeros(Nm,1),PoleM,1));
 %--------------------------------------------------------------------------
 
 
-xout_filterL = filter(Hl,xin);
+xout_filterL = filter(bl,al,xin);
 
 
 %--------------------------------------------------------------------------
@@ -219,7 +210,7 @@ for i = (L*M):-1:1 %Starting from the LM-1 branch
     sumBranch = sumBranch + upsamp;
 
     if i > 1
-        sumBranch = delayseq(sumBranch,b);
+        sumBranch = delayseq(sumBranch,-b);
     end
 
 end
@@ -229,6 +220,6 @@ end
 %--------------------------------------------------------------------------
 
 flag = 0; %no problem, no flag needed
-output_russell = filter(Hm,sumBranch);
+output_russell = filter(bm,am,sumBranch);
 
 end

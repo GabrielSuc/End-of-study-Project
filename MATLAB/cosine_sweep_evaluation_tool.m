@@ -223,6 +223,9 @@ elseif tool == 3
         
         
         
+            fs = input('What frequency are you resampling to? :');
+            
+        
         
         
         % check if upper_frequency_limit == 0, set to fs/2 if true

@@ -44,35 +44,17 @@ if manual == 1
     % Ask if we want to use polyphase
     ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
      
-    for i = 1:2%length(FL)
+    for i = 1:length(FL)
 
-%             % Frequency bands
-%             Fmax = Fs*FL(1,i);
-%             pass_bands = Fpass/Fmax;
-%             if FL(1,i) > FM(1,i)
-%                 stop_bands = (Fs - Fstop)/Fmax;
-%             else
-%                 stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/Fmax;
-%             end   
-% 
-%             
-%             
-% 
-%             % Defining the limit frequencies for the design
-%             f = [pass_bands stop_bands];
-% 
-%             % Getting the order of the filters
-%             [Order,fo,ao,w] = firpmord(f,A,dev);
+            % Frequency bands
+            Fmax = Fs*FL(1,i);
 
-            if FL(1,i) > FM(1,i)
-                Fcutoff = min(Fs/(2*FL(1,i)),Fs/(2*FM(1,i)));
-            else
-                Fcutoff = min(Fs/(2*FL(1,i)),Fs/(2*FM(1,i)));
-            end
+            Fcutoff = (Fmax)/2 * min(1/FL(1,i),1/FM(1,i));
+            
             
             f = [Fpass Fcutoff];
 
-            [Order,fo,ao,w] = firpmord(f,A,dev,Fs);
+            [Order,fo,ao,w] = firpmord(f,A,dev,Fmax);
 
             
             % Polyphase decomposition    
@@ -101,23 +83,31 @@ if manual == 1
                     signal = input_signal; %true only for the first input
                 end
                 
-                for k = (FL(1,i)*FM(1,i)):-1:1 %Starting from the LM-1 branch
-                    %Creating the other branches before summation
-                    delayedBy_a = delayseq(signal,(k-1)*a); 
-                    downsamp = downsample(delayedBy_a,FM(1,i));
-                    %Implement polyphase components as folded structures
-                    filter_polyphase = filter(dfilt.dfsymfir(ek(k,:)),downsamp);
-                    upsamp = upsample(filter_polyphase,FL(1,i)); 
-
-                    %Sum 
-
-                    sumBranch = sumBranch + upsamp;
-
-                    if i > 1
-                        sumBranch = delayseq(sumBranch,b);
-                    end
-                end
+%                 for k = (FL(1,i)*FM(1,i)):-1:1 %Starting from the LM-1 branch
+%                     %Creating the other branches before summation
+%                     delayedBy_a = delayseq(signal,(k-1)*a); 
+%                     downsamp = downsample(delayedBy_a,FM(1,i));
+%                     %Implement polyphase components as folded structures
+%                     filter_polyphase = filter(dfilt.dfsymfir(ek(k,:)),downsamp);
+%                     upsamp = upsample(filter_polyphase,FL(1,i)); 
+% 
+%                     %Sum 
+% 
+%                     sumBranch = sumBranch + upsamp;
+% 
+%                     if i > 1
+%                         sumBranch = delayseq(sumBranch,-b);
+%                     end
+%                 end
                 
+                for k = (FL(1,i)*FM(1,i)):-1:1
+                    downsamp = downsample(signal,FM(1,i));
+                    filter_poly = filter(ek(k,:),1,downsamp);
+                    upsamp = upsample(filter_poly,FL(1,i));
+                    
+                    sumBranch = sumBranch + 
+                end    
+
                 signal = sumBranch;
                 
             else
@@ -158,28 +148,20 @@ elseif manual == 2
     %Need to adapt the ripple in the passband
     Rp = Rp/length(FL);   
         
-    Rs = Rs/15;
     % Ask if we want to use polyphase
     ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
      
     for i = 1:length(FL)
 
 %             % Frequency bands
-%             Fmax = Fs*FL(1,i);
-%             pass_bands = Fpass/Fmax;
-%             if FL(1,i) > FM(1,i)
-%                 stop_bands = (Fs - Fstop)/Fmax;
-%             else
-%                 stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/Fmax;
-%             end   
-          
+                        % Frequency bands
+            Fmax = Fs*FL(1,i);
 
-            Fcutoff = min(Fs/(2*FL(1,i)),Fs/(2*FM(1,i)));
+            Fcutoff = (Fmax)/2 * min(1/FL(1,i),1/FM(1,i));
             
-            f = [Fpass Fcutoff];
-            
+
             % Getting the order of the filters
-            [Order,Wp] = ellipord(Fpass/Fs,Fcutoff/Fs,Rp,Rs);
+            [Order,Wp] = ellipord(Fpass/(Fmax/2),Fcutoff/(Fmax/2),Rp,Rs);
             [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
             
             % Polyphase decomposition    

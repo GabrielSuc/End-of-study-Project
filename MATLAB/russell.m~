@@ -1,4 +1,4 @@
-function [output_russell] =  russell(z1,p1,k1,L,M,Nl,Nm,xin)
+function [output_russell, flag] =  russell(z1,p1,k1,L,M,Nl,Nm,xin)
 
 %Takes an IIR filter under the zero-pole-gain form (z,p,k) as input and 
 %returns a decomposed version of it according to Russell's method
@@ -10,36 +10,6 @@ end
     
 syms z k l A
 
-Z1 = zeros(length(z1),1,'sym'); %zeros
-P1 = zeros(length(p1),1,'sym'); %poles
-
-H = zeros(length(z1),1,'sym');
-
-%Factorization in a different way
-for i =1:length(z1)
-    
-    
-    Z1(i) = 1 - z1(i).*z^(-1);
-    P1(i) = 1 - p1(i).*z^(-1);
-    
-    %H(z) = (k1*Prod(Z1(i))/Prod(P(i))
-    
-    H(i) = (Z1(i)/P1(i));
-    
-   
-    %P = sym2cell(P1);
-    %We now use the substitution
-%     for j = 1:L
-%         symsum((p1(j)^k)*(z^(-k)),k,0,L-1)
-%         H(j) = subs(Z1(j)/P1(j),P1(j),(1 - p1(j).*z^(-L))/symsum((p1(j)^k)*(z^(-k)),k,0,L-1));
-%     end
-%     
-%     for j = (L+1):(L+M-1)
-%         H(j) = subs(Z1(j)/P1(j),P1(j),(1 - p1(j).*z^(-M))/symsum((p1(j)^k)*(z^(-k)),k,0,M-1));
-%     end      
-    
-    
-end   
     
 % Using the subtitution Russel does, we can create three different
 % filters. 
@@ -57,9 +27,9 @@ end
 
 
 % Implementing the filter as SOS structure
-Hl = dfilt.df2sos(zp2sos(zeros(Nl,1),PoleL,1));
+[bl,al] = zp2tf(zeros(Nl,1),PoleL,1);%dfilt.df2sos(zp2sos
 
-%fvtool(Hl)
+fvtool(bl,al)
 
 %--------------------------------------------------------------------------
 % Second filter FILTER - FIR filter composed of three factors
@@ -90,7 +60,7 @@ A1 = 0;
 
 for k = 1:Nl
     for l = 0:(L-1)
-        A1 = A1 + simplify((vpa(Pl(k))*z)^l);
+        A1 = A1 + simplify((vpa(Pl(k))*z).^l);
     end
     B1(k) = A1;
     
@@ -108,7 +78,7 @@ A2 = 0;
 
 for k = 1:Nm
     for m = 0:(M-1)
-        A2 = A2 + simplify((vpa(Pm(k))*z)^m);
+        A2 = A2 + simplify((vpa(Pm(k))*z).^m);
     end
     B2(k) = A2;
     
@@ -133,7 +103,7 @@ for i =1:length(z1)
 end 
 
 
-C3 = simplify(k1.*prod(Z1),'Steps',150);
+C3 = simplify(k1*prod(Z1),'Steps',150);
 
 
 %-------------------------- Final FIR (numerator) -------------------------
@@ -149,19 +119,22 @@ Nz = length(z1);
 %Get the order of the numerator
 Coeff_num = sym2poly(numFIR);
 
+fvtool(dfilt.dffir(Coeff_num))
+
 
 if length(Coeff_num) ~= (Nz + Nl*(L-1) + Nm*(M-1) + 1)
     error('Problem order numerator FIR')
 end    
 
 % This technique might sometimes not be possible, so we will have to perform
-% a cl
+% a direct implementation of the filter
 
 if L*M > length(Coeff_num)
     
+    flag = 1; %create a flag
     output_russell = xin;
     return
-
+end
 
 %--------------------------------------------------------------------------
 % <THIRD FILTER - SPLIT THE POLES BY Nm - Allpolefilter indice M
@@ -175,7 +148,9 @@ for i = (Nl + 1):Np
 end
 
 % Implementing the filter as SOS structure
-Hm = dfilt.df2sos(zp2sos(zeros(Nm,1),PoleM,1));
+[bm,am] = zp2tf(zeros(Nm,1),PoleM,1); %dfilt.df2sos(zp2sos())
+
+fvtool(bm,am)
 
 
 %--------------------------------------------------------------------------
@@ -189,7 +164,7 @@ Hm = dfilt.df2sos(zp2sos(zeros(Nm,1),PoleM,1));
 %--------------------------------------------------------------------------
 
 
-xout_filterL = filter(1,PoleL,xin);
+xout_filterL = filter(bl,al,xin);
 
 
 %--------------------------------------------------------------------------
@@ -214,33 +189,34 @@ disp('-------------------------------------------------------------------')
 
 %Now need the LM polyphase components ek of hn
     
-    ek = myPolyphase(Coeff_num,1,L,M,'2');
+ek = myPolyphase(Coeff_num,1,L,M,'2');
 
-    %Have to filter xin through each branch 
+%Have to filter xin through each branch 
 
-    sumBranch = 0;
+sumBranch = 0;
 
-    for i = (L*M):-1:1 %Starting from the LM-1 branch
-        %Creating the other branches before summation
-        delayedBy_a = delayseq(xout_filterL,(i-1)*a);
-        downsamp = downsample(delayedBy_a,M);
-        filter_polyphase = filter(ek(i,:),1,downsamp);
-        upsamp = upsample(filter_polyphase,L); 
+for i = (L*M):-1:1 %Starting from the LM-1 branch
+    %Creating the other branches before summation
+    delayedBy_a = delayseq(xout_filterL,(i-1)*a);
+    downsamp = downsample(delayedBy_a,M);
+    filter_polyphase = filter(ek(i,:),1,downsamp);
+    upsamp = upsample(filter_polyphase,L); 
 
-        %Sum 
+    %Sum 
 
-        sumBranch = sumBranch + upsamp;
+    sumBranch = sumBranch + upsamp;
 
-        if i > 1
-            sumBranch = delayseq(sumBranch,b);
-        end
-
+    if i > 1
+        sumBranch = delayseq(sumBranch,-b);
     end
+
+end
 
 %--------------------------------------------------------------------------
 %                           Through Hl(z)
 %--------------------------------------------------------------------------
 
-output_russell = filter(1,PoleM,sumBranch);
+flag = 0; %no problem, no flag needed
+output_russell = filter(bm,am,sumBranch);
 
 end

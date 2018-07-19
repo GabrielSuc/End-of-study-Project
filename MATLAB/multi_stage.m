@@ -104,7 +104,9 @@ for l = 1:length(permsFL)
         % -------------------------- Filters' parameters --------------------------
 
         %Band-edge frequencies
-        [pass_bands,stop_bands] = deal(zeros(1,length(FM))); %Or FL, same length 
+%         [pass_bands,stop_bands] = deal(zeros(1,length(FM))); %Or FL, same length 
+
+        [Fpassband, Fcutoff] = deal(zeros(1,length(FM)));
         
         %Number of MADS at each stage
         %Rmads = zeros(length(FM),1);
@@ -114,33 +116,49 @@ for l = 1:length(permsFL)
 
         %Final Filter
         H = cell(1,length(FM));
+        
+        wrong_stage = 0;
 
         for i = 1:length(FM)
 
             %Frequency bands
             Fmax = Fs*permsFL(l,i);
-            pass_bands(i) = Fpass/Fmax;
-            if permsFL(l,i) > permsFM(m,i)
-                stop_bands(i) = (Fs - Fstop)/Fmax;
-            else
-                stop_bands(i) = (Fs*(permsFL(l,i)/permsFM(m,i)) - Fstop)/Fmax;
-            end   
+%             pass_bands(i) = Fpass/Fmax;
+%             if permsFL(l,i) > permsFM(m,i)
+%                 stop_bands(i) = (Fs - Fstop)/Fmax;
+%             else
+%                 stop_bands(i) = (Fs*(permsFL(l,i)/permsFM(m,i)) - Fstop)/Fmax;
+%             end   
+% 
+%             %Some of combinations can lead to negative stopband frequencies
+%             %Need to pass them
+%             if stop_bands(i) < 0 || (stop_bands(i) < pass_bands(i))
+%                 continue 
+%             end    
+            
 
-            %Some of combinations can lead to negative stopband frequencies
-            %Need to pass them
-            if stop_bands(i) < 0 || (stop_bands(i) < pass_bands(i))
-                continue 
-            end    
+            if (Fs * permsFL(l,i))/permsFM(m,i) < Fsin 
+                wrong_stage = 1;
+                continue
+            end
+            
+            Fpassband(i) = Fpass;
+            Fcutoff(i) = (Fmax)/2 * min(1/permsFL(l,i),1/permsFM(m,i));
+            
+            
+            f(i,:) = [Fpassband(i) Fcutoff(i)];
 
+            [Order((l-1)*length(permsFL) + m,i),fo,ao,w] = firpmord(f(i,:),a,dev,Fmax);
+            
             %Defining the limit frequencies for the design
-            f(i,:) = [pass_bands(i) stop_bands(i)];
+%             f(i,:) = [pass_bands(i) stop_bands(i)];
             %fo(i,:) = [0 pass_bands(i) stop_bands(i) 1];
 
             %Getting the order of the filters
             %By Remez estimation
             %Order(i) = ceil(remlpord(pass_bands(i),stop_bands(i),dev(1),dev(2)));
             %By Matlab estimation
-            [Order((l-1)*length(permsFL) + m,i),fo,ao,w] = firpmord(f(i,:),a,dev);
+%             [Order((l-1)*length(permsFL) + m,i),fo,ao,w] = firpmord(f(i,:),a,dev);
 
 
             %Filter length must be must be 2*K*Mi +1 so that the delay is
@@ -182,7 +200,7 @@ for l = 1:length(permsFL)
         
         %We first need to remove the lines where the Order have 0
         
-        if find(stop_bands < 0 | stop_bands < pass_bands)
+        if wrong_stage == 1
             %MADS((l-1)*length(permsFL) + m) = 0;
             MPOS((l-1)*length(permsFL) + m) = 0;
             permutation((l-1)*length(permsFL) + m) = 0;
@@ -200,6 +218,7 @@ for l = 1:length(permsFL)
         
         end
         
+             
 %--------------------------------------------------------------------------
 % ----------------------------- Elliptic ----------------------------------
 %--------------------------------------------------------------------------
@@ -219,46 +238,27 @@ for l = 1:length(permsFL)
         
         %Number of MPOS at each stage
         Rmpos =  zeros(length(FM),1);
-
-        %Final Filter
-        H = cell(1,length(FM));
-
+        
+        wrong_stage = 0;
+      
         for i = 1:length(FM)
             
             
             %Frequency bands
             Fmax = Fs*permsFL(l,i);
-            pass_bands(i) = Fpass/Fmax;
-            if permsFL(l,i) > permsFM(m,i)
-                stop_bands(i) = (Fs - Fstop)/Fmax;
-            else
-                stop_bands(i) = (Fs*(permsFL(l,i)/permsFM(m,i)) - Fstop)/Fmax;
-            end   
-
-            %Some of combinations can lead to negative stopband frequencies
-            %Need to pass them
-            if stop_bands(i) < 0 || (stop_bands(i) < pass_bands(i))
-                continue 
-            end    
-
-
-            %Getting the order of the filters
-            %By Remez estimation
-            %Order(i) = ceil(remlpord(pass_bands(i),stop_bands(i),dev(1),dev(2)));
-            %By Matlab estimation
-            Order((l-1)*length(permsFL) + m,i) = ellipord(pass_bands(i),stop_bands(i),Rp,Rs);
-
-
-             %Filter length must be must be 2*K*Mi +1 so that the delay is
-            %integer 
-%             k = ceil((Order((l-1)*length(permsFL) + m,i) - 1)/(2*permsFM(m,i)));
-%             while (2*k*permsFM(m,i) + 1 < Order((l-1)*length(permsFL) + m,i))
-%                 k = k + 1;
-%             end
-%             Order((l-1)*length(permsFL) + m,i) = 2*k*permsFM(m,i);
             
-            %Number of multiplies ans adds(MADS) which must be performed by sec
-            %Rmads(i) = (Order((l-1)*length(permsFL) + m,i)*Fs)/permsFM(m,i);
+            if (Fs * permsFL(l,i))/permsFM(m,i) < Fsin 
+                wrong_stage = 1;
+                continue
+            end
+            
+            Fpassband(i) = Fpass;
+            Fcutoff(i) = (Fmax)/2 * min(1/permsFL(l,i),1/permsFM(m,i));
+            
+            
+            f(i,:) = [Fpassband(i) Fcutoff(i)];
+
+            Order((l-1)*length(permsFL) + m,i) = ellipord(Fpassband(i)/(Fmax/2),Fcutoff(i)/(Fmax/2),Rp,Rs);
             
             %Number of MPOS
             %Defined as polyphase implementation
@@ -270,11 +270,7 @@ for l = 1:length(permsFL)
             end    
             Rmpos(i) =  (((Order((l-1)*length(permsFL) + m,i) + 1)*permsFM(m,i))/permsFL(l,i)) * (cumprodL(end)/cumprodM(end)); 
             
-            %Creating the Elliptic Filters
-%           [coef{1,1},coef{1,2},coef{1,3}] = ellip(Order(i),Rp,Rs,Wp); %[z,p,k]
-%           H{i} = dfilt.df2sos(zp2sos(coef{1,1},coef{1,2},coef{1,3})); %Avoid error of quantization
-%           fvtool(H{i})
-            
+
             %Need to adapt the input frequency after passing through each stage
             Fs = (Fs * permsFL(l,i))/permsFM(m,i);
 
@@ -285,7 +281,7 @@ for l = 1:length(permsFL)
         
         %We first need to remove the lines where the Order have 0
         
-        if find(stop_bands < 0 | stop_bands < pass_bands)
+        if wrong_stage == 1
             %MADS((l-1)*length(permsFL) + m) = 0;
             MPOS((l-1)*length(permsFL) + m) = 0;
             permutation((l-1)*length(permsFL) + m) = 0;

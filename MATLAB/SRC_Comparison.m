@@ -28,7 +28,7 @@ Rs = 50; %dB
 % Cutoff Frequency
 Wc = min(pi/M, pi/L);
 %Same frequency but not normalized
-Fcut = min((Fsin/2)/L,(Fsin/2)/M);
+%Fcut = min((Fsin/2)/L,(Fsin/2)/M);
 
 % Underlying continous-time sampling frequency 
 Fe = L*Fsin;
@@ -39,7 +39,7 @@ Fc = Wc*(Fe/(2*pi));
 % Passband edge
 Fp = Fc*BW;%Fc - Wt/2;
 %Same frequency but not normalized
-Fpass = Fcut*BW;
+%Fpass = Fcut*BW;
 
 % Stopband edge
 Fsc = Fc + Wt/2;
