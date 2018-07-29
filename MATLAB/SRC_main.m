@@ -28,7 +28,7 @@ clear
 %Input frequency
 Fsin = 44.1e3; 
 %Output frequency
-Fsout =  48e3; %2*Fsin; %
+Fsout =  2*Fsin; %48e3; %
 
 % Resampling Factors L/M
 [L,M] = getSRFactors(Fsin,Fsout); % Fsout = (L/M)*Fsin
@@ -377,7 +377,7 @@ signal = signal/max(abs(signal(:)));
 %snr(signal(:,1), Fsin)
 
 %Writting the resulting signal as an audio file
-audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
+audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
     signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
 

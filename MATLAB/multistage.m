@@ -4,18 +4,8 @@ function output = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,input_signal,bestPerm,manua
 FL = bestPerm(1:length(bestPerm)/2);
 FM = bestPerm(length(bestPerm)/2 + 1:end);
 
-    
-%Have to inverse Fx and Fy considering the overall system as a decimator or an interpolator
-if M > L
-     [Fsout, Fsin] = deal(Fsin,Fsout);
-end
 
 %Defining the differents band-edge frequencies
-if Fsin < Fsout
-    Fstop = Fsin/2;
-else 
-    Fstop = Fsout/2;
-end
 
 Fpass = Fp;
 
@@ -43,13 +33,14 @@ if manual == 1
     
     % Ask if we want to use polyphase
     ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
+    
      
     for i = 1:length(FL)
 
             % Frequency bands
             Fmax = Fs*FL(1,i);
 
-            Fcutoff = (Fmax)/2 * min(1/FL(1,i),1/FM(1,i));
+            Fcutoff = (Fmax/2) * min(1/FL(1,i),1/FM(1,i));
             
             
             f = [Fpass Fcutoff];
@@ -263,14 +254,118 @@ elseif manual == 2
             
     end
     
-% Schuessler    
+    
+
 else
+        
+        %Combination: First filter is an IIR Elliptic filter and the rest is Schuessler
+        %filters
+        
+        %Need to adapt the ripple in the passband
+        Rp = Rp/length(FM); 
+        
+              
+        %Design of the Schuessler filter
+        %We want the same specs i.e. same Rp and Rs, thus we need to adapt
+        %the specs of the PM filter first
+        
+        %Need of specific variables for the design
+
+        a = [1 0];
+
+        %Ripples
+        Delta1 = 10^(Rp/20); %Reduce the passband ripple by factor of length(FM) so that passband
+        %ripple in the cascade of the length(FM) filters doesn't exeed Delta1
+        Delta2 = 10^(-Rs/20);           
 
 
+        dev = [(Delta1 - 1)/(Delta1 + 1) Delta2]; %abs(Delta1 - 1)
+
+%----------------------------- First Filter -------------------------------
+           
+            %Frequency bands
+            Fmax = Fs*FL(1,1);
+
+            Fpassband = Fpass;
+            Fcutoff = (Fmax)/2 * min(1/FL(1,1),1/FM(1,1));
+            
+            %By Matlab estimation
+            [Order,Wp] = ellipord(Fpassband/(Fmax/2),Fcutoff/(Fmax/2),Rp,Rs);
+            
+            [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
+            %Creating filter
+            Filter =  dfilt.df2sos(zp2sos(z_ellip,p_ellip,FL(1,1)*k_ellip));
+            
+            %Need to adapt the input frequency after passing through each stage
+            Fs = (Fs * FL(1,1))/FM(1,1);
+            
+            %Filtering through first filter
+            signal = input_signal;
+            
+            %Upsampling
+            signal = upsample(signal,FL(1,1));
+            %Filtering
+            input_filtered = filter(Filter,signal);
+            %Downsampling
+            signal = downsample(input_filtered,FM(1,1));
+            
+            
+%----------------------------- Other Filter -------------------------------            
+    
+
+       
+
+        for i = 2:length(FM) %Don't forget that the first filter is an elliptic
+            
+            %Frequency bands
+            Fmax = Fs*FL(1,i);
+            
+            %Defining the limit frequencies for the design
+            Fpassband = Fpass;
+            Fcutoff = (Fmax)/2 * min(1/FL(1,i),1/FM(1,i));
+            
+            f = [Fpassband Fcutoff];
+
+            [Order,fo,ao,w] = firpmord(f,a,dev,Fmax);
+            
+            
+            %If we want to use the spectral factorisation, the filter has to
+            %have a nonnegative zerophase reponse, which implies, has to have
+            %an even order
+        
+            if rem(Order,2)~= 0
+                Order = Order + 1;
+            end
+            
+            b = firpm(Order,fo,ao,w); 
+            
+            %fvtool(b)
+            
+            %Now, we create the Schuessler filters
+            
+            H_schuessler = schuessler(b,Delta2);
+            
+            if H_schuessler == 0  
+                %Upsampling
+                signal = upsample(signal,FL(1,i));
+                %Filtering
+                input_filtered = filter(b,1,signal);
+                %Downsampling
+                signal = downsample(input_filtered,FM(1,i));
+                continue
+            end    
+            
+            
+            %Upsampling
+            signal = upsample(signal,FL(1,i));
+            %Filtering
+            input_filtered = filter(H_schuessler,1,signal);
+            %Downsampling
+            signal = downsample(input_filtered,FM(1,i));
+            
 
 
-
-
+        end
 
 
 end

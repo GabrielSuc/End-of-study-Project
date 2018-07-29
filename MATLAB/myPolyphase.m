@@ -16,11 +16,14 @@ if str == '1' %FIR/IIR case
        N = length(b);
        if N > L %Just to make sure
         if rem(N,L) ~= 0
-            PolyMatrix = vec2mat([b;0],fix(N/L)+1);%zeros(L-(fix(N/(fix(N/L)+1)) +1)...
-                %,fix(N/L)+1)]; %Need to concatenate to have a L*(fix(N/L)+1) matrix
-        else                                                                                                      
-            PolyMatrix = vec2mat(b,fix(N/L));
-        end
+                if L*ceil(N/(L)) > N
+                    PolyMatrix = vec2mat([b;zeros(L*ceil(N/(L)) - N,1)],ceil(N/(L)));
+                else 
+                    PolyMatrix = vec2mat([b;zeros((ceil(N/(L))+1)*L - N,1)],ceil(N/(L)));
+                end    
+         else                                                                                                      
+                PolyMatrix = vec2mat(b,fix(N/(L)));
+         end
        else
        error('Length of filter is smaller than L')   
        end 
