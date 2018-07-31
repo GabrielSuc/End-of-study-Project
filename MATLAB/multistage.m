@@ -98,6 +98,9 @@ if manual == 1
                 
                 % Creating the filter
                 Filter = dfilt.dfsymfir(FL(1,i)*firpm(Order,fo,ao,w));
+                
+                %Saving file to use it in a C code file
+                save(['PM_filter_stage_' num2str(i) '.c'], 'Filter')
                
                 if i == 1 
                     signal = input_signal; %true only for the first input
