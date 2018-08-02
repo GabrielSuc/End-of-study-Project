@@ -1,0 +1,26 @@
+echo "compiling main.c"
+compiling main.c
+gcc -msse -msse2 -ffast-math -mfpmath=sse -Wall -fPIC -DNDEBUG -O3 -g0 -I. -malign-double -std=c99 -DVERSION='"0.3"' -c main.c
+main.c: In function ‘main’:
+main.c:62:6: warning: variable ‘exitcode’ set but not used [-Wunused-but-set-variable]
+  int exitcode = 0;
+      ^
+echo "compiling remez_lp.c"
+compiling remez_lp.c
+gcc -msse -msse2 -ffast-math -mfpmath=sse -Wall -fPIC -DNDEBUG -O3 -g0 -I. -malign-double -std=c99 -DVERSION='"0.3"' -c remez_lp.c
+echo "compiling smarc.c"
+compiling smarc.c
+gcc -msse -msse2 -ffast-math -mfpmath=sse -Wall -fPIC -DNDEBUG -O3 -g0 -I. -malign-double -std=c99 -DVERSION='"0.3"' -c smarc.c
+echo "compiling stage_impl.c"
+compiling stage_impl.c
+gcc -msse -msse2 -ffast-math -mfpmath=sse -Wall -fPIC -DNDEBUG -O3 -g0 -I. -malign-double -std=c99 -DVERSION='"0.3"' -c stage_impl.c
+stage_impl.c: In function ‘build_filter’:
+stage_impl.c:67:10: warning: initialization makes integer from pointer without a cast [-Wint-conversion]
+  int n = get_matlab_filter(stage);
+          ^
+stage_impl.c: In function ‘init_psfilter’:
+stage_impl.c:150:2: error: expected ‘;’ before ‘pfilt’
+  pfilt->flen = Lenh;
+  ^
+Makefile:53: recipe for target 'stage_impl.o' failed
+make: *** [stage_impl.o] Error 1

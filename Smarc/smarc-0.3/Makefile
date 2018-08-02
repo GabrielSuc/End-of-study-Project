@@ -30,7 +30,7 @@ CFLAGS := $(CFLAGS) -DVERSION='"$(VERSION)"'
 
 LDFLAGS := $(LDFLAGS) -lm -lsndfile
 
-LIBSRC = remez_lp.c smarc.c stage_impl.c filtering.c polyfilt.c multi_stage.c
+LIBSRC = remez_lp.c smarc.c stage_impl.c filtering.c polyfilt.c multi_stage.c get_matlab_filter.c
 LIBOBJECTS = $(patsubst %.c,%.o,$(LIBSRC))
 LIBTARGET = libsmarc.so
 
@@ -43,7 +43,7 @@ ARGTABLE_LIB_A := /usr/lib/libargtable2.a
 all: $(TARGET) $(LIBTARGET)
 
 $(TARGET): $(OBJECTS) 
-	gcc main.o remez_lp.o smarc.o stage_impl.o filtering.o polyfilt.o multi_stage.o /usr/local/lib/libargtable2.a -o smarc -L. -L/home/gabriel/Documents/End-of-study-Project/Smarc/libsndfile-1.0.28/src.libs -lm -lsndfile
+	gcc main.o remez_lp.o smarc.o stage_impl.o filtering.o polyfilt.o multi_stage.o get_matlab_filter.o /usr/local/lib/libargtable2.a -o smarc -L. -L/home/gabriel/Documents/End-of-study-Project/Smarc/libsndfile-1.0.28/src.libs -lm -lsndfile
 
 $(LIBTARGET): $(LIBOBJECTS)
 	gcc -shared -Wl,-soname,libsmarc.so -o libsmarc.so.$(VERSION) $(LIBOBJECTS)

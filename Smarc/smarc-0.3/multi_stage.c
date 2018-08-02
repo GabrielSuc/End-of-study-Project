@@ -223,7 +223,7 @@ struct PMultiStageDef* get_predef_ratios(int fsin, int fsout) {
 				while (*pos!=' ') pos++;
 				pos++;
 			}
-			reorder_stages(pdef);
+//			reorder_stages(pdef);
 			return pdef;
 		}
 	}

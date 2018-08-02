@@ -41,7 +41,7 @@ void build_filter(double fpass, double fstop,
 		double rp, double rs, int rpFactor, double** h, int* len, int lenStep, int stage) {
 
 	//We only need to know the value of len
-	/*int i;
+	int i;
 	double *bands, *mag, *dev, *weight;
 
 //	printf("build filter %f %f %f, %f/%i %f (lenstep=%i)\n",fpass,fstop,fmax,rp,rpFactor, rs,lenStep);
@@ -62,9 +62,8 @@ void build_filter(double fpass, double fstop,
 	dev[0] = (pow(10, rp / 20.0) - 1) / (rpFactor *(pow(10, rp / 20.0) + 1));
 	dev[1] = pow(10, -rs / 20.0);
 
-	int n = remez_lp_order(bands, mag, dev, weight); */
+	int n = remez_lp_order(bands, mag, dev, weight); 
 	
-	int n = get_matlab_filter(stage);
 
 	// filter length must be 2*K*lenStep+1 so that delay is integer
 	{
@@ -74,7 +73,7 @@ void build_filter(double fpass, double fstop,
 		*len = 2*k*lenStep + 1;
 	}
 
-	/*if (n>MAX_FILTER_LENGTH)
+	if (n>MAX_FILTER_LENGTH)
 	{
 		free(bands);
 		*len = 0;
@@ -93,17 +92,23 @@ void build_filter(double fpass, double fstop,
 		*len = 0;
 	}
 
-	free(bands);*/
+	free(bands);
 }
 
 struct PSFilter* init_psfilter(int L, int M,
 		double fpass, double fstop,
 		double rp, double rs, int rpFactor, int stage) {
 
-	double* h = 0;
-	int Lenh;
+//	double* h = 0;
+	unsigned int Lenh;
+		
+	struct getFilter* getfilter = malloc(sizeof(struct getFilter));
 
-	build_filter(fpass,fstop,rp, rs, rpFactor, &h, &Lenh, M, stage);
+	getfilter = get_matlab_filter(stage);
+
+	Lenh = getfilter->flen;
+	
+//	build_filter(fpass,fstop,rp, rs, rpFactor, &h, &Lenh, M, stage);
 	if (Lenh==0)
 	{
 		printf("ERROR: cannot build filter %i/%i (within a %i stage filter) with parameters fpass=%0.2f fstop=%0.2f rp=%0.2f rs=%0.2f\n",L,M,rpFactor, fpass,fstop,rp,rs);
@@ -126,7 +131,7 @@ struct PSFilter* init_psfilter(int L, int M,
 	int K = Lenh / L;
 	if (Lenh > K*L)
 		K++;
-	pfilt->filters = malloc(L*K*sizeof(double));
+	//pfilt->filters = malloc(L*K*sizeof(double));
 
 	/*if (L==1)
 	{
@@ -143,8 +148,8 @@ struct PSFilter* init_psfilter(int L, int M,
 		}
 	}*/
 	
-	pfilt->filters = get_matlab_filter(stage)
-	
+	pfilt->filters = getfilter->filter; 
+			
 	//free(h);
 
 	pfilt->flen = Lenh;
@@ -152,6 +157,8 @@ struct PSFilter* init_psfilter(int L, int M,
 	pfilt->L = L;
 	pfilt->K = K;
 	pfilt->filter_delay = (Lenh - 1) / (2*M);
+
+	free(getfilter);
 
 	return pfilt;
 }

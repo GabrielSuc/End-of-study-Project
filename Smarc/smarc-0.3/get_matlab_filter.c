@@ -6,47 +6,72 @@
  
 #include <stdio.h>
 #include <stdlib.h>
-#include "get_matlab_filter.h"
- 
-#define MAXCHAR 10000
-int get_matlab_filter(int i) {
-   	FILE *fp;
-   	char str[MAXCHAR];
-   	char buffer[32];
-	double bar = 0.0;
-	int lines, ch  = 0;
+#include <string.h>
 
-   // char*filename = 
-	snprintf(buffer, sizeof(char*) * 32, "/home/gabriel/Documents/End-of-study-Project/SRC_files/PM_Multistage_16_bits/PM_filter%i.txt",i); 
-    
+#include "get_matlab_filter.h"
+
+
+#define SIZE 1024 
+
+struct getFilter* get_matlab_filter(int i) {
+   	FILE *fp;
+        
+	char buffer[SIZE + 1];
+	unsigned int lines = 0;
+	char buf[SIZE + 1], lastchar = '\n';
+        size_t bytes;
+	
+	snprintf(buffer, sizeof(char*) * 32, "/home/gabriel/Documents/End-of-study-Project/SRC_files/PM_Multistage_16_bits/PM_filter%i.txt",i+1); 
+
 	fp = fopen(buffer, "r");
     	if (fp == NULL){
         	printf("Could not open file %s",buffer);
-//        	return (double *) 1;
-		return 1;
-    	}
+        	return NULL;
+    	}       
+	
 
-	while(!feof(fp))
-	{
-  	ch = fgetc(fp);
-  	if(ch == '\n')
-  	{
-    		lines++;
-  	}
+	//Counting lines
+	while ((bytes = fread(buf, 1, sizeof(buf) - 1, fp))) {
+                lastchar = buf[bytes - 1];
+                for (char *c = buf; (c = memchr(c, '\n', bytes - (c - buf))); c++) {
+                    lines++;
+                }
+        }
+
+        if (lastchar != '\n') {
+                lines++;  /* Count the last line even if it lacks a newline */
+        }
+
+	
+//	printf("%d\n", lines);  	
+//	fflush(stdout);
+	fseek(fp, 0, SEEK_SET); /* getting back to first line of fp */
+
+	//Creating filter
+	double *filter = (double *) malloc(lines*sizeof(double));
+
+	while(getc(fp)!=EOF){
+		for (size_t i = 0; i< lines; i++){
+			if(fscanf(fp, "%lf\n", filter + i) == 1){
+			}//	printf("%.10f\n", *filter+i);	
+			else{
+				printf("failed to read file.\n");
+			}		
+		}	 
 	}
-    	
 
-	while (fgets(str, MAXCHAR, fp) != NULL)
-       // 	printf("%s\n", str);
-    	fclose(fp);
-
-	bar = atof(str);
-
-   // 	filter = &bar;
-
-	printf("%d\n",lines);
-
-    	return lines;   // filter;
+                  	
+//	printf("%.10f\n", *filter);	
+//	fflush(stdout);
+	fclose(fp);
+	
+	struct getFilter* getfilter = malloc(sizeof(struct getFilter*));
+	
+	getfilter->flen = lines;
+	getfilter->filter = filter;
+	
+	return getfilter;
 }
+
 
 

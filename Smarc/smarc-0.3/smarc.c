@@ -77,7 +77,7 @@ struct PFilter* smarc_init_pfilter(int fsin, const int fsout, double bandwidth, 
         printf("ERROR: in and out samplerates are equals ! (%i Hz)\n",fsin);
         return NULL;
     }
-
+	
 	struct PMultiStageDef* pdef;
 	pdef = get_predef_ratios(fsin,fsout);
 /*	if (userratios!=NULL && strlen(userratios)>0)
@@ -127,6 +127,8 @@ struct PFilter* smarc_init_pfilter(int fsin, const int fsout, double bandwidth, 
 			// decimation
 			fstop = ((stage_fsin * pdef->L[i]) / pdef->M[i]) - (pfilt->fstop);
 		}*/
+		printf("%d %d", pdef->L[i], pdef->M[i]);
+		fflush(stdout);
 		pfilt->filter[i] = init_psfilter(pdef->L[i],pdef->M[i],
 				fpass / fmax,fstop / fmax,rp,rs,pdef->nb_stages, i);
 
@@ -144,7 +146,7 @@ struct PFilter* smarc_init_pfilter(int fsin, const int fsout, double bandwidth, 
 	{
 		printf("WARNING: output samplerate is %f\n",stage_fsin);
 	}
-
+	
 	destroy_multistagedef(pdef);
 
 	return pfilt;
@@ -367,16 +369,17 @@ int smarc_resample_flush(struct PFilter* pfilt, struct PState* pstate,
 				pstate->flush_pos = inbuf->size-inbuf->pos;
 				inbuf->pos = inbuf->size;
 			}
-		} else {
+		} else {      
 			// continue flushing
-			int toWrite = inbuf->size - inbuf->pos;
-			if (toWrite> (pstate->flush_size-pstate->flush_pos))
-				toWrite = pstate->flush_size-pstate->flush_pos;
-			for (int k=0;k<toWrite;k++)
-				inbuf->data[inbuf->pos+k] = pstate->flush_buf[pstate->flush_pos+k];
-//			printf("flushing next %i samples starting at %i/%i\n",toWrite,pstate->flush_pos,pstate->flush_size);
-			pstate->flush_pos += toWrite;
-			inbuf->pos += toWrite;
+                        int toWrite = inbuf->size - inbuf->pos;
+                        if (toWrite> (pstate->flush_size-pstate->flush_pos))
+                                toWrite = pstate->flush_size-pstate->flush_pos;
+                        for (int k=0;k<toWrite;k++)
+                                inbuf->data[inbuf->pos+k] = pstate->flush_buf[pstate->flush_pos+k];
+//                      printf("flushing next %i samples starting at %i/%i\n",toWrite,pstate->flush_pos,pstate->flush_size);
+                        pstate->flush_pos += toWrite;
+                        inbuf->pos += toWrite;
+
 		}
 
 		// process filtering
