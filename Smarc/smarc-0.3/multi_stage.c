@@ -77,7 +77,7 @@ static const struct PPredef s_predefs[] = {
 		{ 80, 441, "3/2 3/2 7/4 7/5"},
 		{ 147, 40, "2/1 2/3 2/7 5/7"},
 		{ 147, 80, "5/7 4/7 2/3 2/1"},
-		{ 147, 160, "5/1 4/7 4/7 2/3"}, //Most efficient combination, cf multi_stage.m
+		{ 147, 160, "4/3 2/1 4/7 5/7"}, //Most efficient combination, cf multi_stage.m
 		{ 147, 320, "4/7 4/1 4/3 5/7"},
 		{ 147, 640, "2/1 4/1 4/7 4/3 5/7"},
 		{ 147, 1280, "4/1 4/1 4/7 4/3 5/7"},

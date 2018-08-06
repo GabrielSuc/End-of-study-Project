@@ -11,6 +11,8 @@ Fpass = Fp;
 
 Fs = Fsin;
 
+Fstop = Fsin/2;
+
 % Filtering through the different kind of filters:
 % Parks-McClellan
 if manual == 1
@@ -44,9 +46,33 @@ if manual == 1
             
             
             f = [Fpass Fcutoff];
-
+            
             [Order,fo,ao,w] = firpmord(f,A,dev,Fmax);
 
+%             Fmax = Fs*FL(1,i);
+%             pass_bands = Fpass/Fmax;
+%             if FL(1,i) > FM(1,i)
+%                 stop_bands = (Fs - Fstop)/Fmax;
+%             else
+%                 stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/Fmax;
+%             end
+% 
+%             
+%             
+%             Order = ceil(remlpord(pass_bands,stop_bands,dev(1),dev(2)));
+            
+            % SMARC - Filter length must be must be 2*K*Mi +1 so that the delay is integer 
+%             k = ceil((Order - 1)/(2*FM(1,i)));
+%             while (2*k*FM(1,i) + 1 < Order)
+%                 k = k + 1;
+%             end
+%             Order = 2*k*FM(1,i);
+
+%             ao = [1 1 0 0];
+%             fo = [0 pass_bands stop_bands 1];
+            
+            
+            
             
             % Polyphase decomposition    
             if isempty(ispolyphase)
@@ -65,7 +91,7 @@ if manual == 1
                 end   
                 
                 %Compensate gain
-                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2');
+                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2'); %
 
                 %Have to filter xin through each branch 
                 sumBranch = 0;
@@ -96,11 +122,17 @@ if manual == 1
                 
             else
                 
+                           
                 % Creating the filter
-                Filter = dfilt.dfsymfir(FL(1,i)*firpm(Order,fo,ao,w));
-                
+                Filter = dfilt.dffir(FL(1,i)*firpm(Order,fo,ao));%,w
+                fvtool(Filter);
                 %Saving file to use it in a C code file
-                save(['PM_filter_stage_' num2str(i) '.c'], 'Filter')
+                %Move it to the appropriate directory
+%                 file = fopen(['PM_filter',num2str(i),'.txt'],'w');
+%                 fprintf(file,'%.20e\n',vpa(Filter.Numerator));
+%                 fclose(file);
+%                 set(Filter,'arithmetic','fixed');
+%                 fcfwrite(Filter,['Pm_filter', num2str(i), '.fcf']);
                
                 if i == 1 
                     signal = input_signal; %true only for the first input

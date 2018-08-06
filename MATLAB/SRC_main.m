@@ -46,7 +46,7 @@ Rs = 140; %in dB
 %Desired Transition Width
 %Represent how close we want the passband frequency to be from the stopband
 %frequency.
-TW = 0.99; %in percent of the stopband freqeuncy;
+TW = 0.95; %in percent of the stopband freqeuncy;
 
 %Cutoff frequency
 %Also defined the stopband frequency i.e. Fstop

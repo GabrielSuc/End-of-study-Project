@@ -41,9 +41,6 @@ permutation = zeros(length(permsFL)*length(permsFL),length(FL) + length(FM));
 %Orders of the filters accross each permutations
 Order = zeros(length(permsFL)*length(permsFL),length(FL));
 
-%Total number of MADS accross each permutations
-MADS = zeros(length(permsFL)*length(permsFL),1);
-
 %Total number of MPOS
 MPOS = zeros(length(permsFL)*length(permsFL),1);
 
@@ -64,9 +61,10 @@ for l = 1:length(permsFL)
 
 %         Defining the differents band-edge frequencies
         Fpass = Fp;
-
+        
         Fs = Fsin;
         
+%         Fstop = Fsin/2;
 %--------------------------------------------------------------------------
 % ------------------------- Parks-McClellan -------------------------------
 %--------------------------------------------------------------------------
@@ -93,19 +91,22 @@ for l = 1:length(permsFL)
         %Band-edge frequencies
         [Fpassband, Fcutoff] = deal(zeros(1,length(FM)));
         
+%         [pass_bands, stop_bands] = deal(zeros(1,length(FM)));
+
         %Number of MPOS at each stage
         Rmpos =  zeros(length(FM),1);
 
-        %Final Filter
-        H = cell(1,length(FM));
-        
+            
         wrong_stage = 0;
 
         for i = 1:length(FM)
 
 %             %Frequency bands
             Fmax = Fs*permsFL(l,i);
+           
+            
 %             pass_bands(i) = Fpass/Fmax;
+% 
 %             if permsFL(l,i) > permsFM(m,i)
 %                 stop_bands(i) = (Fs - Fstop)/Fmax;
 %             else
@@ -117,10 +118,8 @@ for l = 1:length(permsFL)
 %             if stop_bands(i) < 0 || (stop_bands(i) < pass_bands(i))
 %                 continue 
 %             end    
-%             
-            
+% 
             if Fsin < Fsout
-
                 if (Fs * permsFL(l,i))/permsFM(m,i) < Fsin 
                     wrong_stage = 1;
                     continue
@@ -138,12 +137,11 @@ for l = 1:length(permsFL)
             Fpassband(i) = Fpass;
             Fcutoff(i) = (Fmax/2) * min(1/permsFL(l,i),1/permsFM(m,i));
 %             
-%             
             f(i,:) = [Fpassband(i) Fcutoff(i)];
-
+% 
 %             f(i,:) = [pass_bands(i) stop_bands(i)];
 
-            [Order((l-1)*length(permsFL) + m,i),fo,ao,w] = firpmord(f(i,:),a,dev,Fmax);
+            [Order((l-1)*length(permsFL) + m,i),fo,ao,w] = firpmord(f(i,:),a,dev,Fmax);%
             
             %Defining the limit frequencies for the design
 %             f(i,:) = [pass_bands(i) stop_bands(i)];
@@ -151,7 +149,7 @@ for l = 1:length(permsFL)
 
             %Getting the order of the filters
             %By Remez estimation
-%             Order((l-1)*length(permsFL) + m,i) = ceil(remlpord(pass_bands(i),stop_bands(i),dev(1),dev(2)));
+            %Order((l-1)*length(permsFL) + m,i) = ceil(remlpord(pass_bands(i),stop_bands(i),dev(1),dev(2)));
             %By Matlab estimation
 %             [Order((l-1)*length(permsFL) + m,i),fo,ao,w] = firpmord(f(i,:),a,dev);
 
@@ -195,7 +193,7 @@ for l = 1:length(permsFL)
         
         %We first need to remove the lines where the Order have 0
         
-        if wrong_stage == 1 %find(stop_bands < 0 | (stop_bands < pass_bands)) %
+        if  wrong_stage == 1 %find(stop_bands < 0 | (stop_bands < pass_bands)) %
             %MADS((l-1)*length(permsFL) + m) = 0;
             MPOS((l-1)*length(permsFL) + m) = 0;
             permutation((l-1)*length(permsFL) + m) = 0;
@@ -265,6 +263,14 @@ for l = 1:length(permsFL)
             f(i,:) = [Fpassband(i) Fcutoff(i)];
 
             Order((l-1)*length(permsFL) + m,i) = ellipord(Fpassband(i)/(Fmax/2),Fcutoff(i)/(Fmax/2),Rp,Rs);
+            
+            %Filter length must be must be 2*K*Mi +1 so that the delay is
+            %integer 
+            k = ceil((Order((l-1)*length(permsFL) + m,i) - 1)/(2*permsFM(m,i)));
+            while (2*k*permsFM(m,i) + 1 < Order((l-1)*length(permsFL) + m,i))
+                k = k + 1;
+            end
+            Order((l-1)*length(permsFL) + m,i) = 2*k*permsFM(m,i);
             
             %Number of MPOS
             %Defined as polyphase implementation
@@ -408,7 +414,13 @@ for l = 1:length(permsFL)
 
 
 
-
+        %Filter length must be must be 2*K*Mi +1 so that the delay is
+            %integer 
+            k = ceil((Order((l-1)*length(permsFL) + m,1) - 1)/(2*permsFM(m,1)));
+            while (2*k*permsFM(m,1) + 1 < Order((l-1)*length(permsFL) + m,1))
+                k = k + 1;
+            end
+            Order((l-1)*length(permsFL) + m,1) = 2*k*permsFM(m,1);
             
             %MPOS
             %Defined as polyphase implementation
@@ -456,24 +468,17 @@ for l = 1:length(permsFL)
             
 
             
-            [Order((l-1)*length(permsFL) + m,i),fo,ao,w] = firpmord(f(i,:),a,dev,Fmax);
+            [Order((l-1)*length(permsFL) + m,i),fo,ao,w] = firpmord(f(i,:),a,dev,Fmax); 
             
+            %Filter length must be must be 2*K*Mi +1 so that the delay is
+            %integer 
+            k = ceil((Order((l-1)*length(permsFL) + m,i) - 1)/(2*permsFM(m,i)));
+            while (2*k*permsFM(m,i) + 1 < Order((l-1)*length(permsFL) + m,i))
+                k = k + 1;
+            end
+            Order((l-1)*length(permsFL) + m,i) = 2*k*permsFM(m,i);
 
-            %Number of MPOS
-            %Defined as polyphase implementation
-            cumprodM = cumprod(permsFM(m,i+1:end));
-            cumprodL = cumprod(permsFL(l,i+1:end));
-            if isempty(cumprodL) && isempty(cumprodM)
-                cumprodL = 1;
-                cumprodM = 1;
-            end    
-            Rmpos(i) =  (((Order((l-1)*length(permsFL) + m,i) + 1)*permsFM(m,i))/permsFL(l,i)) * (cumprodL(end)/cumprodM(end));
-
-            %Creating the P-M filters
-            %H{i} = dfilt.dfsymfir(firpm(Order(k,i),fo,ao,w)); %Folded implementation, reduces multiples by 2
-            %fvtool(H{i})
-            %Need to adapt the input frequency after passing through each stage
-            Fs = (Fs * permsFL(l,i))/permsFM(m,i);
+           
             
             
             
@@ -499,6 +504,22 @@ for l = 1:length(permsFL)
             
             Order((l-1)*length(permsFL) + m,i) = length(H_schuessler) - 1;
             
+            
+             %Number of MPOS
+            %Defined as polyphase implementation
+            cumprodM = cumprod(permsFM(m,i+1:end));
+            cumprodL = cumprod(permsFL(l,i+1:end));
+            if isempty(cumprodL) && isempty(cumprodM)
+                cumprodL = 1;
+                cumprodM = 1;
+            end    
+            Rmpos(i) =  (((Order((l-1)*length(permsFL) + m,i) + 1)*permsFM(m,i))/permsFL(l,i)) * (cumprodL(end)/cumprodM(end));
+
+            %Creating the P-M filters
+            %H{i} = dfilt.dfsymfir(firpm(Order(k,i),fo,ao,w)); %Folded implementation, reduces multiples by 2
+            %fvtool(H{i})
+            %Need to adapt the input frequency after passing through each stage
+            Fs = (Fs * permsFL(l,i))/permsFM(m,i);
             
             %Need to create a flag to inform that a Schuessler form has
             %been used

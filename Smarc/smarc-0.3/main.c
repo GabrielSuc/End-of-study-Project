@@ -37,10 +37,10 @@
 
 #define BUF_SIZE 8192
 
-#define BANDWIDTH "0.99"
+#define BANDWIDTH "0.95"
 #define RP "0.1"
 #define RS "140"
-#define TOL "0.000001"
+#define TOL "0"//"0.000001"
 
 struct arg_lit *h, *version, *verbose, *fast, *check;
 struct arg_str *c, *b, *rp, *rs, *tol, *ratios;
@@ -59,8 +59,6 @@ void resample_separately(struct PFilter* pfilter, SNDFILE* fin, SNDFILE* fout,
 void check_filter(struct PFilter* pfilter,int fsin, int fsout, double bandwidth);
 
 int main(int argc, char** argv) {
-	printf("lafesse");
-	fflush(stdout);
 	int exitcode = 0;
 	const char* progname = argv[0];
 	// build option parser

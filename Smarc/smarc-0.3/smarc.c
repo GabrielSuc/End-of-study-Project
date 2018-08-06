@@ -127,8 +127,8 @@ struct PFilter* smarc_init_pfilter(int fsin, const int fsout, double bandwidth, 
 			// decimation
 			fstop = ((stage_fsin * pdef->L[i]) / pdef->M[i]) - (pfilt->fstop);
 		}*/
-		printf("%d %d", pdef->L[i], pdef->M[i]);
-		fflush(stdout);
+//		printf("%d %d", pdef->L[i], pdef->M[i]);
+//		fflush(stdout);
 		pfilt->filter[i] = init_psfilter(pdef->L[i],pdef->M[i],
 				fpass / fmax,fstop / fmax,rp,rs,pdef->nb_stages, i);
 
@@ -304,7 +304,7 @@ int smarc_resample(struct PFilter* pfilt, struct PState* pstate,
 			int nbStageWritten;
 			polyfiltLM(filt,state,inbuf->data,inbuf->pos,&nbStageRead,outbuf->data + outbuf->pos,outbuf->size - outbuf->pos,&nbStageWritten);
 
-//			printf("stage %i: read %i [%i/%i] write %i [%i/%i] K=%i\n",i,nbStageRead,inbuf->pos,inbuf->size,nbStageWritten,outbuf->pos,outbuf->size,filt->K);
+//		printf("stage %i: read %i [%i/%i] write %i [%i/%i] K=%i\n",i,nbStageRead,inbuf->pos,inbuf->size,nbStageWritten,outbuf->pos,outbuf->size,filt->K);
 
 			// keep non processed input
 			if (nbStageRead<inbuf->pos) {

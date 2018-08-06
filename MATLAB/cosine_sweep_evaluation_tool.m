@@ -48,7 +48,7 @@ if tool == 1
             
             audio_channels = 2;         % channels
             f_start = 20;               % Hz
-            f_stop = fs/2 * (20000/22050);          % Hz (forces fmax to be 20k @ 44.1 kHz)
+            f_stop = fs/2; %* (20000/22050);          % Hz (forces fmax to be 20k @ 44.1 kHz)
             duration_in_seconds = 60;   % seconds
             bitrate = 256;              % AAC bitrate - options: 64, 96, 128, 160, 192, 256, 320 kbps
             for level_dBFS = [0 -1]    % dB

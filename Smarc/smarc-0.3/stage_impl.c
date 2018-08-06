@@ -149,8 +149,9 @@ struct PSFilter* init_psfilter(int L, int M,
 	}*/
 	
 	pfilt->filters = getfilter->filter; 
-			
-	//free(h);
+	printf("%le\n", *pfilt->filters);		
+	fflush(stdout);	
+//free(h);
 
 	pfilt->flen = Lenh;
 	pfilt->M = M;

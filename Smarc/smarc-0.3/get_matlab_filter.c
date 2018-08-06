@@ -21,7 +21,7 @@ struct getFilter* get_matlab_filter(int i) {
 	char buf[SIZE + 1], lastchar = '\n';
         size_t bytes;
 	
-	snprintf(buffer, sizeof(char*) * 32, "/home/gabriel/Documents/End-of-study-Project/SRC_files/PM_Multistage_16_bits/PM_filter%i.txt",i+1); 
+	snprintf(buffer, sizeof(char*) * 32, "/home/gabriel/Documents/End-of-study-Project/SRC_files/PM_Multistage_24_bits/PM_filter%i.txt",i+1); 
 
 	fp = fopen(buffer, "r");
     	if (fp == NULL){
@@ -50,19 +50,18 @@ struct getFilter* get_matlab_filter(int i) {
 	//Creating filter
 	double *filter = (double *) malloc(lines*sizeof(double));
 
-	while(getc(fp)!=EOF){
-		for (size_t i = 0; i< lines; i++){
-			if(fscanf(fp, "%lf\n", filter + i) == 1){
-			}//	printf("%.10f\n", *filter+i);	
-			else{
-				printf("failed to read file.\n");
-			}		
-		}	 
+
+	for (size_t i = 0; i< lines; i++){
+		if(fscanf(fp, "%lf\n", filter + i) == 1){
+		}//	printf("%.10f\n", *filter+i);	
+		else{
+			printf("failed to read file.\n");
+		}		
 	}
 
                   	
-//	printf("%.10f\n", *filter);	
-//	fflush(stdout);
+//	printf("%.10f\n", filter[0]);	
+	//fflush(stdout);
 	fclose(fp);
 	
 	struct getFilter* getfilter = malloc(sizeof(struct getFilter*));
