@@ -174,7 +174,7 @@ for l = 1:length(permsFL)
                 cumprodL = 1;
                 cumprodM = 1;
             end    
-            Rmpos(i) =  (((Order((l-1)*length(permsFL) + m,i) + 1)*permsFM(m,i))/permsFL(l,i)) * (cumprodL(end)/cumprodM(end)); 
+            Rmpos(i) =  (((Order((l-1)*length(permsFL) + m,i) + 1)*permsFM(m,i))/(2*permsFL(l,i))) * (cumprodL(end)/cumprodM(end)); 
             
            
            
@@ -263,14 +263,18 @@ for l = 1:length(permsFL)
             f(i,:) = [Fpassband(i) Fcutoff(i)];
 
             Order((l-1)*length(permsFL) + m,i) = ellipord(Fpassband(i)/(Fmax/2),Fcutoff(i)/(Fmax/2),Rp,Rs);
+            [z,p,k] = ellip(Order((l-1)*length(permsFL) + m,i),Rp,Rs,Fpassband(i)/(Fmax/2));
+            
+            Nzi = length(z);
+            Npi = length(p);
             
             %Filter length must be must be 2*K*Mi +1 so that the delay is
             %integer 
-            k = ceil((Order((l-1)*length(permsFL) + m,i) - 1)/(2*permsFM(m,i)));
-            while (2*k*permsFM(m,i) + 1 < Order((l-1)*length(permsFL) + m,i))
-                k = k + 1;
-            end
-            Order((l-1)*length(permsFL) + m,i) = 2*k*permsFM(m,i);
+%             k = ceil((Order((l-1)*length(permsFL) + m,i) - 1)/(2*permsFM(m,i)));
+%             while (2*k*permsFM(m,i) + 1 < Order((l-1)*length(permsFL) + m,i))
+%                 k = k + 1;
+%             end
+%             Order((l-1)*length(permsFL) + m,i) = 2*k*permsFM(m,i);
             
             %Number of MPOS
             %Defined as polyphase implementation
@@ -280,7 +284,8 @@ for l = 1:length(permsFL)
                 cumprodL = 1;
                 cumprodM = 1;
             end    
-            Rmpos(i) =  (((Order((l-1)*length(permsFL) + m,i) + 1)*permsFM(m,i))/permsFL(l,i)) * (cumprodL(end)/cumprodM(end)); 
+            Rmpos(i) =  ((Nzi + 1)/permsFL(l,i) + ((permsFL(l,i) + permsFM(m,i) - 1)/permsFL(l,i)) * Npi)...
+                * (cumprodL(end)/cumprodM(end)); 
             
 
             %Need to adapt the input frequency after passing through each stage
