@@ -379,7 +379,7 @@ signal = signal/max(abs(signal(:)));
 %Writting the resulting signal as an audio file
 audiowrite(['~/Documents/Bang_Olufsen/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
-    signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
+    signal, cosine_sweeps(i).fs*L/M, 'BitsperSample', cosine_sweeps(i).bit_depth)
 
 
 end
