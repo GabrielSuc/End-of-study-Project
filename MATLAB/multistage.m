@@ -182,6 +182,7 @@ elseif manual == 2
             % Getting the order of the filters
             [Order,Wp] = ellipord(Fpass/(Fmax/2),Fcutoff/(Fmax/2),Rp,Rs);
             [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
+            [b_ellip,a_ellip] = ellip(Order,Rp,Rs,Wp);
             
             % Polyphase decomposition    
             if isempty(ispolyphase)
@@ -213,8 +214,8 @@ elseif manual == 2
                     elseif Nl > Np
                         error('Nl has to be smaller than Np')
 
-                    elseif rem(Nl,2) ~= 0
-                        error('Nl has to be even')
+%                     elseif rem(Nl,2) ~= 0
+%                         error('Nl has to be even')
                     end
 
                 else
@@ -229,8 +230,8 @@ elseif manual == 2
                     elseif Nl > Np
                         error('Nl has to be smaller than Np')
 
-                    elseif rem(Nl,2) ~= 0
-                        error('Nl has to be even')
+%                     elseif rem(Nl,2) ~= 0
+%                         error('Nl has to be even')
                     end
 
                 end
@@ -241,7 +242,7 @@ elseif manual == 2
                     signal = input_signal; %true only for the first input
                 end
                 
-                [signal, flag] = russell(z_ellip,p_ellip,FL(1,i)*k_ellip,FL(1,i),FM(1,i),Nl,Nm,signal);
+                [signal, flag] = russell(z_ellip,p_ellip,FL(1,i)*k_ellip,FL(1,i),FM(1,i),b_ellip,Nl,Nm,signal);
 
                 
                 %In case the above technique is not feasible 
