@@ -46,7 +46,7 @@ Rs = 140; %in dB
 %Desired Transition Width
 %Represent how close we want the passband frequency to be from the stopband
 %frequency.
-TW = 0.95; %in percent of the stopband freqeuncy;
+TW = 0.85; %in percent of the stopband freqeuncy;
 
 %Cutoff frequency
 %Also defined the stopband frequency i.e. Fstop
@@ -147,7 +147,7 @@ PM_direct = L*firpm(n_pm_direct,fo,ao,w); %Direct Implementation
 %fvtool(PM_direct) %Uncomment to see graphs
 
 %Folded Implentation FIR
-PM_folded = dfilt.dfsymfir(PM_direct);
+%PM_folded = dfilt.dfsymfir(PM_direct);
 
 %fvtool(PM_folded)
 
@@ -201,7 +201,7 @@ end
 
 Ellip_direct = zp2sos(z_ellip_direct,p_ellip_direct,L*k_ellip_direct); %Have to compensate for he gain
 
-%fvtool(Ellip_direct) %Uncomment to see graphs
+fvtool(Ellip_direct) %Uncomment to see graphs
 
 % Direct-form II SOS 
 
@@ -377,7 +377,7 @@ signal = signal/max(abs(signal(:)));
 %snr(signal(:,1), Fsin)
 
 %Writting the resulting signal as an audio file
-audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
+audiowrite(['~/Documents/Bang_Olufsen/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
     signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
 

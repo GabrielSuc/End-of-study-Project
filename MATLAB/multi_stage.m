@@ -121,6 +121,7 @@ for l = 1:length(permsFL)
 % 
             if Fsin < Fsout
                 if (Fs * permsFL(l,i))/permsFM(m,i) < Fsin 
+                    Fs = (Fs * permsFL(l,i))/permsFM(m,i);
                     wrong_stage = 1;
                     continue
                 end
@@ -128,6 +129,7 @@ for l = 1:length(permsFL)
             elseif Fsout < Fsin
                 
                 if (Fs * permsFL(l,i))/permsFM(m,i) < Fsout 
+                    Fs = (Fs * permsFL(l,i))/permsFM(m,i);
                     wrong_stage = 1;
                     continue
                 end
@@ -242,14 +244,16 @@ for l = 1:length(permsFL)
             
             if Fsin < Fsout
 
-                if (Fs * permsFL(l,i))/permsFM(m,i) < Fsin 
+                if (Fs * permsFL(l,i))/permsFM(m,i) <= Fsin 
+                    Fs = (Fs * permsFL(l,i))/permsFM(m,i);
                     wrong_stage = 1;
                     continue
                 end
             
             elseif Fsout < Fsin
                 
-                if (Fs * permsFL(l,i))/permsFM(m,i) < Fsout 
+                if (Fs * permsFL(l,i))/permsFM(m,i) <= Fsout 
+                    Fs = (Fs * permsFL(l,i))/permsFM(m,i);
                     wrong_stage = 1;
                     continue
                 end
@@ -259,8 +263,19 @@ for l = 1:length(permsFL)
             Fpassband(i) = Fpass;
             Fcutoff(i) = (Fmax)/2 * min(1/permsFL(l,i),1/permsFM(m,i));
             
+            if Fcutoff(i) < 1
+                    Fs = (Fs * permsFL(l,i))/permsFM(m,i);
+                    wrong_stage = 1;
+                    continue
+            end
             
             f(i,:) = [Fpassband(i) Fcutoff(i)];
+            
+            if (Fpassband(i)/(Fmax/2)>=1) || (Fcutoff(i)/(Fmax/2)>=1) 
+                Fs = (Fs * permsFL(l,i))/permsFM(m,i);
+                    wrong_stage = 1;
+                    continue
+            end        
 
             Order((l-1)*length(permsFL) + m,i) = ellipord(Fpassband(i)/(Fmax/2),Fcutoff(i)/(Fmax/2),Rp,Rs);
             [z,p,k] = ellip(Order((l-1)*length(permsFL) + m,i),Rp,Rs,Fpassband(i)/(Fmax/2));
