@@ -34,7 +34,7 @@ if manual == 1
     dev = [(Delta1 - 1)/(length(FL)*(Delta1 + 1)) Delta2]; 
     
     % Ask if we want to use polyphase
-    ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
+    ispolyphase = 1; %input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
     
      
     for i = 1:length(FL)

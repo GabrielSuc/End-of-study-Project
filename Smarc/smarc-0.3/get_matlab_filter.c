@@ -10,6 +10,9 @@
 
 #include "get_matlab_filter.h"
 
+#include <string.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #define SIZE 1024 
 
