@@ -1,0 +1,11 @@
+% Chapter Template
+
+\chapter{Conclusion} % Main chapter title
+
+\label{conclusion} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+Sampling rate conversion is a broad topic. If we desire to modify two known sample-rates, we can opt for a synchronous conversion. On the other hand, an asychronous conversion would be preferred if the sampling frequencies are unknown or permanently evolving. This report aimed to present manners to optimize a synchronous procedure. 
+
+A major challenge was the choice of the low-pass filter and its design. Whether or not the phase distortion is perceptible, the student decided to use two kinds of filter: a FIR Parks-McClellan filter and an IIR Elliptic filter. These two filters were retained because they have the lowest order within their category. Typically, two known sampling frequencies can be related by a ratio $L/M$. If it is greater than $1$, we \textit{upsample} the signal, and \textit{downsample} it when the ratio is lower than $1$. The direct method would be to use an \textit{expander} $L$ that would strech out the signal, a low-pass filter to remove replicas previously created and alising, and finally a \textit{decimator} that would keep every $M^{th}$ output samples only. An implementation in this way is often not achievable because of the large values of $L$ and $M$. Important savings can be reached for the FIR case if we decide to implement the filter in a multistage decomposition and parallelizing its impulse reponse by generating its polyphase components. The IIR case does not require a multistage separation, but by manipulating its transfer function, a FIR part can be extracted and thus implemented as a polyphase decomposition too. 
+
+These approaches gave good quality evaluations, especially compared to those obtained by the current process, GStreamer. Nevertheless, certain points remain to be explored and a fully-functioning program must still be incorporated in the current plugin. 

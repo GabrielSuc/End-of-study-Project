@@ -1,0 +1,30 @@
+% Chapter Template
+
+
+\chapter{Introduction} \label{gen_intro}% Main chapter title
+
+\label{Chapter1} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
+
+Most of the modern signal processing chains consist of an interconection of digital discrete-time systems operating at different rates. For instance, let us consider a guitar player who desires to record his music. Thanks to microphones, the signal that the player is producing will be digitalized and will go inside the digital signal processing chain. From recording to reproduction, a variety of systems are involved and they operate at different rates. So as to fully reconstruct the signal, all the systems must perform at the same rate. As a result, sampling rate conversion is crucial in order to make these interconnections possible. Moreover, for the sake of real-time processing, efficiency is one of the major aspect of this topic. Essentially, a sample-rate converter would be considered efficient if the data is processed fast and the signal obtained is faithful to the original.
+
+
+ 
+First and foremost, we can distinguish two categories of conversions: synchronous and asynchronous. When a system has only one single internal clock, i.e. when the system has a constant output sampling rate, we will use a synchronous converter (for example, we can think about a system accepting the following set of input sampling rates: $ F_\mathrm{s_{in}} = \{\SI{32}{\kilo \Hz}, \;  \SI{44.1}{\kilo \Hz}, \; \SI{48}{\kilo \Hz}  \}  $ with as only output sampling rate: $ F_\mathrm{s_{out}} = \{\SI{48}{\kilo \Hz} \}$). On the other hand, when a system has multiple clocks, we will choose an asynchronous sample rate converter (in this case, we can imagine a USB device receving data from a PC and converting them to an analog signal, operating at two different rates. Another example would be when two systems are said to have the same clock, but they slightly differ over time). 
+
+
+The purpose of this report is to investigate and document different methods to create a real-time synchronous converter that can be implemented in the platforms of Bang \& Olufsen. It is an important project for the company since the current converters are responsible of audible artifacts that do not meet the quality standards of B\&O. Moreover, available solutions cannot be fully applied within this context. Indeed, they are either not fully adapted to the cases required by the firm or they are suboptimal. 
+
+
+The idea was to use either a \hyperlink{FIR}{FIR} or \hyperlink{IIR}{IIR} filter implemented in a multi-stage separation and exploring the polyphase decomposition of the non-recursive part. 
+
+
+
+The report is composed of two sections:
+
+\begin{itemize}
+
+\item Bang \& Olufsen. This first part presents an overview of the company and the context in which the internship took place.
+
+\item End-of-study Project. This second part describes the work done by the student during the internship in a theortical approach first and in a practical case thereafter.
+
+\end{itemize}

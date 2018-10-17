@@ -1,0 +1,38 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\select@language {english}
+\addvspace {10\p@ }
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {2.1}{\ignorespaces Organization Chart of the Acoustics \& Research Department\relax }}{4}{figure.caption.15}
+\addvspace {10\p@ }
+\contentsline {figure}{\numberline {3.1}{\ignorespaces A/D Converter\relax }}{7}{figure.caption.21}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces One Method to Resample a Digital Signal x[n]\relax }}{8}{figure.caption.22}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces Block Diagram of Sampling Rate Conversion\relax }}{9}{figure.caption.24}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces Sampling Rate Conversion by a Factor of 2/3\relax }}{10}{figure.caption.27}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Lowpass Filter and its Specifications\relax }}{11}{figure.caption.32}
+\contentsline {figure}{\numberline {3.6}{\ignorespaces Magnitude Responses\relax }}{12}{figure.caption.34}
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Classic Polyphase Decomposition for \hyperlink {SRC}{SRC} Systems\relax }}{15}{figure.caption.48}
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Efficient Polyphase Decomposition\relax }}{16}{figure.caption.50}
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Direct Polyphase Implementation for IIR Filter\relax }}{16}{figure.caption.54}
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Decomposition of $H(z)$ as a Cascaded Structure\relax }}{19}{figure.caption.66}
+\contentsline {figure}{\numberline {3.11}{\ignorespaces Efficient Implementation of an IIR Filter for a \hyperlink {SRC}{SRC}\relax }}{19}{figure.caption.67}
+\contentsline {figure}{\numberline {3.12}{\ignorespaces Multistage Representation\relax }}{19}{figure.caption.70}
+\contentsline {figure}{\numberline {3.13}{\ignorespaces Representation of K-stage Decimator\relax }}{21}{figure.caption.78}
+\contentsline {figure}{\numberline {3.14}{\ignorespaces Frequency Response Interpretation of the K-stage Decimation Process\relax }}{21}{figure.caption.79}
+\contentsline {figure}{\numberline {3.15}{\ignorespaces Representation of K-stage Interpolator\relax }}{22}{figure.caption.83}
+\contentsline {figure}{\numberline {3.16}{\ignorespaces Frequency Response Interpretation of the K-stage Interpolation Process\relax }}{22}{figure.caption.84}
+\contentsline {figure}{\numberline {3.17}{\ignorespaces Corresponding 2-stage decomposition\relax }}{23}{figure.caption.85}
+\contentsline {figure}{\numberline {3.18}{\ignorespaces Frequency Representation of Resulting Filters\relax }}{23}{figure.caption.86}
+\contentsline {figure}{\numberline {3.19}{\ignorespaces Corresponding 2-stage decomposition\relax }}{23}{figure.caption.87}
+\contentsline {figure}{\numberline {3.20}{\ignorespaces Frequency Representation of Resulting Filters\relax }}{24}{figure.caption.88}
+\contentsline {figure}{\numberline {3.21}{\ignorespaces Impact of the Filters' Parameters on the Number of MPOS\relax }}{26}{figure.caption.97}
+\contentsline {figure}{\numberline {3.22}{\ignorespaces Implication of Stage Combinations on the Number of MPOS\relax }}{28}{figure.caption.101}
+\contentsline {figure}{\numberline {3.23}{\ignorespaces Frequency Sweep Input\relax }}{31}{figure.caption.108}
+\contentsline {figure}{\numberline {3.24}{\ignorespaces Sweep Frequency Response Analyses of the Two Filter Structures\relax }}{31}{figure.caption.109}
+\contentsline {figure}{\numberline {3.25}{\ignorespaces Sweep Frequency Response Analysys of the Schuessler Filters Combination\relax }}{32}{figure.caption.110}
+\contentsline {figure}{\numberline {3.26}{\ignorespaces Quality Evaluation of The Smarc Project\relax }}{33}{figure.caption.112}
+\contentsline {figure}{\numberline {3.27}{\ignorespaces Application of the Smarc's Method to a Practical Case\relax }}{33}{figure.caption.114}
+\contentsline {figure}{\numberline {3.28}{\ignorespaces Sweep Frequency Response Analysys of the Smarc Method\relax }}{34}{figure.caption.116}
+\contentsline {figure}{\numberline {3.30}{\ignorespaces Output From GStreamer Plugin\relax }}{36}{figure.caption.125}
+\addvspace {10\p@ }
+\addvspace {10\p@ }

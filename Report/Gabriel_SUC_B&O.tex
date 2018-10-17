@@ -1,0 +1,437 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Masters/Doctoral Thesis 
+% LaTeX Template
+% Version 2.5 (27/8/17)
+%
+% This template was downloaded from:
+% http://www.LaTeXTemplates.com
+%
+% Version 2.x major modifications by:
+% Vel (vel@latextemplates.com)
+%
+% This template is based on a template by:
+% Steve Gunn (http://users.ecs.soton.ac.uk/srg/softwaretools/document/templates/)
+% Sunil Patel (http://www.sunilpatel.co.uk/thesis-template/)
+%
+% Template license:
+% CC BY-NC-SA 3.0 (http://creativecommons.org/licenses/by-nc-sa/3.0/)
+%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%----------------------------------------------------------------------------------------
+%	PACKAGES AND OTHER DOCUMENT CONFIGURATIONS
+%----------------------------------------------------------------------------------------
+
+
+
+\documentclass[
+11pt, % The default document font size, options: 10pt, 11pt, 12pt
+%oneside, % Two side (alternating margins) for binding by default, uncomment to switch to one side
+english, % ngerman for German
+singlespacing, % Single line spacing, alternatives: onehalfspacing or doublespacing
+%draft, % Uncomment to enable draft mode (no pictures, no links, overfull hboxes indicated)
+%nolistspacing, % If the document is onehalfspacing or doublespacing, uncomment this to set spacing in lists to single
+%liststotoc, % Uncomment to add the list of figures/tables/etc to the table of contents
+%toctotoc, % Uncomment to add the main table of contents to the table of contents
+%parskip, % Uncomment to add space between paragraphs
+%nohyperref, % Uncomment to not load the hyperref package
+headsepline, % Uncomment to get a line under the header
+%chapterinoneline, % Uncomment to place the chapter title next to the number on one line
+%consistentlayout, % Uncomment to change the layout of the declaration, abstract and acknowledgements pages to match the default layout
+]{MastersDoctoralThesis} % The class file specifying the document structure
+
+\usepackage[utf8]{inputenc} % Required for inputting international characters
+\usepackage[T1]{fontenc} % Output font encoding for international characters
+
+\usepackage{mathpazo} % Use the Palatino font by default
+
+
+\usepackage[
+backend =bibtex,
+natbib=true,
+style=numeric,
+sorting=none]{biblatex}
+
+
+%\usepackage[sorting = none, backend=bibtex]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
+
+%\bibliographystyle{ieeetr})
+
+\addbibresource{example.bib} % The filename of the bibliography
+
+
+
+\usepackage[autostyle=true]{csquotes} % Required to generate language-dependent quotes in the bibliography
+
+\usepackage{xcolor} %Change text color
+
+\usepackage{siunitx} %math symbol
+
+\usepackage{hyperref} %references
+
+\usepackage{bm} %bold font
+
+\setcounter{secnumdepth}{4} %subsubsection and so on
+
+%Path to inkscape folder
+\makeatletter
+\def\input@path{{/Users/gabrielsuc/Documents/Bang_Olufsen/Report/InkScape/}}
+%or: \def\input@path{{/path/to/folder/}{/path/to/other/folder/}}
+\makeatother
+
+\usepackage{amsmath} %equation
+\usepackage{amssymb}
+
+%subfigures
+\usepackage[format=hang]{caption}
+\usepackage{subcaption}
+\captionsetup[subfigure]{labelfont=rm}
+\usepackage{float}
+
+%matlab
+\usepackage{xspace}
+\newcommand{\MATLAB}{\textsc{Matlab}\xspace}
+
+ %split equation over pages
+\allowdisplaybreaks
+
+%Justify text inside paragraph
+\usepackage{ragged2e}
+
+%Change size of math symbols
+\usepackage{relsize}
+
+%Item with numbers
+\usepackage{enumitem}
+%\newlist{legal}{enumerate}{10}
+%\setlist[legal]{label*=\arabic*.}
+
+
+\setlist[enumerate]{wide=0pt, widest=99,leftmargin=\parindent, labelsep=* } 
+%tikz
+\usepackage{tikz}
+\usepackage{tikz-dsp}
+\tikzset{rounded corners=0}
+\usetikzlibrary{decorations.pathreplacing}
+
+\usepackage{slashbox}
+
+%footnote
+\usepackage[bottom]{footmisc}
+
+%handle figure + table
+\usepackage{placeins}
+
+\usepackage{graphics}
+
+\usepackage{multirow}
+
+\usepackage{array}
+
+\newcommand\ChangeRT[1]{\noalign{\hrule height #1}}
+
+%----------------------------------------------------------------------------------------
+%	MARGIN SETTINGS
+%----------------------------------------------------------------------------------------
+
+\geometry{
+	paper=a4paper, % Change to letterpaper for US letter
+	inner=2.5cm, % Inner margin
+	outer=3.8cm, % Outer margin
+	bindingoffset=.5cm, % Binding offset
+	top=1.5cm, % Top margin
+	bottom=1.5cm, % Bottom margin
+	%showframe, % Uncomment to show how the type block is set on the page
+}
+
+%----------------------------------------------------------------------------------------
+%	THESIS INFORMATION
+%----------------------------------------------------------------------------------------
+
+\thesistitle{Real-Time Sample Rate Converter for High-Quality Audio Signal Processing} % Your thesis title, this is used in the title and abstract, print it elsewhere with \ttitle
+\supervisor{Dr. Pablo \textsc{Martínez-Nuevo}\\
+Dr. Sven Ewan \textsc{Shepstone}\\
+Mr. Henrik Lund \textsc{Jensen}\\
+Dr. Geoff \textsc{Martin}} % Your supervisor's name, this is used in the title page, print it elsewhere with \supname
+\examiner{Dr. Matthieu \textsc{Guerquin-Kern}} % Your examiner's name, this is not currently used anywhere in the template, print it elsewhere with \examname
+\degree{Electrical Engineer} % Your degree name, this is used in the title page and abstract, print it elsewhere with \degreename
+\author{Gabriel \textsc{Suc}} % Your name, this is used in the title page and abstract, print it elsewhere with \authorname
+\addresses{} % Your address, this is not currently used anywhere in the template, print it elsewhere with \addressname
+
+\subject{} % Your subject area, this is not currently used anywhere in the template, print it elsewhere with \subjectname
+\keywords{} % Keywords for your thesis, this is not currently used anywhere in the template, print it elsewhere with \keywordnames
+\university{\href{http://www.ensea.fr/en}{Ecole Nationale Supérieure de l'Electronique et de ses Applications}} % Your university's name and URL, this is used in the title page and abstract, print it elsewhere with \univname
+\department{\href{}{Multimedia Systems}} % Your department's name and URL, this is used in the title page and abstract, print it elsewhere with \deptname
+\group{\href{}{Research Group Name}} % Your research group's name and URL, this is used in the title page, print it elsewhere with \groupname
+\optionensea{Multimedia Systems}
+\faculty{\href{http://www.ensea.fr/en}{E.N.S.E.A.}} % Your faculty's name and URL, this is used in the title page and abstract, print it elsewhere with \facname
+
+\AtBeginDocument{
+\hypersetup{pdftitle=\ttitle} % Set the PDF's title to your title
+\hypersetup{pdfauthor=\authorname} % Set the PDF's author to your name
+\hypersetup{pdfkeywords=\keywordnames} % Set the PDF's keywords to your keywords
+}
+
+\begin{document}
+
+\frontmatter % Use roman page numbering style (i, ii, iii, iv...) for the pre-content pages
+
+\pagestyle{plain} % Default to the plain heading style until the thesis style is called for the body content
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\begin{titlepage}
+\begin{center}
+
+\vspace*{.06\textheight}
+{\scshape\LARGE \univname\par}\vspace{1.5cm} % University name
+\textsc{\Large End-of-Study Project}\\[0.5cm] % Thesis type
+
+\HRule \\[0.4cm] % Horizontal line
+{\huge \bfseries \ttitle\par}\vspace{0.4cm} % Thesis title
+\HRule \\[1.5cm] % Horizontal line
+ 
+\begin{minipage}[t]{0.4\textwidth}
+\begin{flushleft} \large
+\emph{Author:}\\
+%\href{http://www.johnsmith.com}
+\authorname % Author name - remove the \href bracket to remove the link
+\end{flushleft}
+\end{minipage}
+\begin{minipage}[t]{0.4\textwidth}
+\begin{flushright} \large
+\emph{Supervisors:} \\
+%\href{http://www.jamessmith.com}
+	\supname % Supervisor name - remove the \href bracket to remove the link  
+	
+	\vspace*{.02\textheight}
+\emph{Academic Supervisor:} \\
+	\mbox{\examname}	
+\end{flushright}
+\end{minipage}%\\[3cm]
+ 
+ 
+\vspace*{.03\textheight}
+
+%Pictures
+
+\begin{figure}[!htb]
+	\begin{minipage}{0.48\textwidth}
+		\centering
+		\includegraphics[width=.85\linewidth]{B&O_Logo.jpg}
+		%\caption{Interpolation for Data 1}\label{Fig:Data1}
+	\end{minipage}\hfill
+	\begin {minipage}{0.48\textwidth}
+	\centering
+	\includegraphics[width=.45\linewidth]{{ensea.png}}
+	%\caption{Interpolation for Data 2}\label{Fig:Data2}
+\end{minipage}
+\end{figure}
+
+\large \textit{A report submitted in fulfillment of the requirements\\ for the diploma of \degreename}\\[0.3cm] % University requirement text
+\textit{in the master's program of \optname}%\\[0.4cm]
+%\groupname\\\deptname\\[2cm] % Research group name and department name
+ 
+\vfill
+
+
+$\textrm{April 1, 2018 - September 30, 2018}$
+%{\large  \today}\\[4cm] % Date
+%\includegraphics{Logo} % University/department logo - uncomment to place it
+ 
+\vfill
+\end{center}
+\end{titlepage}
+
+%----------------------------------------------------------------------------------------
+%	DECLARATION PAGE
+%----------------------------------------------------------------------------------------
+
+%\begin{declaration}
+%\addchaptertocentry{\authorshipname} % Add the declaration to the table of contents
+%\noindent I, \authorname, declare that this thesis titled, \enquote{\ttitle} and the work presented in it are my own. I confirm that:
+%
+%\begin{itemize} 
+%\item This work was done wholly or mainly while in candidature for a research degree at this University.
+%\item Where any part of this thesis has previously been submitted for a degree or any other qualification at this University or any other institution, this has been clearly stated.
+%\item Where I have consulted the published work of others, this is always clearly attributed.
+%\item Where I have quoted from the work of others, the source is always given. With the exception of such quotations, this thesis is entirely my own work.
+%\item I have acknowledged all main sources of help.
+%\item Where the thesis is based on work done by myself jointly with others, I have made clear exactly what was done by others and what I have contributed myself.\\
+%\end{itemize}
+% 
+%\noindent Signed:\\
+%\rule[0.5em]{25em}{0.5pt} % This prints a line for the signature
+% 
+%\noindent Date:\\
+%\rule[0.5em]{25em}{0.5pt} % This prints a line to write the date
+%\end{declaration}
+
+\cleardoublepage
+
+%----------------------------------------------------------------------------------------
+%	QUOTATION PAGE
+%----------------------------------------------------------------------------------------
+
+%\vspace*{0.2\textheight}
+%
+%\noindent\enquote{\itshape Thanks to my solid academic training, today I can write hundreds of words on virtually any topic without possessing a shred of information, which is how I got a good job in journalism.}\bigbreak
+%
+%\hfill Dave Barry
+
+%----------------------------------------------------------------------------------------
+%	ABSTRACT PAGE
+%----------------------------------------------------------------------------------------
+
+%\begin{abstract}
+%\addchaptertocentry{\abstractname} % Add the abstract to the table of contents
+%The Thesis Abstract is written here (and usually kept to just this page). The page is kept centered vertically so can expand into the blank space above the title too\ldots
+%\end{abstract}
+
+%----------------------------------------------------------------------------------------
+%	PREFACE PAGE
+%----------------------------------------------------------------------------------------
+
+\begin{preface}
+	\addchaptertocentry{\prefacename} % Add the preface to the table of contents
+	
+	This report has been made by Gabriel Suc, a student in the master's program of Multimedia Systems at Ecole Nationale Supérieure de l'Electronique et de ses Applications. 
+	
+	The report details the end-of-study project carried out at Bang \& Olufsen in Struer, Denmark between the months of April and September of 2018. 
+	
+	The content of this report is confidential due to the information regarding the company and the content of the project itself.
+	
+\end{preface}
+
+%----------------------------------------------------------------------------------------
+%	ACKNOWLEDGEMENTS
+%----------------------------------------------------------------------------------------
+
+\begin{acknowledgements}
+\addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
+
+I would like to thank warmly Dr. Pablo Martínez-Nuevo and Dr. Sven Ewan Shepstone for giving him the opportunity to undertake this project within Bang \& Olufsen. I would also like to thank them for their help, advice and support throughout the project as well as Prof. Matthieu Guerquin-Kern.
+
+Moreover, the help of Mr. Henrik Lund Jensen and Dr. Geoff Martin was precious and is truly appreciated.
+
+Finally, I would like to say thank you to the R\&D Acoustics departement for their welcome and great spirit, especially Prof. Søren Bech and Mr. Lars Jørgensen.
+
+\end{acknowledgements}
+
+%----------------------------------------------------------------------------------------
+%	LIST OF CONTENTS/FIGURES/TABLES PAGES
+%----------------------------------------------------------------------------------------
+
+\tableofcontents % Prints the main table of contents
+
+\listoffigures % Prints the list of figures
+
+\listoftables % Prints the list of tables
+
+%----------------------------------------------------------------------------------------
+%	ABBREVIATIONS
+%----------------------------------------------------------------------------------------
+
+\begin{abbreviations}{ll} % Include a list of abbreviations (a table of two columns)
+
+\hypertarget{FIR}{\textbf{FIR}}  \hfill  \textbf{F}inite \textbf{I}mpulse \textbf{R}esponse \\		
+\hypertarget{IIR}{\textbf{IIR}}  \hfill  \textbf{I}nfinite \textbf{I}mpulse \textbf{R}esponse \\	
+\hypertarget{DSP}{\textbf{DSP} \hfill \textbf{D}igital \textbf{S}ignal \textbf{P}rocessing}\\
+\hypertarget{A/D}{\textbf{A/D} \hfill \textbf{A}nalog-to-\textbf{D}igital}\\
+\hypertarget{D/A}{\textbf{D/A} \hfill \textbf{D}igital-to-\textbf{A}nalog}\\
+\hypertarget{DTFT}{\textbf{DTFT}} \hfill \textbf{D}iscrete-\textbf{T}ime \textbf{F}ourier \textbf{T}ransform\\
+\hypertarget{IR}{\textbf{IR}} \hfill \textbf{I}mpulse \textbf{R}esponse\\
+\hypertarget{SRC}{\textbf{SRC}} \hfill \textbf{S}ample \textbf{R}ate \textbf{C}onversion \\	
+\hypertarget{MPOS}{\textbf{MPOS}} \hfill \textbf{M}ultiplications \textbf{P}er \textbf{O}utput \textbf{S}ample \\	
+\hypertarget{LPF}{\textbf{LPF}} \hfill \textbf{L}ow\textbf{P}ass \textbf{F}ilter\\
+\hypertarget{dB FS}{\textbf{dBFS}} \hfill \textbf{D}ecibels relative to \textbf{F}ull \textbf{S}cale\\
+\hypertarget{WAV}{\textbf{WAV}} \hfill \textbf{Wav}eform Audio File Format\\
+\hypertarget{SNR}{\textbf{SNR}} \hfill \textbf{S}ignal to \textbf{N}oise \textbf{R}atio\\
+
+
+
+
+\end{abbreviations}
+
+%----------------------------------------------------------------------------------------
+%	PHYSICAL CONSTANTS/OTHER DEFINITIONS
+%----------------------------------------------------------------------------------------
+
+%\begin{constants}{lr@{${}={}$}l} % The list of physical constants is a three column table
+%
+%% The \SI{}{} command is provided by the siunitx package, see its documentation for instructions on how to use it
+%
+%Speed of Light & $c_{0}$ & \SI{2.99792458e8}{\meter\per\second} (exact)\\
+%%Constant Name & $Symbol$ & $Constant Value$ with units\\
+%
+%\end{constants}
+
+%----------------------------------------------------------------------------------------
+%	SYMBOLS
+%----------------------------------------------------------------------------------------
+
+\begin{symbols}{lll} % Include a list of Symbols (a three column table)
+
+$\boldsymbol{\Omega}$ \hfill Analog Frequency\\
+$\boldsymbol{\Omega_N}$ \hfill Nyquist Frequency\\
+$\boldsymbol{\omega}$ \hfill Digital Frequency \\
+$\boldsymbol{\si{dB}}$ \hfill Decibel
+%Symbol & Name & Unit \\
+
+%\addlinespace % Gap to separate the Roman symbols from the Greek
+
+%$\omega$ & angular frequency & \si{\radian} \\
+
+\end{symbols}
+
+%----------------------------------------------------------------------------------------
+%	DEDICATION
+%----------------------------------------------------------------------------------------
+
+%\dedicatory{For/Dedicated to/To my\ldots} 
+
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - CHAPTERS
+%----------------------------------------------------------------------------------------
+
+\mainmatter % Begin numeric (1,2,3...) page numbering
+
+\pagestyle{thesis} % Return the page headers back to the "thesis" style
+
+% Include the chapters of the thesis as separate files from the Chapters folder
+% Uncomment the lines as you write the chapters
+
+\include{Chapters/Introduction}
+\include{Chapters/work_environment} 
+\include{Chapters/project}
+\include{Chapters/conclusion} 
+%\include{Chapters/Chapter5} 
+
+%----------------------------------------------------------------------------------------
+%	THESIS CONTENT - APPENDICES
+%----------------------------------------------------------------------------------------
+
+\appendix % Cue to tell LaTeX that the following "chapters" are Appendices
+
+% Include the appendices of the thesis as separate files from the Appendices folder
+% Uncomment the lines as you write the Appendices
+
+\include{Appendices/AppendixA}
+%\include{Appendices/AppendixB}
+%\include{Appendices/AppendixC}
+
+%----------------------------------------------------------------------------------------
+%	BIBLIOGRAPHY
+%----------------------------------------------------------------------------------------
+\printbibliography[
+heading=bibintoc, 
+title={References}
+]
+
+
+
+%----------------------------------------------------------------------------------------
+
+\end{document}  
