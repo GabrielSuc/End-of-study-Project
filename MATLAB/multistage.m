@@ -1,4 +1,4 @@
-function output = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,input_signal,bestPerm,manual)
+function output = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,input_signal,bestPerm,filter_choice, multistage_method)
 
 %Get the list of factors L & M for the different stages
 FL = bestPerm(1:length(bestPerm)/2);
@@ -11,11 +11,14 @@ Fpass = Fp;
 
 Fs = Fsin;
 
-Fstop = Fsin/2;
+if (multistage_method == 2)
+    Fstop = Fsin/2;
+end
+
 
 % Filtering through the different kind of filters:
 % Parks-McClellan
-if manual == 1
+if filter_choice == 1
     
     % ---------------------------------------------------------------------
     %                          Filters' parameters
@@ -42,38 +45,35 @@ if manual == 1
             % Frequency bands
             Fmax = Fs*FL(1,i);
 
-            Fcutoff = (Fmax/2) * min(1/FL(1,i),1/FM(1,i));
-            
-            
-            f = [Fpass Fcutoff];
-            
-            [Order,fo,ao,w] = firpmord(f,A,dev,Fmax);
+            if (multistage_method == 1)
+                
+                Fcutoff = (Fmax/2) * min(1/FL(1,i),1/FM(1,i));
 
-%             Fmax = Fs*FL(1,i);
-%             pass_bands = Fpass/Fmax;
-%             if FL(1,i) > FM(1,i)
-%                 stop_bands = (Fs - Fstop)/Fmax;
-%             else
-%                 stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/Fmax;
-%             end
-% 
-%             
-%             
-%             Order = ceil(remlpord(pass_bands,stop_bands,dev(1),dev(2)));
+                f = [Fpass Fcutoff];
             
-            % SMARC - Filter length must be must be 2*K*Mi +1 so that the delay is integer 
-%             k = ceil((Order - 1)/(2*FM(1,i)));
-%             while (2*k*FM(1,i) + 1 < Order)
-%                 k = k + 1;
-%             end
-%             Order = 2*k*FM(1,i);
+                [Order,fo,ao,w] = firpmord(f,A,dev,Fmax); 
+                
+                    
+            else
+                
+                pass_bands = Fpass/(Fmax/2);
+                
+                if FL(1,i) > FM(1,i)
+                    stop_bands = (Fs - Fstop)/(Fmax/2);
+                else
+                    stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax/2);
+                end
 
-%             ao = [1 1 0 0];
-%             fo = [0 pass_bands stop_bands 1];
+
+                f = [pass_bands stop_bands];
+
+
+                [Order,fo,ao,w] = firpmord(f,A,dev);
+
+
+            end
             
-            
-            
-            
+  
             % Polyphase decomposition    
             if isempty(ispolyphase)
                  ispolyphase = 1;
@@ -91,7 +91,8 @@ if manual == 1
                 end   
                 
                 %Compensate gain
-                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2'); %
+                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w ...
+                ),1,FL(1,i),FM(1,i),'2'); %
 
                 %Have to filter xin through each branch 
                 sumBranch = 0;
@@ -158,7 +159,7 @@ if manual == 1
     
     
 % Elliptic    
-elseif manual == 2
+elseif filter_choice == 2
     
     % ---------------------------------------------------------------------
     %                          Filters' parameters
@@ -172,17 +173,42 @@ elseif manual == 2
      
     for i = 1:length(FL)
 
-%             % Frequency bands
-                        % Frequency bands
+%           % Frequency bands
+            % Frequency bands
             Fmax = Fs*FL(1,i);
 
-            Fcutoff = (Fmax)/2 * min(1/FL(1,i),1/FM(1,i));
-            
+            if (multistage_method == 1)
+                
+                Fcutoff = (Fmax/2) * min(1/FL(1,i),1/FM(1,i));
 
-            % Getting the order of the filters
-            [Order,Wp] = ellipord(Fpass/(Fmax/2),Fcutoff/(Fmax/2),Rp,Rs);
-            [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
-            [b_ellip,a_ellip] = ellip(Order,Rp,Rs,Wp);
+            
+                % Getting the order of the filters
+                [Order,Wp] = ellipord(Fpass/(Fmax/2),Fcutoff/(Fmax/2),Rp,Rs);
+                [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
+                [b_ellip,a_ellip] = ellip(Order,Rp,Rs,Wp);
+                
+                    
+            else
+                
+                pass_bands = Fpass/(Fmax/2);
+                
+                if FL(1,i) > FM(1,i)
+                    stop_bands = (Fs - Fstop)/(Fmax/2);
+                else
+                    stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax/2);
+                end
+
+
+
+                % Getting the order of the filters
+                [Order,Wp] = ellipord(pass_bands,stop_bands,Rp,Rs);
+                [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
+                [b_ellip,a_ellip] = ellip(Order,Rp,Rs,Wp);
+
+                
+                
+            end
+            
             
             % Polyphase decomposition    
             if isempty(ispolyphase)
@@ -322,15 +348,44 @@ else
             %Frequency bands
             Fmax = Fs*FL(1,1);
 
-            Fpassband = Fpass;
-            Fcutoff = (Fmax)/2 * min(1/FL(1,1),1/FM(1,1));
             
-            %By Matlab estimation
-            [Order,Wp] = ellipord(Fpassband/(Fmax/2),Fcutoff/(Fmax/2),Rp,Rs);
+            if (multistage_method == 1)
+                
+                Fpassband = Fpass;
+                Fcutoff = (Fmax)/2 * min(1/FL(1,1),1/FM(1,1));
             
-            [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
-            %Creating filter
-            Filter =  dfilt.df2sos(zp2sos(z_ellip,p_ellip,FL(1,1)*k_ellip));
+                %By Matlab estimation
+                [Order,Wp] = ellipord(Fpassband/(Fmax/2),Fcutoff/(Fmax/2),Rp,Rs);
+
+                [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
+                %Creating filter
+                Filter =  dfilt.df2sos(zp2sos(z_ellip,p_ellip,FL(1,1)*k_ellip));
+                
+                    
+            else
+                
+                pass_bands = Fpass/(Fmax/2);
+                
+                if FL(1,1) > FM(1,1)
+                    stop_bands = (Fs - Fstop)/(Fmax/2);
+                else
+                    stop_bands = (Fs*(FL(1,1)/FM(1,1)) - Fstop)/(Fmax/2);
+                end
+
+
+
+                %By Matlab estimation
+                [Order,Wp] = ellipord(pass_bands,stop_bands,Rp,Rs);
+
+                [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
+                %Creating filter
+                Filter =  dfilt.df2sos(zp2sos(z_ellip,p_ellip,FL(1,1)*k_ellip));
+
+                
+                
+            end
+            
+            
             
             %Need to adapt the input frequency after passing through each stage
             Fs = (Fs * FL(1,1))/FM(1,1);
@@ -356,13 +411,34 @@ else
             %Frequency bands
             Fmax = Fs*FL(1,i);
             
-            %Defining the limit frequencies for the design
-            Fpassband = Fpass;
-            Fcutoff = (Fmax)/2 * min(1/FL(1,i),1/FM(1,i));
-            
-            f = [Fpassband Fcutoff];
+            if (multistage_method == 1)
+                
+                %Defining the limit frequencies for the design
+                Fcutoff = (Fmax/2) * min(1/FL(1,i),1/FM(1,i));
 
-            [Order,fo,ao,w] = firpmord(f,a,dev,Fmax);
+                f = [Fpass Fcutoff];
+            
+                [Order,fo,ao,w] = firpmord(f,a,dev,Fmax); 
+                
+                    
+            else
+                
+                pass_bands = Fpass/(Fmax/2);
+                
+                if FL(1,i) > FM(1,i)
+                    stop_bands = (Fs - Fstop)/(Fmax/2);
+                else
+                    stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax/2);
+                end
+
+
+                f = [pass_bands stop_bands];
+
+                [Order,fo,ao,w] = firpmord(f,a,dev);
+
+            end
+            
+            
             
             
             %If we want to use the spectral factorisation, the filter has to
@@ -388,6 +464,7 @@ else
                 input_filtered = filter(b,1,signal);
                 %Downsampling
                 signal = downsample(input_filtered,FM(1,i));
+                disp('Cannot create Schuessler filter');
                 continue
             end    
             

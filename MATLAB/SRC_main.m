@@ -81,8 +81,13 @@ fs = Fsin; %_Choose Sampling Frequency
     
 i = 1; %add counter for filling in signal array
     
+<<<<<<< HEAD
 for bit_depth = 16 %[16 24], no difference between the two
 %        for bitrate = [128 256 320]
+=======
+for bit_depth = 16%[16 24]
+    %for bitrate = [128 256 320]
+>>>>>>> e8e174f858408898a8369b2ad98a9087d8882531
     
     audio_channels = 2;         % channels
     f_start = 20;               % Hz
@@ -106,13 +111,13 @@ for bit_depth = 16 %[16 24], no difference between the two
                                     level_dBFS, fs, bit_depth, zero_padding, dirac_on);
     
         
-%        audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
+%        audiowrite(['~/Documents/Bang_Olufsen/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
 %     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS_input.wav'],...
 %     cosine_sweeps(i).sweep, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)                             
                                 
         i = i + 1;
     end
-    
+    %end
 end
 
    
@@ -144,7 +149,9 @@ dev = [(10^(Rp/20)-1)/(10^(Rp/20)+1)  10^(-Rs/20)];
 PM_direct = L*firpm(n_pm_direct,fo,ao,w); %Direct Implementation
 
 
-%fvtool(PM_direct) %Uncomment to see graphs
+fvtool(PM_direct) %Uncomment to see graphs
+
+fvtool(schuessler(PM_direct, 10^(-Rs/20)))
 
 %Folded Implentation FIR
 %PM_folded = dfilt.dfsymfir(PM_direct);
@@ -366,7 +373,7 @@ clc
 %Regarding the choice of the values of the different stages, it's done by
 %hand in getListStages.m. 
 
-[bestPerm,manual] = multi_stage(L,M,Fsin,Fsout,Fp,Rp,Rs);
+[bestPerm,filter_choice,multistage_method] = multi_stage(L,M,Fsin,Fsout,Fp,Rp,Rs); 
 
 %buffer size
 len_in = 7055;%floor(length(cosine_sweeps(1).sweep(:,1))/1000);%
@@ -387,6 +394,7 @@ for i = 1:length(cosine_sweeps)
                     
         signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep(k:(k+len_in),:),bestPerm,manual);
 
+<<<<<<< HEAD
         signal = signal/max(abs(signal(:))); 
         
         if k == 1 
@@ -399,6 +407,9 @@ for i = 1:length(cosine_sweeps)
     end
     
     signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep((k+1):end,:),bestPerm,manual);
+=======
+signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep,bestPerm,filter_choice,multistage_method);
+>>>>>>> e8e174f858408898a8369b2ad98a9087d8882531
 
     signal = signal/max(abs(signal(:))); 
     
@@ -408,11 +419,18 @@ for i = 1:length(cosine_sweeps)
 %snr(signal(:,1), Fsin)
 
 %Writting the resulting signal as an audio file
+<<<<<<< HEAD
 audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
     buff_out, floor(cosine_sweeps(i).fs*(L/M)), 'BitsperSample', cosine_sweeps(i).bit_depth)
+=======
+audiowrite(['~/Documents/Bang_Olufsen/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
+    num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS'...
+    '_' num2str(cosine_sweeps(i).bitrate) 'bitrate.wav'],...
+    signal, floor(cosine_sweeps(i).fs*(L/M)), 'BitsperSample', cosine_sweeps(i).bit_depth)
+>>>>>>> e8e174f858408898a8369b2ad98a9087d8882531
 
 
 end
 
-
+ 

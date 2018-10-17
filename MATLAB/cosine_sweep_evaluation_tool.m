@@ -416,7 +416,7 @@ for n=channels   % loop  for the number of audio channels
     xlabel('Time (sec)')
     ylabel('Freq (Hz)')
     
-    text(2, fs/4, num2str(fs))
+    text(2, fs/4, num2str(fs),'FontSize',28)
     
     axis([0 max(t) 10 upper_frequency_limit])
     grid on
@@ -430,10 +430,10 @@ for n=channels   % loop  for the number of audio channels
     
     ax.YTick      = [10 100 1000 10000];
     ax.YTickLabel = {'10', '100', '1k', '10k'};
-    ax.FontSize = 8;
+    ax.FontSize = 28;
     ax.YMinorGrid = 'on';
     ax.XMinorGrid = 'off';
-    title(filename_pdf(1:end-4), 'Interpreter', 'none');
+    %title(filename_pdf(1:end-4), 'Interpreter', 'none');
     
     set(gca, 'FontName','Helvetica')
     set(get(gca,'Title'),'FontName','Helvetica')

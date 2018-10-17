@@ -2,7 +2,8 @@ function H_schuess = schuessler(b,delta2)
     
 %This function aims to create a minimum-phase FIR filter according to
 %Schuessler's method. It turns an FIR filter (Parks-McClellan) into this
-%new type of filter.
+%new type of filter. cf D.I. Turek, ?Design of Efficient Digital Interpolation 
+%Filters for Integer Upsampling?, MA thesis, M.I.T., Jun. 2004  
 
 %STEP ONE
 %Creating the Parks-McClellan with the required specs i.e. those to produce
