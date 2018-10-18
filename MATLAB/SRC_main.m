@@ -21,7 +21,7 @@ clear
 
 
 
-%%  Frequencies specification
+%% Frequencies specification
 
 %Type here the desired sampling frequencies that need to be converted
 
@@ -81,13 +81,9 @@ fs = Fsin; %_Choose Sampling Frequency
     
 i = 1; %add counter for filling in signal array
     
-<<<<<<< HEAD
+
 for bit_depth = 16 %[16 24], no difference between the two
 %        for bitrate = [128 256 320]
-=======
-for bit_depth = 16%[16 24]
-    %for bitrate = [128 256 320]
->>>>>>> e8e174f858408898a8369b2ad98a9087d8882531
     
     audio_channels = 2;         % channels
     f_start = 20;               % Hz
@@ -375,62 +371,56 @@ clc
 
 [bestPerm,filter_choice,multistage_method] = multi_stage(L,M,Fsin,Fsout,Fp,Rp,Rs); 
 
-%buffer size
-len_in = 7055;%floor(length(cosine_sweeps(1).sweep(:,1))/1000);%
-% len_out = vpa(len_in*(L/M));
+% %buffer size
+% len_in = 7055;%floor(length(cosine_sweeps(1).sweep(:,1))/1000);%
+% % len_out = vpa(len_in*(L/M));
+% % 
+% % if floor(len_out)~=len_out
+% %     error('len_out is not an integer');
+% % end
 % 
-% if floor(len_out)~=len_out
-%     error('len_out is not an integer');
-% end
-
-%buff_out = zeros(ceil(length(cosine_sweeps(1).sweep(:,1))*(L/M))+2,2); %+2 is here to just match the size, this is not an automated process
-
-for i = 1:length(cosine_sweeps)
-    k = 1;
-    
-    %Buffer processing
-    %for k = 1:len_in:(length(cosine_sweeps(i).sweep(:,1))-len_in)  
-    while(length(cosine_sweeps(i).sweep(:,1))-k >= len_in)
-                    
-        signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep(k:(k+len_in),:),bestPerm,manual);
-
-<<<<<<< HEAD
-        signal = signal/max(abs(signal(:))); 
-        
-        if k == 1 
-                buff_out(1:length(signal),:) = signal;
-        else
-            buff_out(round(k*(L/M)):(round(k*(L/M))+length(signal)-1),:) = signal;
-        end
-        
-        k = k + len_in;
-    end
-    
-    signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep((k+1):end,:),bestPerm,manual);
-=======
+% %buff_out = zeros(ceil(length(cosine_sweeps(1).sweep(:,1))*(L/M))+2,2); %+2 is here to just match the size, this is not an automated process
+% 
+% for i = 1:length(cosine_sweeps)
+%     k = 1;
+%     
+%     %Buffer processing
+%     %for k = 1:len_in:(length(cosine_sweeps(i).sweep(:,1))-len_in)  
+%     while(length(cosine_sweeps(i).sweep(:,1))-k >= len_in)
+%                     
+%         signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep(k:(k+len_in),:),bestPerm,manual);
+% 
+% <<<<<<< HEAD
+%         signal = signal/max(abs(signal(:))); 
+%         
+%         if k == 1 
+%                 buff_out(1:length(signal),:) = signal;
+%         else
+%             buff_out(round(k*(L/M)):(round(k*(L/M))+length(signal)-1),:) = signal;
+%         end
+%         
+%         k = k + len_in;
+%     end
+%     
+%     signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep((k+1):end,:),bestPerm,manual);
+% =======
 signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep,bestPerm,filter_choice,multistage_method);
->>>>>>> e8e174f858408898a8369b2ad98a9087d8882531
 
-    signal = signal/max(abs(signal(:))); 
+
+signal = signal/max(abs(signal(:))); 
     
-    buff_out((end-length(signal(1:(end-1),:))+1):end,:) = signal(1:(end-1),:);
+%     buff_out((end-length(signal(1:(end-1),:))+1):end,:) = signal(1:(end-1),:);
         
 
 %snr(signal(:,1), Fsin)
 
 %Writting the resulting signal as an audio file
-<<<<<<< HEAD
 audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
     buff_out, floor(cosine_sweeps(i).fs*(L/M)), 'BitsperSample', cosine_sweeps(i).bit_depth)
-=======
-audiowrite(['~/Documents/Bang_Olufsen/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
-    num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS'...
-    '_' num2str(cosine_sweeps(i).bitrate) 'bitrate.wav'],...
-    signal, floor(cosine_sweeps(i).fs*(L/M)), 'BitsperSample', cosine_sweeps(i).bit_depth)
->>>>>>> e8e174f858408898a8369b2ad98a9087d8882531
 
 
-end
+
+% end
 
  
