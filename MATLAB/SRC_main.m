@@ -28,7 +28,7 @@ clear
 %Input frequency
 Fsin = 44.1e3; 
 %Output frequency
-Fsout =  48e3; %
+Fsout =  48e3; %2*Fsin; %
 
 % Resampling Factors L/M
 [L,M] = getSRFactors(Fsin,Fsout); % Fsout = (L/M)*Fsin
@@ -406,14 +406,14 @@ for i = 1:length(cosine_sweeps)
 %     signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep((k+1):end,:),bestPerm,manual);
 % =======
 [signal, Fint_max] = multistage(Fsin,Fp,Rp,Rs,cosine_sweeps(i).sweep,bestPerm,filter_choice,multistage_method);
-
+%
 
 signal = signal/max(abs(signal(:))); 
     
 %     buff_out((end-length(signal(1:(end-1),:))+1):end,:) = signal(1:(end-1),:);
 
 disp('-------------------------- Overall Delay --------------------------')
-disp('Overall delay between input and the output signal, for both channel, is: ');
+disp('Overall delay between input and output signal, for both channel, is: ');
 disp(num2str(finddelay(cosine_sweeps(i).sweep,signal)));
 disp('-------------------------------------------------------------------')
 

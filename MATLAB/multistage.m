@@ -4,7 +4,7 @@ function [output, Fint_max] = multistage(Fsin,Fp,Rp,Rs,input_signal,bestPerm,fil
 FL = bestPerm(1:length(bestPerm)/2);
 FM = bestPerm(length(bestPerm)/2 + 1:end);
 
-Fmax = zeros(1,length(bestPerm));
+Fmax = zeros(1,length(bestPerm)/2);
 
 %Defining the differents band-edge frequencies
 
@@ -97,7 +97,7 @@ if filter_choice == 1
                 disp('-------------------------------------------------------------------')
                 
                 %Compensate gain
-                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2'); %
+                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2'); %,w
                 
                 
 
@@ -117,7 +117,14 @@ if filter_choice == 1
                     upsamp = upsample(filter_polyphase,FL(1,i)); 
 
                     %Sum 
-
+                    
+%                     if size(sumBranch,1) > 1
+%                         if size(upsamp,1) > size(sumBranch,1)
+%                             sumBranch = cat(1,sumBranch, zeros(size(upsamp,1)-size(sumBranch,1),2)); 
+%                         elseif size(upsamp,1) < size(sumBranch,1)
+%                             upsamp = cat(1,upsamp, zeros(size(sumBranch,1)-size(upsamp,1),2));
+%                         end
+%                     end    
                     sumBranch = sumBranch + upsamp;
 
                     if k > 1
@@ -138,11 +145,11 @@ if filter_choice == 1
                 fvtool(Filter);
                 %Saving file to use it in a C code file
                 %Move it to the appropriate directory
-%                 file = fopen(['PM_filter',num2str(i),'.txt'],'w');
-%                 fprintf(file,'%.20e\n',vpa(Filter.Numerator));
-%                 fclose(file);
-%                 set(Filter,'arithmetic','fixed');
-%                 fcfwrite(Filter,['Pm_filter', num2str(i), '.fcf']);
+                file = fopen(['PM_filter',num2str(i),'.txt'],'w');
+                fprintf(file,'%.20e\n',vpa(Filter.Numerator));
+                fclose(file);
+                set(Filter,'arithmetic','fixed');
+                fcfwrite(Filter,['Pm_filter', num2str(i), '.fcf']);
                
                 if i == 1 
                     signal = input_signal; %true only for the first input
