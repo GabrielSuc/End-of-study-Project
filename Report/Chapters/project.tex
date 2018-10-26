@@ -22,7 +22,7 @@
 \subsection{Introduction}
 A recurrent concern has arisen with the emergence of new digital signal processing applications. In many cases, these systems are the result of an interconnection of distinct devices operating at different sampling rates. Accordingly, the need for efficient conversion between various sampling frequencies has become essential. The process of converting a signal from a given rate to a different one is called \textit{Sampling Rate Conversion}.
 
-First and foremost, it is necessary to remind the reader of the whole process happening before any modification of the signal. Let us consider a music signal created from an instrument (figure \ref{Figure 3.1}) which is an \textit{analog} signal. If we desire to apply some transformations on this input wave, we could do it in the analog domain but the \textit{digital} one presents more advantages (repeatabilty, noise robustness, etc.). For that purpose, the common procedure would be to use an Analog-to-Digital Converter (\hyperlink{A/D}{A/D}). The classical representation of such a converter can be depicted as a Continuous-to-Discrete and Quantizer block. The first one will select a sample every period T and  will assign a value to the amplitude of that sample. This acquisition process is a classic A/D conversion. However, they are other ways of performing this acquisition, like in \cite{AmpSamp}.
+First and foremost, it is necessary to remind the reader of the whole process happening before any modification of the signal. Let us consider a music signal created from an instrument (figure \ref{Figure 3.1}) which is an \textit{analog} signal. If we desire to apply some transformations on this input wave, we could do it in the analog domain but the \textit{digital} one presents more advantages (repeatability, noise robustness, etc.). For that purpose, the common procedure would be to use an Analog-to-Digital Converter (\hyperlink{A/D}{A/D}). The classical representation of such a converter can be depicted as a Continuous-to-Discrete and Quantizer block. The first one will select a sample every period T and  will assign a value to the amplitude of that sample. This acquisition process is a classic A/D conversion. However, they are other ways of performing this acquisition, like in \cite{AmpSamp}.
 
 
 \begin{figure}[th]
@@ -34,10 +34,10 @@ First and foremost, it is necessary to remind the reader of the whole process ha
 
 \newpage
 
-Once the signal has been acquired in the digital domain, sampling rate conversion can be applied: we wish to modify the input sample-rate (denoted as $ F_{s_{in}} $), namely the one fixed by the C/D converter mentionned above. Indeed, the number of samples picked per second is given by one over T, thus: $ F_{s_{in}} = \frac{1}{T}$. 
+Once the signal has been acquired in the digital domain, sampling rate conversion can be applied: we wish to modify the input sample-rate (denoted as $ F_{s_{in}} $), namely the one fixed by the C/D converter mentioned above. Indeed, the number of samples picked up per second is given by one over T, thus: $ F_{s_{in}} = \frac{1}{T}$. 
 
 This process can be understood as "resampling after reconstruction" \cite{Proakis} that is reconstructing the sequence of samples as a continuous-time signal and sample it again at a different rate. In theory, two general methods exist to realize the conversion \cite{Proakis}, \cite{Oppenheim}. One method is to pass a given digital signal $x[n]$ %(that has not necessarily been convertered by an \hyperlink{A/D}{A/D} converter)
- through a \hyperlink{D/A}{D/A} converter, filter it, and finally pass the analog signal through an \hyperlink{A/D}{A/D} converter which will resample the filtered output signal at the desired rate (cf. figure \ref{Figure 3.2}). The second method is designed to achieve the conversion entirely in the digital/discrete-time domain. In many pratical applications, the latter is prefered. A particularly revelant justification is within the context of audio signal processing in which this project takes place, most of the treatment and interfacing between data streams are carried out digitally. In this way, it makes the interconnections between the different systems easier and more flexible, but also avoids the signal distortion introduced by the \hyperlink{D/A}{D/A} and \hyperlink{A/D}{A/D} converters. 
+ through a \hyperlink{D/A}{D/A} converter, filter it, and finally pass the analog signal through an \hyperlink{A/D}{A/D} converter which will resample the filtered output signal at the desired rate (cf. figure \ref{Figure 3.2}). The second method is designed to achieve the conversion entirely in the digital/discrete-time domain. In many practical applications, the latter is preferred. A particularly relevant justification is within the context of audio signal processing in which this project takes place, most of the treatment and interfacing between data streams are carried out digitally. In this way, it makes the interconnections between the different systems easier and more flexible, but also avoids the signal distortion introduced by the \hyperlink{D/A}{D/A} and \hyperlink{A/D}{A/D} converters. 
 
 
 \begin{figure}[th]
@@ -47,9 +47,9 @@ This process can be understood as "resampling after reconstruction" \cite{Proaki
 	\caption{One Method to Resample a Digital Signal x[n]}\label{Figure 3.2}
 \end{figure}
 
-Moreover, as presented in the general introduction (see \ref{gen_intro}), sample-rate conversion can be further sorted into two categories depending on if the relation between the input sampling rate and the output one is known: synchronous and asynchronous. Since the internship of the student was only 6 months, it has been decided that he will only investigate the synchronous part. Nonetheless, the asynchronous method has been largely studied over the pass decades \cite{async1}-\nocite{async2}\cite{async3} and clearly encompasses the first type of transformation but could be considered as the continuity of this project.
+Moreover, as presented in the general introduction (see \ref{gen_intro}), sample-rate conversion can be further sorted into two categories depending on whether the relation between the input sampling rate and the output one is known: synchronous and asynchronous. Since the internship of the student was only 6 months, it has been decided that he will only investigate the synchronous part. Nonetheless, the asynchronous method has been largely studied over the pass decades \cite{async1}-\nocite{async2}\cite{async3} and clearly encompasses the first type of transformation but could be considered as the continuity of this project.
 
-Hence, this chapter intends to give a valuable description of synchonous sample-rate conversions. Recent studies already attempted to tackle this topic by exploiting the properties of fractional delay filters \cite{fract1}, \cite{fract2} and filter banks \cite{filtbanks1}, \cite{filtbanks2}. The approach employed here is more traditional but with the intention to produce an efficient converter in terms of quality and complexity.
+Hence, this chapter intends to give a valuable description of synchronous sample-rate conversions. Recent studies already attempted to tackle this topic by exploiting the properties of fractional delay filters \cite{fract1}, \cite{fract2} and filter banks \cite{filtbanks1}, \cite{filtbanks2}. The approach employed here is more traditional but with the intention to produce an efficient converter in terms of quality and complexity.
 
 
 \newpage
@@ -58,7 +58,7 @@ Hence, this chapter intends to give a valuable description of synchonous sample-
 
 The classic method to accomplish a synchronous conversion between two known sample-rates has been amply elaborated in \cite{Oppenheim}. Hereunder, we will remind the overall principles that rule such a process.\\
 
-In this particular case, the input and outpout sample-rate $F_{s_{in}}$ and $F_{s_{out}}$ respectively are related by a rational factor $\frac{L}{M}$ i.e. we have: $F_{s_{out}}= \frac{L}{M} F_{s_{in}}$. In order to be able to realize this operation, the following figure presents the method used. 
+In this particular case, the input and output sample-rate $F_{s_{in}}$ and $F_{s_{out}}$ respectively are related by a rational factor $\frac{L}{M}$ i.e. we have: $F_{s_{out}}= \frac{L}{M} F_{s_{in}}$. In order to be able to realize this operation, the following figure presents the method used. 
 
 \begin{figure}[th]
 	\centering
@@ -66,9 +66,9 @@ In this particular case, the input and outpout sample-rate $F_{s_{in}}$ and $F_{
 	\caption{Block Diagram of Sampling Rate Conversion}\label{Figure 3.3}
 \end{figure}
 
-The input signal $x[n]$ that we want to resample i.e., change the underlying sampling frequency, is firstly \textit{upsampled}: this block inserts $L-1$ zeros between every sample of $x[n]$. Then the resulting signal $x_u[n]$ is lowpass filtered. Indeed, by interleaving zeros within a signal, it creates replicas of the said signal (see figure \ref{c}) that need to be removed otherwise alsiasing will appear in the resampled signal $y[n]$. To finally obtained the desired sampling frequency at the output, the filtered signal is \textit{downsampled} which means that this last block will pick every $M^{th}$ sample of $x_f[n]$  to create the sequence $y[n]$ resampled at the frequency $F_{s_{out}} = \frac{L}{M}.(\text{frequency of}\; x[n])$.
+The input signal $x[n]$ that we want to resample i.e., change the underlying sampling frequency, is firstly \textit{upsampled}: this block inserts $L-1$ zeros between every sample of $x[n]$. Then the resulting signal $x_u[n]$ is lowpass filtered. Indeed, by interleaving zeros within a signal, it creates replicas of the said signal (see figure \ref{c}) that need to be removed otherwise aliasing will appear in the resampled signal $y[n]$. To finally obtain the desired sampling frequency at the output, the filtered signal is \textit{downsampled} which means that this last block will pick up every $M^{th}$ sample of $x_f[n]$  to create the sequence $y[n]$ resampled at the frequency $F_{s_{out}} = \frac{L}{M}.(\text{frequency of}\; x[n])$.
 
-The next figure (figure \ref{Figure 3.4}) depict the different transitions happening in the continuous and digital frequency domains to a signal when it is resampled by a factor of $2/3$. An important consideration to bear in mind is that not every signal can be resampled. According to the \textit{Nyquist-Shannon theorem}, a signal can be fully converted into a digital sequence if the sampling rate is higher than at least two times the maximum frequency contained in that signal. In other words, 
+The next figure (figure \ref{Figure 3.4}) depicts the different transitions happening in the continuous and digital frequency domains to a signal when it is resampled by a factor of $2/3$. An important consideration to bear in mind is that not every signal can be resampled. According to the \textit{Nyquist-Shannon theorem}, a signal can be fully converted into a digital sequence if the sampling rate is higher than at least twice the maximum frequency contained in that signal. In other words, 
 
 \begin{align}
 	Fs \geqslant 2*f_{max} \label{eqn:Shannon}
@@ -132,7 +132,7 @@ A specification can be made regarding the behavior of the conversion depending o
 
 \begin{itemize}
 	\item if L > M: the sampling rate converter acts as an interpolator i.e. it resamples such as $F_{s_{out}} > F_{s_{in}}$. Thus, no further frequency limitation is needed.
-	\item if M > L: in this case, the converter operates as a decimator i.e $F_{s_{out}} < F_{s_{in}}$. Henceforth, with repect to the Nyquist-Shannon theorem, we must ensure that $f_{max} < F_{s_{out}}/2$. Thereby, the filter $H(e^{j\omega})$ will behave as an anti-aliasing filter and then will remove the extra frequency components in the input signal. This can be noticed in figure \ref{e} where the digital frequencies from $\frac{\pi}{3}$ to $\frac{\pi}{2}$ are eliminated. Since $F_{s_{out}} = \frac{2}{3} F_{s_{in}}$, $f_{max}$ is now equal to $\frac{1}{2}.\frac{2F_{s_{in}}}{3} = \frac{F_{s_{in}}}{3}$.
+	\item if M > L: in this case, the converter operates as a decimator i.e $F_{s_{out}} < F_{s_{in}}$. Henceforth, with respect to the Nyquist-Shannon theorem, we must ensure that $f_{max} < F_{s_{out}}/2$. Thereby, the filter $H(e^{j\omega})$ will behave as an anti-aliasing filter and then will remove the extra frequency components in the input signal. This can be noticed in figure \ref{e} where the digital frequencies from $\frac{\pi}{3}$ to $\frac{\pi}{2}$ are eliminated. Since $F_{s_{out}} = \frac{2}{3} F_{s_{in}}$, $f_{max}$ is now equal to $\frac{1}{2}.\frac{2F_{s_{in}}}{3} = \frac{F_{s_{in}}}{3}$.
 \end{itemize}
 
 
@@ -148,7 +148,7 @@ The filter previously alluded to is the most important block of the conversion. 
 	\omega_c = \text{min}\Big(\frac{\pi}{L},\frac{\pi}{M}\Big) \label{eqn:cutoff_digital}
 \end{align}
 
-The equivalent continous-time frequency is then again:
+The equivalent continuous-time frequency is then again:
 
 \begin{align}
 f_c = \Big(\frac{LF_{sin}}{2\pi} \Big)\text{min}\Big(\frac{\pi}{L},\frac{\pi}{M}\Big) \nonumber \\ 
@@ -157,7 +157,7 @@ f_c = \Big(\frac{LF_{sin}}{2\pi} \Big)\text{min}\Big(\frac{\pi}{L},\frac{\pi}{M}
 
 Furthermore, the gain is also known and equal to $L$. In fact, if we desire to have a signal at the output with a gain of $1$, the equivalent frequency-domain gain must be $\frac{L}{MT} = \frac{1}{T_{out}}$ (cf. figure \ref{f}). 
 
-Presently, we can introduce the remaning specifications namely, the \textit{ripple in the passband} $R_p$ , \textit{the attenuation in the stopband} $R_s$ and \textit{the transition width} $TW$. To better grasp these caracteristics, the following figure sums them up. 
+Presently, we can introduce the remaining specifications namely, the \textit{ripple in the passband} $R_p$ , \textit{the attenuation in the stopband} $R_s$ and \textit{the transition width} $TW$. To better grasp these characteristic, the following figure sums them up. 
 
 
 \begin{figure}[ht]
@@ -177,9 +177,9 @@ Presently, we can introduce the remaning specifications namely, the \textit{ripp
 \end{figure}
 \newpage
 
-For audio applications, the influence of these parameters is crucial. A high attenuation with a low ripple and a steep transition band will give great quality result at the expense of the complexity of the filter that is, its order will increase. \ref{section 3.1.2} provides deeper details about this dependency.  
+For audio applications, the influence of these parameters is crucial. A high attenuation with a low ripple and a steep transition band will give great quality result at the expense of the complexity of the filter that is, its order will increase. The delay introduced by the filter will increase as well. \ref{section 3.1.2} provides deeper details about this dependency.  
 
-From this point forward, what matters is how the filter is implemented. Usually, the common method would be to use a \hyperlink{FIR}{FIR} filter because they have a linear phase. It signifies that signals of all frequencies are delayed by the same amount of time, therefore eliminating the possibility of phase distortion which is significant in audio applications. Nevertheless, it seems \cite{toole} that a regular listener cannot perceive the effect of phase distortion under special circumstances \cite{hartmann}, \cite{lipshitz}. Then, it has been decided that the advantages of \hyperlink{IIR}{IIR} filters should be also considered. The table below summerizes the main caracteristics of these two families of filters.
+From this point forward, what matters is how the filter is implemented. Usually, the common method would be to use a \hyperlink{FIR}{FIR} filter because they have a linear phase. It means that signals of all frequencies are delayed by the same amount of time, therefore eliminating the possibility of phase distortion which is significant in audio applications. Nevertheless, it seems \cite{toole} that a regular listener cannot perceive the effect of phase distortion under special circumstances \cite{hartmann}, \cite{lipshitz}. Then, it has been decided that the advantages of \hyperlink{IIR}{IIR} filters should be also considered. The table below summarizes the main characteristics of these two families of filters.
 
 \begin{table}[ht]
 	\centering
@@ -195,11 +195,11 @@ From this point forward, what matters is how the filter is implemented. Usually,
 \label{tab:filters}
 \end{table}
 
-Some analyses have been carried out on what filters have the best performances for the same set of specifications \cite{comparison_filters}. The Parks-McCLellan implementation was retained for the FIR category and the Elliptic one for the IIR category. 
+Some analyses have been carried out on what filters have the best performances for the same set of specifications \cite{comparison_filters}. The Parks-McClellan design was retained for the FIR category and the Elliptic one for the IIR category. 
 
-The Parks-McCLellan filters have equiripple in the passband and in the stopband. They minimize the maximum error in both bands for a given weighting function in other words, we have separated control of the deviations in both bands.
+The Parks-McClellan filters have equiripple in the passband and in the stopband. They minimize the maximum error in both bands for a given weighting function in other words, we have separated control of the deviations in both bands.
 
-The Elliptic or Cauer filters have also equiripple in both bands and usually present the rational function that requires the lowest order for the same specifications. They have four degrees of freedom: order, passband edge, passband and stopband ripple. They are optimal in terms of minimizing the transition bandwidth which is controlled by the order. Below, the magnitude responses of these two filters is provided for (L, M) = (2, 1) and  (Rp, Rs, TW) = (1, 100, 0.85).
+The Elliptic or Cauer filters have also equiripple in both bands and usually present the rational function that requires the lowest order for the same specifications. They have four degrees of freedom: order, passband edge, passband and stopband ripple. They are optimal in terms of minimizing the transition bandwidth which is controlled by the order. Below (see figure \ref{Figure 3.6}), the magnitude responses of these two filters is provided for (L, M) = (2, 1) and  (Rp, Rs, TW) = (1, 100, 0.85). The order for the Parks-McClellan filter is 82 and 10 for the Elliptic one.
 
 \begin{figure}[ht]
 	\begin{subfigure}[b]{0.5\textwidth}
@@ -209,12 +209,14 @@ The Elliptic or Cauer filters have also equiripple in both bands and usually pre
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.5\textwidth}
-		\includegraphics[height = 0.5\textwidth, width = 1.2\textwidth]{ellip_direct.pdf}
+		\includegraphics[height = 0.5\textwidth, width = 1.2\textwidth]{Ellip_direct.pdf}
 		\caption{Elliptic Filter}
 		\label{mgellip}
 	\end{subfigure}
 	\caption{Magnitude Responses}\label{Figure 3.6}
 \end{figure}
+
+\newpage
 
 The filter have been designed in \MATLAB. The common procedure \cite{matlab} requires to specify the normalizing frequency (to transition from continuous to digital frequency). Hereunder, it is the normalizing frequency after the upsampling block $L$ which we call:
 
@@ -224,16 +226,16 @@ The filter have been designed in \MATLAB. The common procedure \cite{matlab} req
  
 \subsubsection{Efficiency}
 
-As well as a conversion of high quality with no aliasing or any other artifacts, an efficient filter, that processes data rapidly is desired. The decision was made that what undoubtedly counts is how many multiplications will be necessary to generate a single sample at the output. In this way, we define the number of \textit{Multiplications Per Output Samples} or MPOS. The lower it is, the faster the conversion will be which is what we need for a real-time process. In the case of a direct implementation of a \hyperlink{FIR}{FIR} or  \hyperlink{IIR}{IIR} filter of order $N$, we have:
+As well as a conversion of high quality with no aliasing or any other artifacts, an efficient filter, that processes data rapidly is desired. The decision was made that what undoubtedly counts is how many multiplications will be necessary to generate a single sample at the output. In this way, we define the number of \textit{Multiplications Per Output Samples} or MPOS. The lower it is, the lower the computation requirements will be, which is what we need for a real-time process. In the case of a direct implementation of a \hyperlink{FIR}{FIR} or  \hyperlink{IIR}{IIR} filter of order $N$, we have:
 
 \begin{align}
 	MPOS = (N + 1)M \label{eqn:mpos_direct} 
 \end{align} 
 
-It is conspicuous that if the length of the filter (i.e. the  number of its coefficients) is too considerable, the number of MPOS will enlarge resulting in an extremely slow transformation. Thus, the need for improvement would be clearly an obligation.
+It is conspicuous that if the length of the filter (i.e. the  number of its coefficients) is too considerable, the number of MPOS will enlarge resulting in an extremely slow transformation \footnote{This is particularly true for a direct implementation of FIR filters because the order is larger than IIR filters. However, we can still improve the efficiency for the IIR case, even if it appears to be already good.}. Thus, the need for improvement would be clearly an obligation.
 \subsection{Improvements} 
 
-In many cases, the numbers $L$ and $M$ are actually too large, making the computation of the filter's coefficients unfeasible (especially for the FIR case; cf. \ref{tab:filters}). For example, with a conversion from 44.1 kHz to 48 kHz, the resampling factor is then $\frac{L}{M} = \frac{160}{147}$. The cutoff frequency $\omega_c = \frac{\pi}{L}$ will become extremely small, giving less time for the transition to happen and therefore will have the effect of increasing the order. A well known method to address this issue is the polyphase decomposition which permits an easier implementation of the filter. Moreover, the decomposition into several cascaded stages is also explored in this section.
+In many cases, the numbers $L$ and $M$ are actually too large, making the computation of the filter's coefficients unfeasible (especially for the FIR case; cf. table \ref{tab:filters}). For example, with a conversion from 44.1 kHz to 48 kHz, the resampling factor is then $\frac{L}{M} = \frac{160}{147}$. For a direct implementation, the order of the filter will be high, making the computation of the coefficients unstable. A well known method to address this issue is the polyphase decomposition which permits a more efficient implementation of a given transfer function. Moreover, the decomposition into several cascaded stages is also explored in this section.
 
 
 \subsubsection{Polyphase}
@@ -241,7 +243,7 @@ In many cases, the numbers $L$ and $M$ are actually too large, making the comput
 The polyphase decomposition is a different way to express the impulse response of the filter. Instead of convolving the signal by the whole filter's \hyperlink{IR}{IR}, only parts of this response are used and they process the input signal simultaneously.
  It is a parallel representation that can considerably reduce the amount of complexity needed to perform a sampling rate conversion. 
 
-The classic method \cite{Oppenheim}, \cite{oppenheim2} would be to decompose the filter's impulse repsonse $h[n]$ into M (or L) subsequences $h_k[n]$ with $ k = 0, 1, \dots, M-1$ such as
+The classic method \cite{Oppenheim}, \cite{oppenheim2} would be to decompose the filter's impulse response $h[n]$ into M (or L) subsequences $h_k[n]$ with $ k = 0, 1, \dots, M-1$ such as
 
 
 \begin{align}
@@ -252,7 +254,7 @@ h_k[n] =
 	\end{cases}
 \end{align}
 
-Now, if we consider the z-transform of the filter,
+Now, if we consider the z-transform of the impulse response of the filter,
 
 \begin{align}
 	H(z) = \sum\limits_{n=-\infty}^{\infty} h[n]z^{-n} \label{eqn:ztrans}
@@ -306,9 +308,9 @@ According to this notation, we are now able to present a classic representation 
 	\end{subfigure}	
 \end{figure}
 
-\newpage
 
-\begin{figure}[htb!] \ContinuedFloat
+
+\begin{figure}[htb!] %\ContinuedFloat
 	\centering
 	\begin{subfigure}[b]{\textwidth}
 		\centering
@@ -325,16 +327,18 @@ At this point, the reader might wonder why the block $M$ in figure \ref{3.7.a} o
 
 These structures considerably reduce the amount of MPOS required for the computation since currently with have $MPOS = \frac{(N+1)M}{M} = (N+1)$ for the type 1 polyphase and $MPOS = \frac{(N+1)M}{L} $ for the type 2 polyphase. However, these arrangements are not the most efficient ones since the polyphase components are not applied at the lowest rate where the hardware complexity is the lowest. This is due to the fact that the expander $L$ and the decimator $M$ are not interchangeable (we cannot apply the noble identity again). Nonetheless, the next section describes what solution has been retained to further enhance our procedure.
 
+\newpage
+
 \paragraph{Polyphase Representation for FIR Filters}
 \justify
 
-Before we proceed, it is important to specify that the above polyphase decompositions can only be implemented to a non-recursive filter, that is a filter that only uses the input values to compute its coefficients. Typically, these filters are refered as \hyperlink{FIR}{FIR} filters. 
+Before we proceed, it is important to specify that the above polyphase decompositions can only be implemented to a non-recursive filter, that is a filter that only uses the input values to compute its coefficients. Typically, these filters are referred as \hyperlink{FIR}{FIR} filters. 
 
-For the purpose of having an efficient polyphase structure, as explained in \cite{vaidyanathan}, we can exploit the fact that the  $k^{th}$ polyphase term in equation \ref{eqn:compact} can be substituted by $z^{-Lka}z^{Mkb}$ with $a$ and $b$ positive integers. As long as $L$ and $M$ are relatively prime (common divisor is 1), the terms $a$ and $b$ can be found according to the Euclid's Theorem since we have $La-Mb=1$. As of now, every delay $z^{-1}$ in figure \ref{Figure 3.7} can be replaced by $z^{-La}z^{Mb}$, thus the expander and decimator can be interchanged which leads to the following stucture displayed on the next page (figure \ref{Figure 3.8}).
+For the purpose of having an efficient polyphase structure, as explained in \cite{vaidyanathan}, we can exploit the fact that the  $k^{th}$ polyphase term in equation \ref{eqn:compact} can be substituted by $z^{-Lka}z^{Mkb}$ with $a$ and $b$ positive integers. As long as $L$ and $M$ are relatively prime (common divisor is 1), the terms $a$ and $b$ can be found according to the Euclid's Theorem since we have $La-Mb=1$. As of now, every delay $z^{-1}$ in figure \ref{Figure 3.7} can be replaced by $z^{-La}z^{Mb}$, thus the expander and decimator can be interchanged which leads to the following structure displayed on the next page (figure \ref{Figure 3.8}).
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[scale=1]{polyphase_direct_efficient.pdf}
+	\includegraphics[scale=0.95]{polyphase_direct_efficient.pdf}
 	\vspace*{1mm}
 	\caption{Efficient Polyphase Decomposition}
 	\label{Figure 3.8}
@@ -348,9 +352,9 @@ Thanks to this final representation, the \hyperlink{MPOS}{MPOS} is now decreased
 	MPOS =  \frac{(N+1)M}{LM} = \frac{(N+1)}{L}\label{eqn:final_poly}
 \end{align}
 
-As a result, we obviously chose to use this decomposition. The integers $a$ and $b$ are simply pre-conputed in accordance with the values of $L$ and $M$ by means of the \textit{Euclidean Algorithm}.
+As a result, we obviously chose to use this decomposition. The integers $a$ and $b$ are simply pre-computed in accordance with the values of $L$ and $M$ by means of the \textit{Euclidean Algorithm}.
 
-\newpage
+
 \paragraph{Polyphase Representation for IIR Filters}
 
 \justify
@@ -400,7 +404,7 @@ with $z_k$ the \textit{zeros}, $p_k$ the \textit{poles} and $k$ the gain. At pre
 \end{align} 
 
 
-The next step is to replace equation \ref{eqn:3.17} in \ref{eqn:3.16} but we need to assign some values to $D$. The point is to split the poles and raise them to the power of $L$ and $M$ to then be able to use the noble identity. To make it clearer, let's say we have $N_z$ poles and we arbitrarily choose two values $N_L$ and $N_M$ such as $N_L + N_M = N_z$. Now we pick $N_L$ poles $\gamma$ among the $p_k$ with $D = L$ and the $N_M$ $\epsilon$ remaining with $D = M$. The poles we select do not matter, the only important rule to fullfil is to not separate the complex conjugate poles. 
+The next step is to replace equation \ref{eqn:3.17} in \ref{eqn:3.16} but we need to assign some values to $D$. The point is to split the poles and raise them to the power of $L$ and $M$ to then be able to use the noble identity. To make it clearer, let's say we have $N_z$ poles and we arbitrarily choose two values $N_L$ and $N_M$ such as $N_L + N_M = N_z$. Now we pick $N_L$ poles $\gamma$ among the $p_k$ with $D = L$ and the $N_M$ $\epsilon$ remaining with $D = M$. The poles we select do not matter, the only important rule to fulfill is to not separate the complex conjugate poles. 
 
 Therefore, we can expand equation \ref{eqn:3.16}
 
@@ -857,7 +861,7 @@ In the interest of clarfying the above observations, the graphs herein (cf. figu
 	\centering
 	\begin{subfigure}[b]{\textwidth}
 		\centering
-		\centerline{\includegraphics[scale=0.25]{2_stages_Ellip.png}}
+		\centerline{\includegraphics[scale=0.25]{2_stages_ellip.png}}
 		\caption{Implication of Stage Combinations on Elliptic Filters}
 		\label{Figure 22.b}
 	\end{subfigure}
@@ -927,7 +931,7 @@ The input is before any expander $L$ or $L_i$ and the output is after the last p
 
 \begin{figure}[ht]
 	\centering
-	\includegraphics[scale=0.22]{/Users/gabrielsuc/Documents/Bang_Olufsen/End-of-study-Project/Sweeps/44k_16_0dBFS_input_chan1_100dB_snr.pdf}
+	\includegraphics[scale=0.22]{/home/gabriel/Documents/End-of-study-Project/Sweeps/44k_16_0dBFS_input_chan1_100dB_snr.pdf}
 	\caption{Frequency Sweep Input}\label{Figure 3.23}
 \end{figure}
 
@@ -935,13 +939,13 @@ For instance, the following outputs (figure \ref{Figure 3.24}) are those of the 
 
 \begin{figure}[ht]
 	\begin{subfigure}[b]{0.5\textwidth}
-		\includegraphics[height = 0.7\textwidth, width = 1\textwidth]{/Users/gabrielsuc/Documents/Bang_Olufsen/End-of-study-Project/Quality_Evaluation/PM_Multistage_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.pdf}
+		\includegraphics[height = 0.7\textwidth, width = 1\textwidth]{/home/gabriel/Documents/End-of-study-Project/Quality_Evaluation/PM_Multistage_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.pdf}
 		\caption{Folded Parks-McClellan Filter}
 		
 	\end{subfigure}
 	\hfill
 	\begin{subfigure}[b]{0.5\textwidth}
-		\includegraphics[height = 0.7\textwidth, width = 1\textwidth]{/Users/gabrielsuc/Documents/Bang_Olufsen/End-of-study-Project/Quality_Evaluation/Russell_Multistage_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.pdf}
+		\includegraphics[height = 0.7\textwidth, width = 1\textwidth]{/home/gabriel/Documents/End-of-study-Project/Quality_Evaluation/Russell_Multistage_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.pdf}
 		\caption{Russell Elliptic Filter}
 		
 	\end{subfigure}
@@ -965,7 +969,7 @@ If we apply the same procedure to the method involving the three Schuessler filt
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[scale=0.22]{/Users/gabrielsuc/Documents/Bang_Olufsen/End-of-study-Project/Quality_Evaluation/Russell_Schuessler_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.pdf}
+	\includegraphics[scale=0.22]{/home/gabriel/Documents/End-of-study-Project/Quality_Evaluation/Russell_Schuessler_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.pdf}
 	\captionsetup{width=0.98\linewidth}
 	\caption{Sweep Frequency Response Analysys of the Schuessler Filters Combination}\label{Figure 3.25}
 \end{figure}
@@ -983,7 +987,7 @@ One major investigation completed was the way to design the filters in a multist
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[scale=0.2]{/Users/gabrielsuc/Documents/Bang_Olufsen/End-of-study-Project/Smarc/smarc/output_smarc_48k_chan1_100dB_snr.pdf}
+	\includegraphics[scale=0.2]{/home/gabriel/Documents/End-of-study-Project/Smarc/smarc/output_smarc_48k_chan1_100dB_snr.pdf}
 	\caption{Quality Evaluation of The Smarc Project}\label{Figure 3.26}
 \end{figure}
 
@@ -1043,7 +1047,7 @@ For the specifications given in the above table, the output takes the following 
 
 \begin{figure}[ht!]
 	\centering
-	\includegraphics[scale=0.22]{/Users/gabrielsuc/Documents/Bang_Olufsen/End-of-study-Project/Smarc/Quality_Evaluation/PM_Multistage_Polyphase_Smarc_140_0.1_0.85_160_147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.pdf}
+	\includegraphics[scale=0.22]{/home/gabriel/Documents/End-of-study-Project/Smarc/Quality_Evaluation/PM_Multistage_Polyphase_Smarc_140_0.1_0.85_160_147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.pdf}
 	\captionsetup{width=0.95\linewidth}
 	\caption{Sweep Frequency Response Analysys of the Smarc Method}\label{Figure 3.28}
 \end{figure}

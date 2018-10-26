@@ -28,7 +28,7 @@ clear
 %Input frequency
 Fsin = 44.1e3; 
 %Output frequency
-Fsout =  48e3; %2*Fsin; %
+Fsout =  48e3; %
 
 % Resampling Factors L/M
 [L,M] = getSRFactors(Fsin,Fsout); % Fsout = (L/M)*Fsin
@@ -371,53 +371,59 @@ clc
 
 [bestPerm,filter_choice,multistage_method] = multi_stage(L,M,Fsin,Fsout,Fp,Rp,Rs); 
 
-%buffer size
-len_in = 7055;%floor(length(cosine_sweeps(1).sweep(:,1))/1000);%
-% len_out = vpa(len_in*(L/M));
+% %buffer size
+% len_in = 7055;%floor(length(cosine_sweeps(1).sweep(:,1))/1000);%
+% % len_out = vpa(len_in*(L/M));
+% % 
+% % if floor(len_out)~=len_out
+% %     error('len_out is not an integer');
+
+% % end
 % 
-% if floor(len_out)~=len_out
-%     error('len_out is not an integer');
-% end
-
-%buff_out = zeros(ceil(length(cosine_sweeps(1).sweep(:,1))*(L/M))+2,2); %+2 is here to just match the size, this is not an automated process
-
+% %buff_out = zeros(ceil(length(cosine_sweeps(1).sweep(:,1))*(L/M))+2,2); %+2 is here to just match the size, this is not an automated process
+% 
 for i = 1:length(cosine_sweeps)
-    k = 1;
-    
-    %Buffer processing
-    %for k = 1:len_in:(length(cosine_sweeps(i).sweep(:,1))-len_in)  
-    while(length(cosine_sweeps(i).sweep(:,1))-k >= len_in)
-                    
-        signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep(k:(k+len_in),:),bestPerm,manual);
-
-<<<<<<< HEAD
-        signal = signal/max(abs(signal(:))); 
-        
-        if k == 1 
-                buff_out(1:length(signal),:) = signal;
-        else
-            buff_out(round(k*(L/M)):(round(k*(L/M))+length(signal)-1),:) = signal;
-        end
-        
-        k = k + len_in;
-    end
-    
-    signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep((k+1):end,:),bestPerm,manual);
-=======
+%     k = 1;
+%     
+%     %Buffer processing
+%     %for k = 1:len_in:(length(cosine_sweeps(i).sweep(:,1))-len_in)  
+%     while(length(cosine_sweeps(i).sweep(:,1))-k >= len_in)
+%                     
+%         signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep(k:(k+len_in),:),bestPerm,manual);
+% 
+% <<<<<<< HEAD
+%         signal = signal/max(abs(signal(:))); 
+%         
+%         if k == 1 
+%                 buff_out(1:length(signal),:) = signal;
+%         else
+%             buff_out(round(k*(L/M)):(round(k*(L/M))+length(signal)-1),:) = signal;
+%         end
+%         
+%         k = k + len_in;
+%     end
+%     
+%     signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep((k+1):end,:),bestPerm,manual);
+% =======
 signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep,bestPerm,filter_choice,multistage_method);
->>>>>>> e8e174f858408898a8369b2ad98a9087d8882531
 
-    signal = signal/max(abs(signal(:))); 
+
+signal = signal/max(abs(signal(:))); 
     
-    buff_out((end-length(signal(1:(end-1),:))+1):end,:) = signal(1:(end-1),:);
-        
+%     buff_out((end-length(signal(1:(end-1),:))+1):end,:) = signal(1:(end-1),:);
+
+disp('-------------------------- Overall Delay --------------------------')
+disp('Overall delay between input and the output signal, for both channel is: ');
+disp(num2str(finddelay(cosine_sweeps(i).sweep,signal)));
+disp('-------------------------------------------------------------------')
+
 
 %snr(signal(:,1), Fsin)
 
 %Writting the resulting signal as an audio file
 audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
-    buff_out, floor(cosine_sweeps(i).fs*(L/M)), 'BitsperSample', cosine_sweeps(i).bit_depth)
+    signal, floor(cosine_sweeps(i).fs*(L/M)), 'BitsperSample', cosine_sweeps(i).bit_depth)
 
 
 

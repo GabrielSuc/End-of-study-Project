@@ -46,11 +46,7 @@ headsepline, % Uncomment to get a line under the header
 \usepackage{mathpazo} % Use the Palatino font by default
 
 
-\usepackage[
-backend =bibtex,
-natbib=true,
-style=numeric,
-sorting=none]{biblatex}
+\usepackage[backend =bibtex,natbib=true,style=numeric,sorting=none]{biblatex}
 
 
 %\usepackage[sorting = none, backend=bibtex]{biblatex} % Use the bibtex backend with the authoryear citation style (which resembles APA)
@@ -114,7 +110,7 @@ sorting=none]{biblatex}
 \tikzset{rounded corners=0}
 \usetikzlibrary{decorations.pathreplacing}
 
-\usepackage{slashbox}
+\usepackage{diagbox}
 
 %footnote
 \usepackage[bottom]{footmisc}
@@ -312,7 +308,7 @@ $\textrm{April 1, 2018 - September 30, 2018}$
 \begin{acknowledgements}
 \addchaptertocentry{\acknowledgementname} % Add the acknowledgements to the table of contents
 
-I would like to thank warmly Dr. Pablo Martínez-Nuevo and Dr. Sven Ewan Shepstone for giving him the opportunity to undertake this project within Bang \& Olufsen. I would also like to thank them for their help, advice and support throughout the project as well as Prof. Matthieu Guerquin-Kern.
+I would like to thank warmly Dr. Pablo Martínez-Nuevo and Dr. Sven Ewan Shepstone for giving me the opportunity to undertake this project at Bang \& Olufsen. I would also like to thank them for their help, advice and support throughout the project as well as Dr. Matthieu Guerquin-Kern.
 
 Moreover, the help of Mr. Henrik Lund Jensen and Dr. Geoff Martin was precious and is truly appreciated.
 
@@ -425,10 +421,7 @@ $\boldsymbol{\si{dB}}$ \hfill Decibel
 %----------------------------------------------------------------------------------------
 %	BIBLIOGRAPHY
 %----------------------------------------------------------------------------------------
-\printbibliography[
-heading=bibintoc, 
-title={References}
-]
+\printbibliography[heading=bibintoc, title={References}]
 
 
 

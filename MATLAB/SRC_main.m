@@ -28,7 +28,7 @@ clear
 %Input frequency
 Fsin = 44.1e3; 
 %Output frequency
-Fsout =  48e3; %2*Fsin; %
+Fsout =  48e3; %
 
 % Resampling Factors L/M
 [L,M] = getSRFactors(Fsin,Fsout); % Fsout = (L/M)*Fsin
@@ -377,11 +377,12 @@ clc
 % % 
 % % if floor(len_out)~=len_out
 % %     error('len_out is not an integer');
+
 % % end
 % 
 % %buff_out = zeros(ceil(length(cosine_sweeps(1).sweep(:,1))*(L/M))+2,2); %+2 is here to just match the size, this is not an automated process
 % 
-% for i = 1:length(cosine_sweeps)
+for i = 1:length(cosine_sweeps)
 %     k = 1;
 %     
 %     %Buffer processing
@@ -404,23 +405,32 @@ clc
 %     
 %     signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep((k+1):end,:),bestPerm,manual);
 % =======
-signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep,bestPerm,filter_choice,multistage_method);
+[signal, Fint_max] = multistage(Fsin,Fp,Rp,Rs,cosine_sweeps(i).sweep,bestPerm,filter_choice,multistage_method);
 
 
 signal = signal/max(abs(signal(:))); 
     
 %     buff_out((end-length(signal(1:(end-1),:))+1):end,:) = signal(1:(end-1),:);
-        
+
+disp('-------------------------- Overall Delay --------------------------')
+disp('Overall delay between input and the output signal, for both channel, is: ');
+disp(num2str(finddelay(cosine_sweeps(i).sweep,signal)));
+disp('-------------------------------------------------------------------')
+
+
+disp('------------------------ Harware Complexity -----------------------')
+disp(['The maximum intermediary frequency is: ', num2str(Fint_max), ' Hz']);
+disp('-------------------------------------------------------------------')
 
 %snr(signal(:,1), Fsin)
 
 %Writting the resulting signal as an audio file
 audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
-    buff_out, floor(cosine_sweeps(i).fs*(L/M)), 'BitsperSample', cosine_sweeps(i).bit_depth)
+    signal, floor(cosine_sweeps(i).fs*(L/M)), 'BitsperSample', cosine_sweeps(i).bit_depth)
 
 
 
-% end
+end
 
  

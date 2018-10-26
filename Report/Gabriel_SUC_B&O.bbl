@@ -1,5 +1,5 @@
 % $ biblatex auxiliary file $
-% $ biblatex bbl format version 2.8 $
+% $ biblatex version 2.6 $
 % Do not modify the above lines!
 %
 % This is an auxiliary file used by the 'biblatex' package.
@@ -16,527 +16,459 @@
   {}
 \endgroup
 
-\sortlist[entry]{none/global/}
-  \entry{AmpSamp}{article}{}
-    \name{author}{1}{}{%
-      {{hash=P}{%
-         family={{P. Martínez-Nuevo, H. Lai, and A. V. Oppenheim}},
-         familyi={P\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{P1}
-    \strng{fullhash}{P1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Amplitude sampling}
-    \field{journaltitle}{Allerton Conference on Communication, Control and
+\entry{AmpSamp}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {{P. Martínez-Nuevo, H. Lai, and A. V. Oppenheim}}{P.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{P1}
+  \strng{fullhash}{P1}
+  \field{title}{Amplitude sampling}
+  \field{journaltitle}{Allerton Conference on Communication, Control and
   Computing}
-    \field{year}{2016}
-  \endentry
+  \field{year}{2016}
+\endentry
 
-  \entry{Proakis}{book}{}
-    \name{author}{2}{}{%
-      {{hash=PJG}{%
-         family={Proakis},
-         familyi={P\bibinitperiod},
-         given={J.\bibnamedelima G.},
-         giveni={J\bibinitperiod\bibinitdelim G\bibinitperiod},
-      }}%
-      {{hash=MDG}{%
-         family={Manolakis},
-         familyi={M\bibinitperiod},
-         given={D.\bibnamedelima G.},
-         giveni={D\bibinitperiod\bibinitdelim G\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Prentice Hall}%
-    }
-    \strng{namehash}{PJGMDG1}
-    \strng{fullhash}{PJGMDG1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{edition}{Fourth Edition}
-    \field{title}{Digital Signal Processing: Principles, Algorithmes and
+\entry{Proakis}{book}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Proakis}{P.}%
+     {J.~G.}{J.~G.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Manolakis}{M.}%
+     {D.~G.}{D.~G.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Prentice Hall}%
+  }
+  \strng{namehash}{PJGMDG1}
+  \strng{fullhash}{PJGMDG1}
+  \field{edition}{Fourth Edition}
+  \field{title}{Digital Signal Processing: Principles, Algorithmes and
   Applications}
-    \field{year}{2009}
-  \endentry
+  \field{year}{2009}
+\endentry
 
-  \entry{Oppenheim}{book}{}
-    \name{author}{2}{}{%
-      {{hash=OAV}{%
-         family={Oppenheim},
-         familyi={O\bibinitperiod},
-         given={A.\bibnamedelima V.},
-         giveni={A\bibinitperiod\bibinitdelim V\bibinitperiod},
-      }}%
-      {{hash=SRW}{%
-         family={Schafer},
-         familyi={S\bibinitperiod},
-         given={R.\bibnamedelima W.},
-         giveni={R\bibinitperiod\bibinitdelim W\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Pearson New International Edition}%
-    }
-    \strng{namehash}{OAVSRW1}
-    \strng{fullhash}{OAVSRW1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{edition}{Third Edition}
-    \field{title}{Discrete-Time Signal Processing}
-    \field{year}{2013}
-  \endentry
+\entry{Oppenheim}{book}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Oppenheim}{O.}%
+     {A.~V.}{A.~V.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Schafer}{S.}%
+     {R.~W.}{R.~W.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Pearson New International Edition}%
+  }
+  \strng{namehash}{OAVSRW1}
+  \strng{fullhash}{OAVSRW1}
+  \field{edition}{Third Edition}
+  \field{title}{Discrete-Time Signal Processing}
+  \field{year}{2013}
+\endentry
 
-  \entry{async1}{article}{}
-    \name{author}{2}{}{%
-      {{hash=BP}{%
-         family={Beckmann},
-         familyi={B\bibinitperiod},
-         given={P.},
-         giveni={P\bibinitperiod},
-      }}%
-      {{hash=ST}{%
-         family={Stilson},
-         familyi={S\bibinitperiod},
-         given={T.},
-         giveni={T\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{BPST1}
-    \strng{fullhash}{BPST1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{An Efficient Asynchronous Sampling-Rate Conversion Algorithm
+\entry{async1}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Beckmann}{B.}%
+     {P.}{P.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Stilson}{S.}%
+     {T.}{T.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{BPST1}
+  \strng{fullhash}{BPST1}
+  \field{title}{An Efficient Asynchronous Sampling-Rate Conversion Algorithm
   for Multi-Channel Audio Applications}
-    \field{journaltitle}{Audio Engineering Society, 119th Convention}
-    \field{year}{Oct. 2005}
-  \endentry
+  \field{journaltitle}{Audio Engineering Society, 119th Convention}
+  \field{year}{Oct. 2005}
+\endentry
 
-  \entry{async2}{article}{}
-    \name{author}{1}{}{%
-      {{hash=IJOS}{%
-         family={III},
-         familyi={I\bibinitperiod},
-         given={J.\bibnamedelima O.\bibnamedelima Smith},
-         giveni={J\bibinitperiod\bibinitdelim O\bibinitperiod\bibinitdelim
-  S\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{IJOS1}
-    \strng{fullhash}{IJOS1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{The Digital Audio Resampliong Home Page}
-    \verb{url}
-    \verb https://ccrma.stanford.edu/~jos/resample/
-    \endverb
-    \field{journaltitle}{Center for Computer Research in Music and Acoustics
+\entry{async2}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {III}{I.}%
+     {J.~O.~Smith}{J.~O.~S.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{IJOS1}
+  \strng{fullhash}{IJOS1}
+  \field{title}{The Digital Audio Resampliong Home Page}
+  \verb{url}
+  \verb https://ccrma.stanford.edu/~jos/resample/
+  \endverb
+  \field{journaltitle}{Center for Computer Research in Music and Acoustics
   (CCRMA), Stanford University}
-    \field{year}{2018}
-  \endentry
+  \field{year}{2018}
+\endentry
 
-  \entry{async3}{article}{}
-    \name{author}{1}{}{%
-      {{hash=MNP}{%
-         family={Martínez-Nuevo},
-         familyi={M\bibinitperiod-N\bibinitperiod},
-         given={P.},
-         giveni={P\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{MNP1}
-    \strng{fullhash}{MNP1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Nonuniform Sampling Rate Conversion: An Efficient Approach}
-    \field{journaltitle}{In preparation for IEEE Transactions on Signal
+\entry{async3}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Martínez-Nuevo}{M.-N.}%
+     {P.}{P.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{MNP1}
+  \strng{fullhash}{MNP1}
+  \field{title}{Nonuniform Sampling Rate Conversion: An Efficient Approach}
+  \field{journaltitle}{In preparation for IEEE Transactions on Signal
   Processing}
-    \field{year}{2018}
-  \endentry
+  \field{year}{2018}
+\endentry
 
-  \entry{fract1}{article}{}
-    \name{author}{2}{}{%
-      {{hash=JSPJGCBKK}{%
-         family={J.-S.\bibnamedelima Park},
-         familyi={J\bibinitperiod-S\bibinitperiod\bibinitdelim
-  P\bibinitperiod},
-         suffix={B.-K.\bibnamedelima Kim},
-         suffixi={B\bibinitperiod-K\bibinitperiod\bibinitdelim
-  K\bibinitperiod},
-         given={J.-G.\bibnamedelima Chung},
-         giveni={J\bibinitperiod-G\bibinitperiod\bibinitdelim C\bibinitperiod},
-      }}%
-      {{hash=PKK}{%
-         family={Parhi},
-         familyi={P\bibinitperiod},
-         given={K.\bibnamedelima K.},
-         giveni={K\bibinitperiod\bibinitdelim K\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{JSPBKKJGCPKK1}
-    \strng{fullhash}{JSPBKKJGCPKK1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Design of a Sample-Rate Converter From CD to DAT Using
+\entry{fract1}{article}{}
+  \name{author}{2}{}{%
+    {{}%
+     {J.-S.~Park}{J.-S.~P.}%
+     {J.-G.~Chung}{J.-G.~C.}%
+     {}{}%
+     {B.-K.~Kim}{B.-K.~K.}}%
+    {{}%
+     {Parhi}{P.}%
+     {K.~K.}{K.~K.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{JSPBKKJGCPKK1}
+  \strng{fullhash}{JSPBKKJGCPKK1}
+  \field{title}{Design of a Sample-Rate Converter From CD to DAT Using
   Fractional Delay Allpass Filter}
-    \field{journaltitle}{IEEE Transactions on Circuits and Systems-II: Express
+  \field{journaltitle}{IEEE Transactions on Circuits and Systems-II: Express
   Briefs, Vol. 54, No. 1}
-    \field{year}{January 2007}
-  \endentry
+  \field{year}{January 2007}
+\endentry
 
-  \entry{fract2}{article}{}
-    \name{author}{1}{}{%
-      {{hash=BM}{%
-         family={Blok},
-         familyi={B\bibinitperiod},
-         given={M.},
-         giveni={M\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{BM1}
-    \strng{fullhash}{BM1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{On Sample Rate Conversion Based on Variable Fractional Delay
+\entry{fract2}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Blok}{B.}%
+     {M.}{M.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{BM1}
+  \strng{fullhash}{BM1}
+  \field{title}{On Sample Rate Conversion Based on Variable Fractional Delay
   Filters}
-    \field{journaltitle}{International Journal of Computer Science and
+  \field{journaltitle}{International Journal of Computer Science and
   Applications, Vol. 10, No. 1, pp. 98 - 116}
-    \field{year}{2013}
-  \endentry
+  \field{year}{2013}
+\endentry
 
-  \entry{filtbanks1}{book}{}
-    \name{author}{2}{}{%
-      {{hash=CRE}{%
-         family={Crochiere},
-         familyi={C\bibinitperiod},
-         given={R.\bibnamedelima E.},
-         giveni={R\bibinitperiod\bibinitdelim E\bibinitperiod},
-      }}%
-      {{hash=RLR}{%
-         family={Rabiner},
-         familyi={R\bibinitperiod},
-         given={L.\bibnamedelima R.},
-         giveni={L\bibinitperiod\bibinitdelim R\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Prentice-Hall Englewood Cliffs, NJ}%
-    }
-    \strng{namehash}{CRERLR1}
-    \strng{fullhash}{CRERLR1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Multirate Digital Signal Processing}
-    \field{volume}{10}
-    \field{year}{1983}
-  \endentry
+\entry{filtbanks1}{book}{}
+  \name{author}{2}{}{%
+    {{}%
+     {Crochiere}{C.}%
+     {R.~E.}{R.~E.}%
+     {}{}%
+     {}{}}%
+    {{}%
+     {Rabiner}{R.}%
+     {L.~R.}{L.~R.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Prentice-Hall Englewood Cliffs, NJ}%
+  }
+  \strng{namehash}{CRERLR1}
+  \strng{fullhash}{CRERLR1}
+  \field{title}{Multirate Digital Signal Processing}
+  \field{volume}{10}
+  \field{year}{1983}
+\endentry
 
-  \entry{filtbanks2}{book}{}
-    \name{author}{1}{}{%
-      {{hash=VPP}{%
-         family={Vaidyanathan},
-         familyi={V\bibinitperiod},
-         given={P.\bibnamedelima P.},
-         giveni={P\bibinitperiod\bibinitdelim P\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Pearson Education, India}%
-    }
-    \strng{namehash}{VPP1}
-    \strng{fullhash}{VPP1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Multirate Systems and filter banks}
-    \field{year}{1993}
-  \endentry
+\entry{filtbanks2}{book}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Vaidyanathan}{V.}%
+     {P.~P.}{P.~P.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Pearson Education, India}%
+  }
+  \strng{namehash}{VPP1}
+  \strng{fullhash}{VPP1}
+  \field{title}{Multirate Systems and filter banks}
+  \field{year}{1993}
+\endentry
 
-  \entry{toole}{book}{}
-    \name{author}{1}{}{%
-      {{hash=TFE}{%
-         family={Toole},
-         familyi={T\bibinitperiod},
-         given={F.\bibnamedelima E.},
-         giveni={F\bibinitperiod\bibinitdelim E\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {109th AES Conv., Los Angeles}%
-    }
-    \strng{namehash}{TFE1}
-    \strng{fullhash}{TFE1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{The Acoustics and Psychoacoustics of Loudspeakers and Rooms -
+\entry{toole}{book}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Toole}{T.}%
+     {F.~E.}{F.~E.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {109th AES Conv., Los Angeles}%
+  }
+  \strng{namehash}{TFE1}
+  \strng{fullhash}{TFE1}
+  \field{title}{The Acoustics and Psychoacoustics of Loudspeakers and Rooms -
   The Stereo Past and the Multichannel Future}
-    \field{year}{Sept. 2000}
-  \endentry
+  \field{year}{Sept. 2000}
+\endentry
 
-  \entry{hartmann}{book}{}
-    \name{author}{1}{}{%
-      {{hash=HWM}{%
-         family={Hartmann},
-         familyi={H\bibinitperiod},
-         given={W.\bibnamedelima M.},
-         giveni={W\bibinitperiod\bibinitdelim M\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Springer, N. Y}%
-    }
-    \strng{namehash}{HWM1}
-    \strng{fullhash}{HWM1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Signals, Sound, and Sensation}
-  \endentry
+\entry{hartmann}{book}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Hartmann}{H.}%
+     {W.~M.}{W.~M.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Springer, N. Y}%
+  }
+  \strng{namehash}{HWM1}
+  \strng{fullhash}{HWM1}
+  \field{title}{Signals, Sound, and Sensation}
+\endentry
 
-  \entry{lipshitz}{article}{}
-    \name{author}{1}{}{%
-      {{hash=S}{%
-         family={{S. P. Lipshitz, M. Pocock and J. Vanderkooy }},
-         familyi={S\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Journal of the Audio Engineering Society}%
-    }
-    \strng{namehash}{S1}
-    \strng{fullhash}{S1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{On the Audibility of Midrange Phase Distortion in Audio
+\entry{lipshitz}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {{S. P. Lipshitz, M. Pocock and J. Vanderkooy }}{S.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Journal of the Audio Engineering Society}%
+  }
+  \strng{namehash}{S1}
+  \strng{fullhash}{S1}
+  \field{title}{On the Audibility of Midrange Phase Distortion in Audio
   Systems}
-    \field{volume}{Vol. 10}
-    \field{year}{Sept. 1982}
-  \endentry
+  \field{volume}{Vol. 10}
+  \field{year}{Sept. 1982}
+\endentry
 
-  \entry{comparison_filters}{unpublished}{}
-    \name{author}{1}{}{%
-      {{hash=MNP}{%
-         family={Martínez-Nuevo},
-         familyi={M\bibinitperiod-N\bibinitperiod},
-         given={P.},
-         giveni={P\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{2}{%
-      {Massachusetts Institute of Technology, Department of Electrical
+\entry{comparison_filters}{unpublished}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Martínez-Nuevo}{M.-N.}%
+     {P.}{P.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{2}{%
+    {Massachusetts Institute of Technology, Department of Electrical
   Engineering}%
-      {Computer Science}%
-    }
-    \strng{namehash}{MNP1}
-    \strng{fullhash}{MNP1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Filter Design for a Rate-Conversion System}
-  \endentry
+    {Computer Science}%
+  }
+  \strng{namehash}{MNP1}
+  \strng{fullhash}{MNP1}
+  \field{title}{Filter Design for a Rate-Conversion System}
+\endentry
 
-  \entry{matlab}{book}{}
-    \name{author}{1}{}{%
-      {{hash=CTM}{%
-         family={Co.},
-         familyi={C\bibinitperiod},
-         given={The\bibnamedelima Mathworks},
-         giveni={T\bibinitperiod\bibinitdelim M\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Natick,MA}%
-    }
-    \strng{namehash}{CTM1}
-    \strng{fullhash}{CTM1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Matlab and Simulink}
-  \endentry
+\entry{matlab}{book}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Co.}{C.}%
+     {The~Mathworks}{T.~M.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Natick,MA}%
+  }
+  \strng{namehash}{CTM1}
+  \strng{fullhash}{CTM1}
+  \field{title}{Matlab and Simulink}
+\endentry
 
-  \entry{oppenheim2}{book}{}
-    \name{author}{1}{}{%
-      {{hash=J}{%
-         family={{J. S. Lim, A. V. Oppenheim}},
-         familyi={J\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Prentice Hall}%
-    }
-    \strng{namehash}{J2}
-    \strng{fullhash}{J2}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Advanced topics in signal processing}
-    \field{year}{1988}
-  \endentry
+\entry{oppenheim2}{book}{}
+  \name{author}{1}{}{%
+    {{}%
+     {{J. S. Lim, A. V. Oppenheim}}{J.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Prentice Hall}%
+  }
+  \strng{namehash}{J2}
+  \strng{fullhash}{J2}
+  \field{title}{Advanced topics in signal processing}
+  \field{year}{1988}
+\endentry
 
-  \entry{vaidyanathan}{book}{}
-    \name{author}{1}{}{%
-      {{hash=VPP}{%
-         family={Vaidyanathan},
-         familyi={V\bibinitperiod},
-         given={P.\bibnamedelima P.},
-         giveni={P\bibinitperiod\bibinitdelim P\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Prentice Hall}%
-    }
-    \strng{namehash}{VPP1}
-    \strng{fullhash}{VPP1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Multirate Systems and Filter Banks}
-    \field{year}{1993}
-  \endentry
+\entry{vaidyanathan}{book}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Vaidyanathan}{V.}%
+     {P.~P.}{P.~P.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Prentice Hall}%
+  }
+  \strng{namehash}{VPP1}
+  \strng{fullhash}{VPP1}
+  \field{title}{Multirate Systems and Filter Banks}
+  \field{year}{1993}
+\endentry
 
-  \entry{russell}{article}{}
-    \name{author}{1}{}{%
-      {{hash=RAI}{%
-         family={Russell},
-         familyi={R\bibinitperiod},
-         given={A.\bibnamedelima I.},
-         giveni={A\bibinitperiod\bibinitdelim I\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {IEEE Signal Processing Letters}%
-    }
-    \strng{namehash}{RAI1}
-    \strng{fullhash}{RAI1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{number}{No. 1}
-    \field{title}{Efficient Rational Sampling Rate Alteration Using IIR
-  Filters}
-    \field{year}{Jan. 2000}
-  \endentry
+\entry{russell}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Russell}{R.}%
+     {A.~I.}{A.~I.}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {IEEE Signal Processing Letters}%
+  }
+  \strng{namehash}{RAI1}
+  \strng{fullhash}{RAI1}
+  \field{number}{No. 1}
+  \field{title}{Efficient Rational Sampling Rate Alteration Using IIR Filters}
+  \field{year}{Jan. 2000}
+\endentry
 
-  \entry{turek}{thesis}{}
-    \name{author}{1}{}{%
-      {{hash=TDI}{%
-         family={Turek},
-         familyi={T\bibinitperiod},
-         given={D.\bibnamedelima I.},
-         giveni={D\bibinitperiod\bibinitdelim I\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{TDI1}
-    \strng{fullhash}{TDI1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Design of Efficient Digital Interpolation Filters for Integer
+\entry{turek}{thesis}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Turek}{T.}%
+     {D.~I.}{D.~I.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{TDI1}
+  \strng{fullhash}{TDI1}
+  \field{title}{Design of Efficient Digital Interpolation Filters for Integer
   Upsampling}
-    \list{institution}{1}{%
-      {Massachusetts Institute of Technology}%
-    }
-    \field{type}{mathesis}
-    \field{year}{Jun. 2004}
-  \endentry
+  \list{institution}{1}{%
+    {Massachusetts Institute of Technology}%
+  }
+  \field{type}{mathesis}
+  \field{year}{Jun. 2004}
+\endentry
 
-  \entry{crochiere}{article}{}
-    \name{author}{1}{}{%
-      {{hash=R}{%
-         family={{R. E. Crochiere and L. R. Rabiner}},
-         familyi={R\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{2}{%
-      {IEEE Transactions on Acoustics, Speech,}%
-      {Signal Processing}%
-    }
-    \strng{namehash}{R1}
-    \strng{fullhash}{R1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{number}{No. 5}
-    \field{title}{Optimum FIR Digital Filter Implementations for Decimation,
+\entry{crochiere}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {{R. E. Crochiere and L. R. Rabiner}}{R.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{2}{%
+    {IEEE Transactions on Acoustics, Speech,}%
+    {Signal Processing}%
+  }
+  \strng{namehash}{R1}
+  \strng{fullhash}{R1}
+  \field{number}{No. 5}
+  \field{title}{Optimum FIR Digital Filter Implementations for Decimation,
   Interpolation, and Narrow-Band Filtering}
-    \field{year}{Oct. 1975}
-  \endentry
+  \field{year}{Oct. 1975}
+\endentry
 
-  \entry{paristech}{report}{}
-    \name{author}{1}{}{%
-      {{hash=PJ}{%
-         family={Prado},
-         familyi={P\bibinitperiod},
-         given={Jacques},
-         giveni={J\bibinitperiod},
-      }}%
-    }
-    \strng{namehash}{PJ1}
-    \strng{fullhash}{PJ1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{title}{Conversion de Fréquence}
-    \list{institution}{1}{%
-      {Télécom ParisTech}%
-    }
-    \field{type}{techreport}
-    \field{year}{Sept. 2009}
-  \endentry
+\entry{paristech}{report}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Prado}{P.}%
+     {Jacques}{J.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{PJ1}
+  \strng{fullhash}{PJ1}
+  \field{title}{Conversion de Fréquence}
+  \list{institution}{1}{%
+    {Télécom ParisTech}%
+  }
+  \field{type}{techreport}
+  \field{year}{Sept. 2009}
+\endentry
 
-  \entry{ripple1}{article}{}
-    \name{author}{1}{}{%
-      {{hash=N}{%
-         family={{N. Amir, M. Milhim and L. Radai}},
-         familyi={N\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{3}{%
-      {Journal of Basic}%
-      {Clinical Physiology}%
-      {Pharmacology}%
-    }
-    \strng{namehash}{N1}
-    \strng{fullhash}{N1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{issue}{Issue 2-3}
-    \field{title}{Thresholds for Perception of Ripple in the Passband of a
+\entry{ripple1}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {{N. Amir, M. Milhim and L. Radai}}{N.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{3}{%
+    {Journal of Basic}%
+    {Clinical Physiology}%
+    {Pharmacology}%
+  }
+  \strng{namehash}{N1}
+  \strng{fullhash}{N1}
+  \field{issue}{Issue 2-3}
+  \field{title}{Thresholds for Perception of Ripple in the Passband of a
   Low-Pass Filter}
-    \field{year}{2011}
-  \endentry
+  \field{year}{2011}
+\endentry
 
-  \entry{ripple2}{article}{}
-    \name{author}{1}{}{%
-      {{hash=A}{%
-         family={{A. Ya. Supin, V.V. Popov, O. N. Milekhina, and M. B.
-  Tarakanov}},
-         familyi={A\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {The Journal of the Acoustical Society of America}%
-    }
-    \strng{namehash}{A1}
-    \strng{fullhash}{A1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{issue}{Issue 5}
-    \field{title}{Ripple Depth and Density Resolution of Rippled Noise}
-    \field{year}{1999}
-  \endentry
+\entry{ripple2}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {{A. Ya. Supin, V.V. Popov, O. N. Milekhina, and M. B. Tarakanov}}{A.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {The Journal of the Acoustical Society of America}%
+  }
+  \strng{namehash}{A1}
+  \strng{fullhash}{A1}
+  \field{issue}{Issue 5}
+  \field{title}{Ripple Depth and Density Resolution of Rippled Noise}
+  \field{year}{1999}
+\endentry
 
-  \entry{ffa}{article}{}
-    \name{author}{1}{}{%
-      {{hash=J}{%
-         family={{J.-G. Chung and K. K. Parhi}},
-         familyi={J\bibinitperiod},
-      }}%
-    }
-    \list{publisher}{1}{%
-      {Journal on Applied Signal Processing}%
-    }
-    \strng{namehash}{J1}
-    \strng{fullhash}{J1}
-    \field{labelnamesource}{author}
-    \field{labeltitlesource}{title}
-    \field{pages}{pp. 944\bibrangedash 953}
-    \field{title}{Frequency Spectrum Based Low-Area Low-Power Parallel FIR
-  Filter Design}
-    \field{year}{2002}
-  \endentry
-\endsortlist
+\entry{ffa}{article}{}
+  \name{author}{1}{}{%
+    {{}%
+     {{J.-G. Chung and K. K. Parhi}}{J.}%
+     {}{}%
+     {}{}%
+     {}{}}%
+  }
+  \list{publisher}{1}{%
+    {Journal on Applied Signal Processing}%
+  }
+  \strng{namehash}{J1}
+  \strng{fullhash}{J1}
+  \field{pages}{pp. 944\bibrangedash 953}
+  \field{title}{Frequency Spectrum Based Low-Area Low-Power Parallel FIR Filter
+  Design}
+  \field{year}{2002}
+\endentry
+
+\lossort
+\endlossort
+
 \endinput

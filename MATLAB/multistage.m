@@ -1,9 +1,10 @@
-function output = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,input_signal,bestPerm,filter_choice, multistage_method)
+function [output, Fint_max] = multistage(Fsin,Fp,Rp,Rs,input_signal,bestPerm,filter_choice, multistage_method)
 
 %Get the list of factors L & M for the different stages
 FL = bestPerm(1:length(bestPerm)/2);
 FM = bestPerm(length(bestPerm)/2 + 1:end);
 
+Fmax = zeros(1,length(bestPerm));
 
 %Defining the differents band-edge frequencies
 
@@ -37,31 +38,31 @@ if filter_choice == 1
     dev = [(Delta1 - 1)/(length(FL)*(Delta1 + 1)) Delta2]; 
     
     % Ask if we want to use polyphase
-    ispolyphase = 1; %input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
+    ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
     
      
     for i = 1:length(FL)
 
             % Frequency bands
-            Fmax = Fs*FL(1,i);
+            Fmax(1,i) = Fs*FL(1,i);
 
             if (multistage_method == 1)
                 
-                Fcutoff = (Fmax/2) * min(1/FL(1,i),1/FM(1,i));
+                Fcutoff = (Fmax(1,i)/2) * min(1/FL(1,i),1/FM(1,i));
 
                 f = [Fpass Fcutoff];
             
-                [Order,fo,ao,w] = firpmord(f,A,dev,Fmax); 
+                [Order,fo,ao,w] = firpmord(f,A,dev,Fmax(1,i)); 
                 
                     
             else
                 
-                pass_bands = Fpass/(Fmax/2);
+                pass_bands = Fpass/(Fmax(1,i)/2);
                 
                 if FL(1,i) > FM(1,i)
-                    stop_bands = (Fs - Fstop)/(Fmax/2);
+                    stop_bands = (Fs - Fstop)/(Fmax(1,i)/2);
                 else
-                    stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax/2);
+                    stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax(1,i)/2);
                 end
 
 
@@ -90,9 +91,15 @@ if filter_choice == 1
                     b = (FL(1,i)*a - 1)/FM(1,i);
                 end   
                 
+                disp('----------------------- Delay Coefficients ------------------------')
+                X = ['a = ', num2str(a), ' and b = ', num2str(b)];
+                disp(X)
+                disp('-------------------------------------------------------------------')
+                
                 %Compensate gain
-                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w ...
-                ),1,FL(1,i),FM(1,i),'2'); %
+                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2'); %
+                
+                
 
                 %Have to filter xin through each branch 
                 sumBranch = 0;
@@ -120,6 +127,8 @@ if filter_choice == 1
                 
 
                 signal = sumBranch;
+                
+                
                 
             else
                 
@@ -175,27 +184,27 @@ elseif filter_choice == 2
 
 %           % Frequency bands
             % Frequency bands
-            Fmax = Fs*FL(1,i);
+            Fmax(1,i) = Fs*FL(1,i);
 
             if (multistage_method == 1)
                 
-                Fcutoff = (Fmax/2) * min(1/FL(1,i),1/FM(1,i));
+                Fcutoff = (Fmax(1,i)/2) * min(1/FL(1,i),1/FM(1,i));
 
             
                 % Getting the order of the filters
-                [Order,Wp] = ellipord(Fpass/(Fmax/2),Fcutoff/(Fmax/2),Rp,Rs);
+                [Order,Wp] = ellipord(Fpass/(Fmax(1,i)/2),Fcutoff/(Fmax(1,i)/2),Rp,Rs);
                 [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
                 [b_ellip,a_ellip] = ellip(Order,Rp,Rs,Wp);
                 
                     
             else
                 
-                pass_bands = Fpass/(Fmax/2);
+                pass_bands = Fpass/(Fmax(1,i)/2);
                 
                 if FL(1,i) > FM(1,i)
-                    stop_bands = (Fs - Fstop)/(Fmax/2);
+                    stop_bands = (Fs - Fstop)/(Fmax(1,i)/2);
                 else
-                    stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax/2);
+                    stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax(1,i)/2);
                 end
 
 
@@ -346,16 +355,16 @@ else
 %----------------------------- First Filter -------------------------------
            
             %Frequency bands
-            Fmax = Fs*FL(1,1);
+            Fmax(1,i) = Fs*FL(1,1);
 
             
             if (multistage_method == 1)
                 
                 Fpassband = Fpass;
-                Fcutoff = (Fmax)/2 * min(1/FL(1,1),1/FM(1,1));
+                Fcutoff = (Fmax(1,i))/2 * min(1/FL(1,1),1/FM(1,1));
             
                 %By Matlab estimation
-                [Order,Wp] = ellipord(Fpassband/(Fmax/2),Fcutoff/(Fmax/2),Rp,Rs);
+                [Order,Wp] = ellipord(Fpassband/(Fmax(1,i)/2),Fcutoff/(Fmax(1,i)/2),Rp,Rs);
 
                 [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
                 %Creating filter
@@ -364,12 +373,12 @@ else
                     
             else
                 
-                pass_bands = Fpass/(Fmax/2);
+                pass_bands = Fpass/(Fmax(1,i)/2);
                 
                 if FL(1,1) > FM(1,1)
-                    stop_bands = (Fs - Fstop)/(Fmax/2);
+                    stop_bands = (Fs - Fstop)/(Fmax(1,i)/2);
                 else
-                    stop_bands = (Fs*(FL(1,1)/FM(1,1)) - Fstop)/(Fmax/2);
+                    stop_bands = (Fs*(FL(1,1)/FM(1,1)) - Fstop)/(Fmax(1,i)/2);
                 end
 
 
@@ -409,26 +418,26 @@ else
         for i = 2:length(FM) %Don't forget that the first filter is an elliptic
             
             %Frequency bands
-            Fmax = Fs*FL(1,i);
+            Fmax(1,i) = Fs*FL(1,i);
             
             if (multistage_method == 1)
                 
                 %Defining the limit frequencies for the design
-                Fcutoff = (Fmax/2) * min(1/FL(1,i),1/FM(1,i));
+                Fcutoff = (Fmax(1,i)/2) * min(1/FL(1,i),1/FM(1,i));
 
                 f = [Fpass Fcutoff];
             
-                [Order,fo,ao,w] = firpmord(f,a,dev,Fmax); 
+                [Order,fo,ao,w] = firpmord(f,a,dev,Fmax(1,i)); 
                 
                     
             else
                 
-                pass_bands = Fpass/(Fmax/2);
+                pass_bands = Fpass/(Fmax(1,i)/2);
                 
                 if FL(1,i) > FM(1,i)
-                    stop_bands = (Fs - Fstop)/(Fmax/2);
+                    stop_bands = (Fs - Fstop)/(Fmax(1,i)/2);
                 else
-                    stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax/2);
+                    stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax(1,i)/2);
                 end
 
 
@@ -488,7 +497,7 @@ end
 
 output = signal;
 
-
+Fint_max = max(Fmax);
 
 
 end
