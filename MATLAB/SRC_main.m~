@@ -28,7 +28,7 @@ clear
 %Input frequency
 Fsin = 44.1e3; 
 %Output frequency
-Fsout =  48e3; %
+Fsout =  48e3; %2*Fsin; %
 
 % Resampling Factors L/M
 [L,M] = getSRFactors(Fsin,Fsout); % Fsout = (L/M)*Fsin
@@ -38,7 +38,7 @@ Fsout =  48e3; %
 %%  Lowpass Filter Specifications
 
 % Minimum passband gain i.e. passband ripple 
-Rp = 0.1; %in dB
+Rp = 1; %in dB
 
 % Maximum stopband gain i.e. stopband attenuation
 Rs = 140; %in dB
@@ -46,7 +46,7 @@ Rs = 140; %in dB
 %Desired Transition Width
 %Represent how close we want the passband frequency to be from the stopband
 %frequency.
-TW = 0.85; %in percent of the stopband freqeuncy;
+TW = 0.95; %in percent of the stopband freqeuncy;
 
 %Cutoff frequency
 %Also defined the stopband frequency i.e. Fstop
@@ -208,7 +208,7 @@ fvtool(Ellip_direct) %Uncomment to see graphs
 
 % Direct-form II SOS 
 
-Ellip_cascaded = dfilt.df2sos(Ellip_direct);
+%Ellip_cascaded = dfilt.df2sos(Ellip_direct);
 % 
 % Ellip_cascaded.persistentmemory = true;
 
@@ -371,51 +371,61 @@ clc
 
 [bestPerm,filter_choice,multistage_method] = multi_stage(L,M,Fsin,Fsout,Fp,Rp,Rs); 
 
-% %buffer size
-% len_in = 7055;%floor(length(cosine_sweeps(1).sweep(:,1))/1000);%
-% % len_out = vpa(len_in*(L/M));
-% % 
-% % if floor(len_out)~=len_out
-% %     error('len_out is not an integer');
+IR = input('Send Impulse Through system? ''Y''/''N'': ');
 
-% % end
-% 
-% %buff_out = zeros(ceil(length(cosine_sweeps(1).sweep(:,1))*(L/M))+2,2); %+2 is here to just match the size, this is not an automated process
-% 
+if isempty(IR)
+    IR = 'N';
+end
+%Creating Impulse
+t = (-1:0.01:1)';
+impulse = t==0;
+
 for i = 1:length(cosine_sweeps)
-%     k = 1;
-%     
-%     %Buffer processing
-%     %for k = 1:len_in:(length(cosine_sweeps(i).sweep(:,1))-len_in)  
-%     while(length(cosine_sweeps(i).sweep(:,1))-k >= len_in)
-%                     
-%         signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep(k:(k+len_in),:),bestPerm,manual);
-% 
-% <<<<<<< HEAD
-%         signal = signal/max(abs(signal(:))); 
-%         
-%         if k == 1 
-%                 buff_out(1:length(signal),:) = signal;
-%         else
-%             buff_out(round(k*(L/M)):(round(k*(L/M))+length(signal)-1),:) = signal;
-%         end
-%         
-%         k = k + len_in;
-%     end
-%     
-%     signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep((k+1):end,:),bestPerm,manual);
-% =======
-signal = multistage(L,M,Fsin,Fsout,Fp,Rp,Rs,cosine_sweeps(i).sweep,bestPerm,filter_choice,multistage_method);
+    
+if IR == 'Y'
+    input = impulse;
+else 
+    input = cosine_sweeps(i).sweep;
+end    
 
+[signal, Fint_max] = multistage(Fsin,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method);
 
 signal = signal/max(abs(signal(:))); 
-    
-%     buff_out((end-length(signal(1:(end-1),:))+1):end,:) = signal(1:(end-1),:);
 
 disp('-------------------------- Overall Delay --------------------------')
-disp('Overall delay between input and the output signal, for both channel is: ');
-disp(num2str(finddelay(cosine_sweeps(i).sweep,signal)));
+disp('Overall delay between input and output signal, for both channel, is: FIX ME');
+%disp(num2str(finddelay(cosine_sweeps(i).sweep,signal)));
 disp('-------------------------------------------------------------------')
+
+
+disp('------------------------ Hardware Complexity -----------------------')
+disp(['The maximum intermediary frequency is: ', num2str(Fint_max), ' Hz']);
+disp('-------------------------------------------------------------------')
+
+end
+%% Plots and Saving
+
+%Input and Output
+%Choose how many samples to plot
+nbr_samples = 10000;
+
+if IR == 'Y'
+    plot(t,impulse)
+    hold on
+    plot(signal)
+    legend(['Input at ', num2str(Fsin)], ['Output at ', num2str(Fsout)])
+    title('Input and Output signals');
+else
+    plot((0:1/Fsin:(nbr_samples-1)/Fsin),cosine_sweeps(i).sweep(1:nbr_samples))
+    hold on
+    %Have to compensate for difference in sample rates (to have same
+    %ending)
+    plot((0/Fsout:1/Fsout:((nbr_samples-1)/Fsout) + (nbr_samples/44100 - nbr_samples/48000))...
+        ,signal(1:(nbr_samples + (nbr_samples/44100 - nbr_samples/48000)*48000)))
+    legend('Input', 'Output')
+    title('Input and Output signals');
+end
+
 
 
 %snr(signal(:,1), Fsin)
@@ -427,6 +437,6 @@ audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)
 
 
 
-end
+
 
  

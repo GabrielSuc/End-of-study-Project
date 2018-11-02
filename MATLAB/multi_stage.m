@@ -737,7 +737,7 @@ disp(X)
 disp('-------------------------------------------------------------------')
 
 bestPerm = permutation(index(i),:);
-multistage_method = multistage_method;
+%multistage_method = multistage_method;
 end
 
 

@@ -99,7 +99,6 @@ if filter_choice == 1
                 %Compensate gain
                 ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2'); %,w
                 
-                
 
                 %Have to filter xin through each branch 
                 sumBranch = 0;
@@ -113,7 +112,7 @@ if filter_choice == 1
                     delayedBy_a = delayseq(signal,(k-1)*a); 
                     downsamp = downsample(delayedBy_a,FM(1,i));
                     %Implement polyphase components as folded structures
-                    filter_polyphase = filter(ek(k,:),1,downsamp);
+                    filter_polyphase = filter(dfilt.dffir(ek(k,:)),downsamp);
                     upsamp = upsample(filter_polyphase,FL(1,i)); 
 
                     %Sum 
@@ -145,11 +144,11 @@ if filter_choice == 1
                 fvtool(Filter);
                 %Saving file to use it in a C code file
                 %Move it to the appropriate directory
-                file = fopen(['PM_filter',num2str(i),'.txt'],'w');
-                fprintf(file,'%.20e\n',vpa(Filter.Numerator));
-                fclose(file);
-                set(Filter,'arithmetic','fixed');
-                fcfwrite(Filter,['Pm_filter', num2str(i), '.fcf']);
+%                 file = fopen(['PM_filter',num2str(i),'.txt'],'w');
+%                 fprintf(file,'%.20e\n',vpa(Filter.Numerator));
+%                 fclose(file);
+%                 set(Filter,'arithmetic','fixed');
+%                 fcfwrite(Filter,['Pm_filter', num2str(i), '.fcf']);
                
                 if i == 1 
                     signal = input_signal; %true only for the first input
@@ -362,16 +361,16 @@ else
 %----------------------------- First Filter -------------------------------
            
             %Frequency bands
-            Fmax(1,i) = Fs*FL(1,1);
+            Fmax(1,1) = Fs*FL(1,1);
 
             
             if (multistage_method == 1)
                 
                 Fpassband = Fpass;
-                Fcutoff = (Fmax(1,i))/2 * min(1/FL(1,1),1/FM(1,1));
+                Fcutoff = (Fmax(1,1))/2 * min(1/FL(1,1),1/FM(1,1));
             
                 %By Matlab estimation
-                [Order,Wp] = ellipord(Fpassband/(Fmax(1,i)/2),Fcutoff/(Fmax(1,i)/2),Rp,Rs);
+                [Order,Wp] = ellipord(Fpassband/(Fmax(1,1)/2),Fcutoff/(Fmax(1,1)/2),Rp,Rs);
 
                 [z_ellip,p_ellip,k_ellip] = ellip(Order,Rp,Rs,Wp);
                 %Creating filter
@@ -380,12 +379,12 @@ else
                     
             else
                 
-                pass_bands = Fpass/(Fmax(1,i)/2);
+                pass_bands = Fpass/(Fmax(1,1)/2);
                 
                 if FL(1,1) > FM(1,1)
-                    stop_bands = (Fs - Fstop)/(Fmax(1,i)/2);
+                    stop_bands = (Fs - Fstop)/(Fmax(1,1)/2);
                 else
-                    stop_bands = (Fs*(FL(1,1)/FM(1,1)) - Fstop)/(Fmax(1,i)/2);
+                    stop_bands = (Fs*(FL(1,1)/FM(1,1)) - Fstop)/(Fmax(1,1)/2);
                 end
 
 
