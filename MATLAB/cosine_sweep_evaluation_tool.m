@@ -522,7 +522,7 @@ duration_in_samples = length(t);
 
 
 % create the cosine sweep
-signal = level_lin * chirp(t, f_start, duration_in_seconds, f_stop, 'logarithmic');
+signal = level_lin * chirp(t, f_start, duration_in_seconds, f_stop, 'logarithmic',-90);
 signal=signal';
 
 % make the TPDF dither signal
@@ -603,31 +603,5 @@ end
 end
 
 
-%% Get Filter for cos_sweep analysis
 
-
-function h = getFilter(Number)
-    global h_raisedco Hlp1 Hlp6 b2
-
-    
-    List = char(1:11); %Enumerate numbers of filters
-    
-    
-    if ~isempty(find(List == Number))
-        disp('There is no filter corresponding to this number')
-    end
-    
-    switch Number
-        case '1'
-        h = h_sinc;  %sinc filter with Kaiser window
-        case '2' %Elliptic direct-form
-        h = Hlp1;     
-        case '3'
-        h = Hlp6;    
-        case '4'
-        h = b2;    
-            
-    end         
-        
-end
 

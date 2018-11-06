@@ -35,7 +35,7 @@ duration_in_samples = length(t);
 
 
 % create the cosine sweep
-signal = level_lin * chirp(t, f_start, duration_in_seconds, f_stop, 'logarithmic');
+signal = level_lin * chirp(t, f_start, duration_in_seconds, f_stop, 'logarithmic',-90);
 signal=signal';
 
 % make the TPDF dither signal

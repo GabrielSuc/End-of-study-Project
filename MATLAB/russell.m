@@ -1,4 +1,4 @@
-function [output_russell, flag] =  russell(z1,p1,k1,L,M,b_fir,Nl,Nm,xin)
+function [output_russell, flag] =  russell(z1,p1,k1,L,M,b_fir,Nl,Nm,xin,Fsin)
 
 %Takes an IIR filter under the zero-pole-gain form (z,p,k) as input and 
 %returns a decomposed version of it according to Russell's method
@@ -103,12 +103,22 @@ fvtool(Hn)
 % --------------------------------------------------------------------------
 % --------------------------------------------------------------------------
 % 
+%  %Plots
+nbr_samples = 10000;
+subplot(8,1,1)
+plot((0:1/(Fsin):(nbr_samples-1)/(Fsin)),xin(1:nbr_samples))
+title(['Input Signal for Stage ', num2str(i)])
+%
 % --------------------------------------------------------------------------
 %                           Through Hl(z)
 % --------------------------------------------------------------------------
 
 
 xout_filterL = filter(Hl,xin);
+
+subplot(8,1,2)
+plot((0:1/(Fsin):(nbr_samples-1)/(Fsin)),xout_filterL(1:nbr_samples))
+title('Signal After First All-Pole filter')
 
 
 % --------------------------------------------------------------------------
@@ -133,7 +143,7 @@ disp('-------------------------------------------------------------------')
 % 
 % Now need the LM polyphase components ek of hn
 %     
-ek = myPolyphase(num_fir,1,L,M,'2');
+ek = myPolyphase(num_fir,L,M);
 % 
 % Have to filter xin through each branch 
 
@@ -142,9 +152,31 @@ sumBranch = 0;
 for i = (L*M):-1:1 %Starting from the LM-1 branch
 %     Creating the other branches before summation
     delayedBy_a = delayseq(xout_filterL,(i-1)*a);
+    
+    subplot(8,1,3)
+    plot((0:1/(Fsin):(nbr_samples-1)/(Fsin)),delayedBy_a(1:nbr_samples))
+    title(['Input Signal Delayed by ', num2str(i),' times a (branch nbr ' , num2str(i), ')'])
+    %
+    %
     downsamp = downsample(delayedBy_a,M);
+    
+    subplot(8,1,4)
+    plot((0:1/(Fsin/M):(nbr_samples-1)/(Fsin/M)),downsamp(1:nbr_samples))
+    title('Delayed Signal Downsampled ')
+    %
+    %
     filter_polyphase = filter(ek(i,:),1,downsamp);
-    upsamp = upsample(filter_polyphase,L); 
+    
+    subplot(8,1,5)
+    plot((0:1/(Fsin/M):(nbr_samples-1)/(Fsin/M)),filter_polyphase(1:nbr_samples))
+    title('Downsampled Signal filtered ')
+    %
+    %
+    upsamp = upsample(filter_polyphase,L);
+    
+    subplot(8,1,6)
+    plot((0:1/(Fsin*L/M):(nbr_samples-1)/(Fsin*L/M)),upsamp(1:nbr_samples))
+    title('Filtered Signal Upsampled ')
 
 %     Sum 
 
@@ -156,11 +188,19 @@ for i = (L*M):-1:1 %Starting from the LM-1 branch
 
 end
 
+subplot(8,1,7)
+plot((0:1/(Fsin*L/M):(nbr_samples-1)/(Fsin*L/M)),sumBranch(1:nbr_samples))
+title('Signal After Polyphase')
+
 % --------------------------------------------------------------------------
 %                           Through Hl(z)
 % --------------------------------------------------------------------------
 % 
 flag = 0; %no problem, no flag needed
 output_russell = filter(Hm,sumBranch);
+
+subplot(8,1,8)
+plot((0:1/(Fsin*L/M):(nbr_samples-1)/(Fsin*L/M)),output_russell(1:nbr_samples))
+title('Output Signal (After second All-Pole Filter)')
 
 end

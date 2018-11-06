@@ -46,7 +46,7 @@ Rs = 140; %in dB
 %Desired Transition Width
 %Represent how close we want the passband frequency to be from the stopband
 %frequency.
-TW = 0.90; %in percent of the stopband freqeuncy;
+TW = 0.85; %in percent of the stopband freqeuncy;
 
 %Cutoff frequency
 %Also defined the stopband frequency i.e. Fstop
@@ -385,7 +385,7 @@ for i = 1:length(cosine_sweeps)
 if IR == 'Y'
     input = impulse;
 else 
-    input = cosine_sweeps(i).sweep;
+    input = cosine_sweeps(i).sweep; % sin(2*pi*50*t); %
 end    
 
 [signal, Fint_max] = multistage(Fsin,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method);
@@ -420,9 +420,9 @@ else
     hold on
     %Have to compensate for difference in sample rates (to have same
     %ending)
-    plot((0/Fsout:1/Fsout:((nbr_samples-1)/Fsout) + (nbr_samples/44100 - nbr_samples/48000))...
-        ,signal(1:(nbr_samples + (nbr_samples/44100 - nbr_samples/48000)*48000)))
-    legend('Input', 'Output')
+    plot((0/Fsout:1/Fsout:((nbr_samples-1)/Fsout) + (nbr_samples/Fsin - nbr_samples/Fsout))...
+        ,signal(1:(nbr_samples + (nbr_samples/Fsin - nbr_samples/Fsout)*Fsout)))
+    legend(['Input at ', num2str(Fsin)], ['Output at ', num2str(Fsout)])
     title('Input and Output signals');
 end
 

@@ -16,6 +16,8 @@ if (multistage_method == 2)
     Fstop = Fsin/2;
 end
 
+%Choose how many samples to plot
+nbr_samples = 10000;
 
 % Filtering through the different kind of filters:
 % Parks-McClellan
@@ -97,33 +99,51 @@ if filter_choice == 1
                 disp('-------------------------------------------------------------------')
                 
                 %Compensate gain
-                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),1,FL(1,i),FM(1,i),'2'); %,w
+                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),FL(1,i),FM(1,i)); %,w
                 
 
                 %Have to filter xin through each branch 
-                sumBranch = 0;
+                sumBranch = 0.0;%zeros(round(length(input_signal)*FL(1,i)/FM(1,i)),1);
                 
                 if i == 1 
                     signal = input_signal; %true only for the first input
                 end
                 
+                %Plots
+                subplot(6,1,1)
+                plot((0:1/(Fsin):(nbr_samples-1)/(Fsin)),signal(1:nbr_samples))
+                title(['Input Signal for Stage ', num2str(i)])
+                
                 for k = (FL(1,i)*FM(1,i)):-1:1 %Starting from the LM-1 branch
                     %Creating the other branches before summation
                     delayedBy_a = delayseq(signal,(k-1)*a); 
+                    %Plots
+                    subplot(6,1,2)
+                    plot((0:1/(Fsin):(nbr_samples-1)/(Fsin)),delayedBy_a(1:nbr_samples))
+                    title(['Input Signal Delayed by ', num2str(k),' times a (branch nbr ' , num2str(k), ')'])
+                    %
+                    %
                     downsamp = downsample(delayedBy_a,FM(1,i));
-                    %Implement polyphase components as folded structures
-                    filter_polyphase = filter(dfilt.dffir(ek(k,:)),downsamp);
-                    upsamp = upsample(filter_polyphase,FL(1,i)); 
-
-                    %Sum 
                     
-%                     if size(sumBranch,1) > 1
-%                         if size(upsamp,1) > size(sumBranch,1)
-%                             sumBranch = cat(1,sumBranch, zeros(size(upsamp,1)-size(sumBranch,1),2)); 
-%                         elseif size(upsamp,1) < size(sumBranch,1)
-%                             upsamp = cat(1,upsamp, zeros(size(sumBranch,1)-size(upsamp,1),2));
-%                         end
-%                     end    
+                    subplot(6,1,3)
+                    plot((0:1/(Fsin/FM(1,i)):(nbr_samples-1)/(Fsin/FM(1,i))),downsamp(1:nbr_samples))
+                    title('Delayed Signal Downsampled ')
+                    %
+                    %
+                    filter_polyphase = filter(dfilt.dffir(ek(k,:)),downsamp);
+                    
+                    subplot(6,1,4)
+                    plot((0:1/(Fsin/FM(1,i)):(nbr_samples-1)/(Fsin/FM(1,i))),filter_polyphase(1:nbr_samples))
+                    title('Downsampled Signal filtered ')
+                    %
+                    %
+                    upsamp = upsample(filter_polyphase,FL(1,i)); 
+                    
+                    subplot(6,1,5)
+                    plot((0:1/(Fsin*FL(1,i)/FM(1,i)):(nbr_samples-1)/(Fsin*FL(1,i)/FM(1,i))),upsamp(1:nbr_samples))
+                    title('Filtered Signal Upsampled ')
+                    %
+                    %
                     sumBranch = sumBranch + upsamp;
 
                     if k > 1
@@ -134,6 +154,9 @@ if filter_choice == 1
 
                 signal = sumBranch;
                 
+                subplot(6,1,6)
+                plot((0:1/(Fsin*FL(1,i)/FM(1,i)):(nbr_samples-1)/(Fsin*FL(1,i)/FM(1,i))),signal(1:nbr_samples))
+                title('Output Signal ')
                 
                 
             else
@@ -154,12 +177,29 @@ if filter_choice == 1
                     signal = input_signal; %true only for the first input
                 end
                 
+                %Plots
+                subplot(4,1,1)
+                plot((0:1/(Fsin):(nbr_samples-1)/(Fsin)),signal(1:nbr_samples))
+                title(['Input Signal for Stage ', num2str(i)])
+                
                 %Upsampling
                 signal = upsample(signal,FL(1,i));
+                
+                subplot(4,1,2)
+                plot((0:1/(FL(1,i)*Fsin):(nbr_samples-1)/(FL(1,i)*Fsin)),signal(1:nbr_samples))
+                title('Signal Upsampled')
                 %Filtering
                 input_filtered = filter(Filter,signal);
+                
+                subplot(4,1,3)
+                plot((0:1/(FL(1,i)*Fsin):(nbr_samples-1)/(FL(1,i)*Fsin)),input_filtered(1:nbr_samples))
+                title('Signal Filtered')
                 %Downsampling
                 signal = downsample(input_filtered,FM(1,i));
+                
+                subplot(4,1,4)
+                plot((0:1/(FL(1,i)*Fsin/FM(1,i)):(nbr_samples-1)/(FL(1,i)*Fsin/FM(1,i))),signal(1:nbr_samples))
+                title('Signal Downsampled')
                 
             end    
             
@@ -283,7 +323,7 @@ elseif filter_choice == 2
                     signal = input_signal; %true only for the first input
                 end
                 
-                [signal, flag] = russell(z_ellip,p_ellip,FL(1,i)*k_ellip,FL(1,i),FM(1,i),b_ellip,Nl,Nm,signal);
+                [signal, flag] = russell(z_ellip,p_ellip,FL(1,i)*k_ellip,FL(1,i),FM(1,i),b_ellip,Nl,Nm,signal,Fsin);
 
                 
                 %In case the above technique is not feasible 
@@ -310,15 +350,31 @@ elseif filter_choice == 2
                     signal = input_signal; %true only for the first input
                 end
                 
-                fvtool(Filter)
+                %Plots
+                subplot(4,1,1)
+                plot((0:1/(Fsin):(nbr_samples-1)/(Fsin)),signal(1:nbr_samples))
+                title(['Input Signal for Stage ', num2str(i)])
+                
+                %fvtool(Filter)
                 
                 %Upsampling
                 signal = upsample(signal,FL(1,i));
+                
+                subplot(4,1,2)
+                plot((0:1/(FL(1,i)*Fsin):(nbr_samples-1)/(FL(1,i)*Fsin)),signal(1:nbr_samples))
+                title('Signal Upsampled')
                 %Filtering
                 input_filtered = filter(Filter,signal);
+                
+                subplot(4,1,3)
+                plot((0:1/(FL(1,i)*Fsin):(nbr_samples-1)/(FL(1,i)*Fsin)),input_filtered(1:nbr_samples))
+                title('Signal Filtered')
                 %Downsampling
                 signal = downsample(input_filtered,FM(1,i));
                 
+                subplot(4,1,4)
+                plot((0:1/(FL(1,i)*Fsin/FM(1,i)):(nbr_samples-1)/(FL(1,i)*Fsin/FM(1,i))),signal(1:nbr_samples))
+                title('Signal Downsampled')
 %                 output = signal;
 %                 return
                 
