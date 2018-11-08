@@ -112,7 +112,6 @@ if filter_choice == 1
                 
                 % Group Delay
                 gd = grpdelay(FL(1,i)*firpm(Order,fo,ao),1);
-           
                 % The delay for each stage is computed as follow:
     % (Delay introduced by the previous stage (in samples)/Mi + gd/LiMi)*Li
                 delay(1,i+1) = (delay(1,i)/FM(1,i) + gd(1)/(FL(1,i)*FM(1,i)))*FL(1,i);
@@ -185,10 +184,12 @@ if filter_choice == 1
                 fvtool(Filter);
                 
                 % Delay introduced by the filter
+                % Measuring the delay introduced by each stage:
+                delay = zeros(1,length(bestPerm)/2);
                 % Group Delay
                 gd = grpdelay(FL(1,i)*firpm(Order,fo,ao),1);
                 % Since it's a FIR filter, the gd is constant
-                delay(1,i+1) = gd(1)/Fmax(1,i); %Given in seconds
+                delay(1,i) = gd(1)/Fmax(1,i); %Given in seconds
                 
                 %Saving file to use it in a C code file
                 %Move it to the appropriate directory
@@ -371,7 +372,6 @@ elseif filter_choice == 2
                 
                 %Creating the Elliptic Filters
                 Filter = dfilt.df2sos(zp2sos(z_ellip,p_ellip,FL(1,i)*k_ellip));
-                fvtool(Filter);
                
                 if i == 1 
                     signal = input_signal; %true only for the first input
@@ -388,19 +388,19 @@ elseif filter_choice == 2
                 signal = upsample(signal,FL(1,i));
                 
                 subplot(4,1,2)
-                plot((0:1/(Fmax(1,i)):(nbr_samples-1)/(Fmax(1,i))),signal(1:nbr_samples))
+                plot((0:1/(FL(1,i)*Fsin):(nbr_samples-1)/(FL(1,i)*Fsin)),signal(1:nbr_samples))
                 title('Signal Upsampled')
                 %Filtering
                 input_filtered = filter(Filter,signal);
                 
                 subplot(4,1,3)
-                plot((0:1/(Fmax(1,i)):(nbr_samples-1)/(Fmax(1,i))),input_filtered(1:nbr_samples))
+                plot((0:1/(FL(1,i)*Fsin):(nbr_samples-1)/(FL(1,i)*Fsin)),input_filtered(1:nbr_samples))
                 title('Signal Filtered')
                 %Downsampling
                 signal = downsample(input_filtered,FM(1,i));
                 
                 subplot(4,1,4)
-                plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),signal(1:nbr_samples))
+                plot((0:1/(FL(1,i)*Fsin/FM(1,i)):(nbr_samples-1)/(FL(1,i)*Fsin/FM(1,i))),signal(1:nbr_samples))
                 title('Signal Downsampled')
 %                 output = signal;
 %                 return
@@ -588,12 +588,7 @@ if filter_choice == 1 && ispolyphase == 0
     overall_delay = sum(delay);
 elseif filter_choice == 1 && ispolyphase == 1
     overall_delay = delay(1,end)/Fsout;
-elseif filter_choice == 2 && ispolyphase == 0
-    overall_delay = 0;
-elseif filter_choice == 2 && ispolyphase == 1
-    overall_delay = 0;
-end
-
+end    
 disp('Overall delay between input and output signal, for both channel, is: ');
 disp([num2str(overall_delay), ' s']);
 disp('-------------------------------------------------------------------')

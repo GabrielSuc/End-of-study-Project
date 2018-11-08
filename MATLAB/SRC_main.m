@@ -388,19 +388,10 @@ else
     input = cosine_sweeps(i).sweep; % sin(2*pi*50*t); %
 end    
 
-[signal, Fint_max] = multistage(Fsin,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method);
+signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method);
 
 signal = signal/max(abs(signal(:))); 
 
-disp('-------------------------- Overall Delay --------------------------')
-disp('Overall delay between input and output signal, for both channel, is: FIX ME');
-%disp(num2str(finddelay(cosine_sweeps(i).sweep,signal)));
-disp('-------------------------------------------------------------------')
-
-
-disp('------------------------ Hardware Complexity -----------------------')
-disp(['The maximum intermediary frequency is: ', num2str(Fint_max), ' Hz']);
-disp('-------------------------------------------------------------------')
 
 end
 %% Plots and Saving
