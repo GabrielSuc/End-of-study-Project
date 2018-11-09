@@ -396,6 +396,7 @@ signal = signal/max(abs(signal(:)));
 end
 %% Plots and Saving
 
+figure
 %Input and Output
 %Choose how many samples to plot
 nbr_samples = 10000;
@@ -406,6 +407,7 @@ if IR == 'Y'
     plot(signal)
     legend(['Input at ', num2str(Fsin)], ['Output at ', num2str(Fsout)])
     title('Input and Output signals');
+    grid on;
 else
     plot((0:1/Fsin:(nbr_samples-1)/Fsin),cosine_sweeps(i).sweep(1:nbr_samples))
     hold on
@@ -415,6 +417,7 @@ else
         ,signal(1:(nbr_samples + (nbr_samples/Fsin - nbr_samples/Fsout)*Fsout)))
     legend(['Input at ', num2str(Fsin)], ['Output at ', num2str(Fsout)])
     title('Input and Output signals');
+    grid on;
 end
 
 

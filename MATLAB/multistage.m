@@ -250,6 +250,11 @@ elseif filter_choice == 2
         
     % Ask if we want to use polyphase
     ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
+    
+    % Group delay for non-polyphase implementation
+%     gp_direct = zeros(512,length(FL));
+%     w_direct = zeros(512,length(FL));
+%     f_direct = zeros(512,length(FL));
      
     for i = 1:length(FL)
 
@@ -346,9 +351,16 @@ elseif filter_choice == 2
     
                 if i == 1 
                     signal = input_signal; %true only for the first input
+                    
+                    % Need to set the group delay and related frequencies
+                    % to 0 before the first stage
+                    gd_russell = [];
+                    f_russell = [];
+                    
                 end
                 
-                [signal, flag] = russell(z_ellip,p_ellip,FL(1,i)*k_ellip,FL(1,i),FM(1,i),b_ellip,Nl,Nm,signal,Fsin);
+                [signal, flag, gd_russell, f_russell] = russell(z_ellip,p_ellip,FL(1,i)*k_ellip,...
+                    FL(1,i),FM(1,i),b_ellip,Nl,Nm,signal,Fmax(1,i),gd_russell, f_russell);
 
                 
                 %In case the above technique is not feasible 
@@ -372,7 +384,23 @@ elseif filter_choice == 2
                 %Creating the Elliptic Filters
                 Filter = dfilt.df2sos(zp2sos(z_ellip,p_ellip,FL(1,i)*k_ellip));
                 fvtool(Filter);
-               
+                
+                % Group delay for each stage
+                [gd_direct(:,i), w_direct(:,i)] = grpdelay(Filter); 
+                % Have to relate the stage frequencies to the output one
+                cumprodM = cumprod(FM(1,i:end));
+                cumprodL = cumprod(FL(1,i+1:end));
+                if isempty(cumprodL)
+                    cumprodL = 1;
+                elseif isempty(cumprodM)    
+                    cumprodM = 1;
+                end 
+                f_direct(:,i) = w_direct(:,i).*((Fmax(1,i)/(2*pi))*cumprodL(end)/cumprodM(end));
+                
+                % Have to compute the time-scaled delay with the right
+                % sampling frequency;
+                gd_direct(:,i) = gd_direct(:,i)./Fmax(1,i);
+                
                 if i == 1 
                     signal = input_signal; %true only for the first input
                 end
@@ -586,17 +614,50 @@ disp('-------------------------- Overall Delay --------------------------')
 
 if filter_choice == 1 && ispolyphase == 0
     overall_delay = sum(delay);
+    
+    disp('Overall delay between input and output signal, for both channel, is: ');
+    disp([num2str(overall_delay), ' s']);
+    disp('-------------------------------------------------------------------')
 elseif filter_choice == 1 && ispolyphase == 1
     overall_delay = delay(1,end)/Fsout;
+    
+    disp('Overall delay between input and output signal, for both channel, is: ');
+    disp([num2str(overall_delay), ' s']);
+    disp('-------------------------------------------------------------------')
 elseif filter_choice == 2 && ispolyphase == 0
     overall_delay = 0;
+    
+    disp(['Overall delay between input and output signal, for both channel, is'...
+        ' displayed by the group delay plot']);
+    disp('-------------------------------------------------------------------')
+    
+    % Ploting the overall delay
+    figure
+    gd_overall = sum(gd_direct,2);
+    f_overall = f_direct(:,1); % all the columns are the same
+    plot(f_overall,gd_overall);
+    title('Overall Delay using Elliptic filters with Polyphase (Russell)')
+    ylabel('Delay (in s)')
+    xlabel('Frequency (in Hz)')
+    grid on;
+    
 elseif filter_choice == 2 && ispolyphase == 1
     overall_delay = 0;
+    
+    disp(['Overall delay between input and output signal, for both channel, is'...
+        ' displayed by the group delay plot']);
+    disp('-------------------------------------------------------------------')
+    
+    % Ploting the overall delay
+    figure
+    plot(f_russell,gd_russell);
+    title('Overall Delay using Elliptic filters without Polyphase')
+    ylabel('Delay (in s)')
+    xlabel('Frequency (in Hz)')
+    grid on;
 end
 
-disp('Overall delay between input and output signal, for both channel, is: ');
-disp([num2str(overall_delay), ' s']);
-disp('-------------------------------------------------------------------')
+
 
 disp('------------------------ Hardware Complexity -----------------------')
 disp(['The maximum intermediary frequency is: ', num2str(max(Fmax)), ' Hz']);
