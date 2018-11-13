@@ -306,11 +306,8 @@ According to this notation, we are now able to present a classic representation 
 		\vspace*{1mm}
 		\caption{Direct Implementation of Type 1 Polyphase}\label{3.7.a}
 	\end{subfigure}	
-\end{figure}
 
 
-
-\begin{figure}[htb!] %\ContinuedFloat
 	\centering
 	\begin{subfigure}[b]{\textwidth}
 		\centering
@@ -368,14 +365,14 @@ For the \hyperlink{IIR}{IIR} filters, the trick is a little bit more complex. As
 
 where $N_z$ and $N_p$ are the number of zeros and poles respectively. As we can see, the numerator represents the non-recursive part and the denominator the recursive one. The main goal here is to be able to use the polyphase decomposition presented in figure \ref{Figure 3.8}. To do so, we need to isolate the non-recursive part. A straightforward approach would be to simply move the numerator $B(z)$ before the expander $L$ such as illustrated in the figure below.
 
-\begin{figure}[ht!]
+\begin{figure}[htb!]
 	\centering
-	\includegraphics[scale=0.8]{iir_direct_poly.pdf}
+	\includegraphics[scale=0.8]{iir_direct_poly.png}
 	\caption{Direct Polyphase Implementation for IIR Filter}
 	\label{Figure 3.9}
 \end{figure}
 
-By doing this, the polyphase decomposition can be applied upon the polynomial $B(z^{\frac{1}{L}})$ where the working sampling frequency is lower than at its former position, meaning the complexity is lessened:
+By doing this, the type 2 polyphase decomposition depicted in figure \ref{3.7.b} can be applied upon the polynomial $B(z)$ where the working sampling frequency is lower than at its former position, meaning the complexity is lessened:
 
 %\begin{align}
 %	MPOS = (\textcolor{blue}{\frac{N+1}{L}} + \textcolor{orange}{N} + \textcolor{cyan}{1})* M
@@ -392,11 +389,11 @@ Nevertheless, this structure is not the most efficient one since, as before, not
 Since $H(z)$ is a fraction of two polynomials, we can factorize them and then rewrite the transfer function in the following way
 
 \begin{align}
-	H(z) = k\frac{\prod\limits_{k=1}^{N_z} (1 - z_k z^{-1} )}{\prod\limits_{k=1}^{N_p} (1 - p_k z^{-1})}
+	H(z) = H_0\frac{\prod\limits_{k=1}^{N_z} (1 - z_k z^{-1} )}{\prod\limits_{k=1}^{N_p} (1 - p_k z^{-1})}
 	\label{eqn:3.16}
 \end{align}
 
-with $z_k$ the \textit{zeros}, $p_k$ the \textit{poles} and $k$ the gain. At present, we can have recourse to the substitution 
+with $z_k$ the \textit{zeros}, $p_k$ the \textit{poles} and $H_0$ the gain. At present, we can have recourse to the substitution 
 
 \begin{align}
 	1 - p_kz^{-1} \equiv \frac{1 - p_k^Dz^{-D}}{\sum\limits_{i=0}^{D-1}p_k^iz^{-i}}
@@ -404,20 +401,20 @@ with $z_k$ the \textit{zeros}, $p_k$ the \textit{poles} and $k$ the gain. At pre
 \end{align} 
 
 
-The next step is to replace equation \ref{eqn:3.17} in \ref{eqn:3.16} but we need to assign some values to $D$. The point is to split the poles and raise them to the power of $L$ and $M$ to then be able to use the noble identity. To make it clearer, let's say we have $N_z$ poles and we arbitrarily choose two values $N_L$ and $N_M$ such as $N_L + N_M = N_z$. Now we pick $N_L$ poles $\gamma$ among the $p_k$ with $D = L$ and the $N_M$ $\epsilon$ remaining with $D = M$. The poles we select do not matter, the only important rule to fulfill is to not separate the complex conjugate poles. 
+The next step is to replace equation \ref{eqn:3.17} in \ref{eqn:3.16} but we need to assign some values to $D$. The point is to split the poles and raise them to the power of $L$ and $M$ to then be able to use the noble identity. To make it clearer, let's say we have $N_z$ poles and we arbitrarily choose two values $N_L$ and $N_M$ such that $N_L + N_M = N_z$. Now we pick $N_L$ poles $\gamma$ among the $p_k$ with $D = L$ and the $N_M$ $\epsilon$ remaining with $D = M$. The poles we select do not matter, the only important rule to fulfill is to not separate the complex conjugate poles. 
 
 Therefore, we can expand equation \ref{eqn:3.16}
 
 \begin{equation}
 	\begin{aligned}
-H(z) &= k\cfrac{\prod\limits_{k=1}^{N_z} (1 - z_k z^{-1} )}{\prod\limits_{k=1}^{N_L} (1 - \gamma_k z^{-1})\prod\limits_{k=1}^{N_M} (1 - \epsilon_k z^{-1})} \\ 
-&= \cfrac{k\prod\limits_{k=1}^{N_z} (1 - z_k z^{-1} )}{\prod\limits_{k=1}^{N_L} \cfrac{1 - \gamma_k^L z^{-L}}{\sum\limits_{i=0}^{L-1}\gamma_k^i z^{-i}} \prod\limits_{k=1}^{N_M} \cfrac{1 - \epsilon_k^M z^{-M}}{\sum\limits_{i=0}^{M-1}\epsilon_k^i z^{-i}}} \\
-& = \cfrac{k\prod\limits_{k=1}^{N_z} (1 - z_k z^{-1} ) \prod\limits_{k=1}^{N_L}\Big (\sum\limits_{i=0}^{L-1}\gamma_k^i z^{-i} \Big )\prod\limits_{k=1}^{N_M} \Big (\sum\limits_{i=0}^{M-1}\epsilon_k^i z^{-i} \Big )}{\prod\limits_{k=1}^{N_L} (1 - \gamma_k^L z^{-L}) \prod\limits_{k=1}^{N_M} (1 - \epsilon_k^M z^{-M}) }
+H(z) &= H_0\cfrac{\prod\limits_{k=1}^{N_z} (1 - z_k z^{-1} )}{\prod\limits_{k=1}^{N_L} (1 - \gamma_k z^{-1})\prod\limits_{k=1}^{N_M} (1 - \epsilon_k z^{-1})} \\ 
+&= \cfrac{H_0\prod\limits_{k=1}^{N_z} (1 - z_k z^{-1} )}{\prod\limits_{k=1}^{N_L} \cfrac{1 - \gamma_k^L z^{-L}}{\sum\limits_{i=0}^{L-1}\gamma_k^i z^{-i}} \prod\limits_{k=1}^{N_M} \cfrac{1 - \epsilon_k^M z^{-M}}{\sum\limits_{i=0}^{M-1}\epsilon_k^i z^{-i}}} \\
+& = \cfrac{H_0\prod\limits_{k=1}^{N_z} (1 - z_k z^{-1} ) \prod\limits_{k=1}^{N_L}\Big (\sum\limits_{i=0}^{L-1}\gamma_k^i z^{-i} \Big )\prod\limits_{k=1}^{N_M} \Big (\sum\limits_{i=0}^{M-1}\epsilon_k^i z^{-i} \Big )}{\prod\limits_{k=1}^{N_L} (1 - \gamma_k^L z^{-L}) \prod\limits_{k=1}^{N_M} (1 - \epsilon_k^M z^{-M}) }
 \label{eqn:3.18}
 	\end{aligned}
 \end{equation}
 
-To simplify the numerator, we can return to the first definition of $H(z)$ (cf. equation \ref{eqn:3.14}) and rewrite $k\prod\limits_{k=1}^{N_z} (1 - z_k z^{-1})$ as $\sum\limits_{k=0}^{N_z} b_kz^{-k}$.
+To simplify the numerator, we can return to the first definition of $H(z)$ (cf. equation \ref{eqn:3.14}) and rewrite $H_0\prod\limits_{k=1}^{N_z} (1 - z_k z^{-1})$ as $\sum\limits_{k=0}^{N_z} b_kz^{-k}$.
 Then, for the two other products we have to recall that it is a multiplication of polynomials. In other words, if we consider first the product over $N_L$, it is a multiplication of polynomials of coefficients $\Gamma_k = [\gamma_k^0, \gamma_k^1, \dots, \gamma_k^{L-1}] \;for\; k = 1, \dots, N_L$. Thereby, if we name $cL$ the list of coefficients of this product, we end up with $cL = \Gamma_1*\dots*\Gamma_{N_L-2}*\Gamma_{N_L-1}*\Gamma_{N_L}$where $*$ designates the \textit{linear convolution}. 
 
 All this leads to 
@@ -457,7 +454,7 @@ The final expression of $H(z)$ is composed of three filters:
 	\item $H_M(z^M) = \cfrac{1}{\prod\limits_{k=1}^{N_M} (1 - \epsilon_k^M z^{-M})}$ which is also an all-pole filter, function of $z^M$.
 \end{enumerate}
 
-\newpage
+
 The structure of the sampling rate conversion is henceforward
 
 \begin{figure}[ht!]
@@ -468,7 +465,7 @@ The structure of the sampling rate conversion is henceforward
 	\label{Figure 3.10}
 \end{figure}
 
-As depicted in the above figure, the procedure formerly detailed has introduced two filters $H_L(z^L)$ and $H_M(z^M)$ that can be moved respectively accross the expander and the decimator thanks to the noble identity. Furthermore, we can perform the polyphase decomposition seen in figure \ref{Figure 3.8} on $H_N(z)$ since it is a FIR filter. It follows
+As depicted in the above figure, the procedure formerly detailed has introduced two filters $H_L(z^L)$ and $H_M(z^M)$ that can be moved respectively across the expander and the decimator thanks to the noble identity. Furthermore, we can perform the polyphase decomposition seen in figure \ref{Figure 3.8} on $H_N(z)$ since it is a FIR filter. It follows the flowing structure.
 
 \begin{figure}[ht!]
 	\centering
@@ -478,7 +475,7 @@ As depicted in the above figure, the procedure formerly detailed has introduced 
 \end{figure}
 
 
-This final arrangement is an efficient implementation for IIR filters. It has been introduced in \cite{russell}. Although the numerator order is increased by $N_L(L-1) + N_M(M-1)$, the gain in efficiency over the direct implementation is $LM$ for the numerator and $LM/(L+M-1)$ with a number of \hyperlink{MPOS}{MPOS} of
+This final arrangement is an efficient implementation for IIR filters. It has been introduced in \cite{russell}. Although the numerator order is increased by $N_L(L-1) + N_M(M-1)$, the gain in efficiency over the direct implementation is $LM$ for the numerator and $LM/(L+M-1)$, with a number of \hyperlink{MPOS}{MPOS} of
 
 \begin{equation}
 	\begin{aligned}
@@ -488,7 +485,7 @@ This final arrangement is an efficient implementation for IIR filters. It has be
 	\end{aligned}
 \end{equation}
 
-It appears from this last equation that the number of MPOS does not depend on $N_M$ or $N_L$, therefore, we can just as well set one of these factors to zero. This method should be prefered over using a FIR filter since the efficiency is greatly enhanced. 
+It appears from this last equation that the number of MPOS does not depend on $N_M$ or $N_L$, therefore, we can just as well set one of these factors to zero. This method should be preferred over using a FIR filter since the efficiency is greatly enhanced. 
 
 
 \subsubsection{Multistage}\label{3.1.4.2}
@@ -502,7 +499,7 @@ Even so, another improvement is still possible. It is based on dividing the fact
 	\label{Figure 3.12}
 \end{figure}
 
-\newpage
+
 The overall filter can be found again by applying multiple noble identities
 
 \begin{align}
@@ -510,7 +507,7 @@ The overall filter can be found again by applying multiple noble identities
 	\label{eqn:3.24}
 \end{align}
 
-With the notation $\tilde{L}_i$ and $\tilde{M}_{i}$ standing for $\prod_{k=i+1}^{N}L_k$ and $\prod_{k=1}^{i}M_k$ respectively and $\tilde{L}_N = \tilde{M_0} = 1$.\\
+With the notations $\tilde{L}_i$ and $\tilde{M}_{i}$ standing for $\prod_{k=i+1}^{N}L_k$ and $\prod_{k=1}^{i}M_k$ respectively and $\tilde{L}_N = \tilde{M_0} = 1$.\\
 
 
 This approach called \textit{multistage} has been widely utilized in interpolators and decimators \cite{Proakis}, \cite{Oppenheim}, \cite{vaidyanathan}, \cite{turek}. It allows less constraints on the filters by reducing their orders and therefore the MPOS is lower than a direct implementation
@@ -534,7 +531,7 @@ For the case of sample-rate conversion by a fractional factor, two methods on ho
 		H_i(1) = L_i, \quad i = 1,2,\dots N. \label{eqn:3.27}
 	\end{align}
 	 	
-	 \item The second method has been introduced by \textit{Crochiere} and \textit{Rabiner} in \cite{crochiere} (we will reference it as \textit{second method}). We decided to explore this solution because \textit{Smarc}, an open source project by \textit{Télécom ParisTech} \cite{paristech} chose this process with \hyperlink{FIR}{FIR} Parks-McClellan filters implemented in polyphase decomposition and it gave decent results (cf \ref{section 3.2.6}). To explain the manner to process, we can defferentiate two cases:
+	 \item The second method has been introduced by \textit{Crochiere} and \textit{Rabiner} in \cite{crochiere} (we will reference it as \textit{second method}). We decided to explore this solution because \textit{Smarc}, an open source project by \textit{Télécom ParisTech} \cite{paristech} chose this process with \hyperlink{FIR}{FIR} Parks-McClellan filters implemented in polyphase decomposition and it gave decent results (cf \ref{section 3.2.6}). To explain the manner to process, we can distinguish two cases:
 	 
 	 \begin{enumerate}
 	 	\item $L/M < 1$
@@ -557,7 +554,7 @@ For the case of sample-rate conversion by a fractional factor, two methods on ho
 	 		\caption{Representation of K-stage Decimator}\label{Figure 3.13}
 	 	\end{figure}
  	
- 	The initial sampling rate is $f_{r0}$ and the final one is $f_{rK}$ with  $f_{r0} > f_{rK}$. The global reduction factor is $D = \frac{f_{r0}}{f_{rK}} = \prod_{i=1}^{K} D_i$, greater than $1$. A block $D_i$ is equivalent to a stage $i$ presented in figure \ref{Figure 3.12}, the difference lies in the design of the filters: the stopband of the filters has to be adapted for each stage without modifying the passband. The way to do so is sketched as follows\\
+ 	The initial sampling rate is $f_{r0}$ and the final one is $f_{rK}$ with  $f_{r0} > f_{rK}$. The global reduction factor is $D = \frac{f_{r0}}{f_{rK}} = \prod_{i=1}^{K} D_i$, greater than $1$. A block $D_i$ is equivalent to a stage $i$ presented in figure \ref{Figure 3.12}, the difference lies in the design of the filters: the stopband of the filters has to be adapted for each stage without modifying the passband. The way to do so is sketched in figure \ref{Figure 3.14}.\\
  	
  	\begin{figure}[ht!]
  		\centering
@@ -592,6 +589,8 @@ For the case of sample-rate conversion by a fractional factor, two methods on ho
 	 	\end{figure}
 	 	
 	 	and the filter design in the frequency domain
+	 	
+	 	\newpage
 	 	
 	 	\begin{figure}[ht!]
 	 		\centering
@@ -735,7 +734,7 @@ now more complicated because
 What can be retained from this example is that if the first stage is composed of the factors $L_1$ and  $M_1$ such that $M_1 > L_1$, this will result in a degradation of the signal. More generally, we can extract two rules out of these examples:
 \begin{itemize}\label{3.1.4.2.conclusion}
 	\item[--] if $L > M$ ($F_{s_{out}} > F_{s_{in}}$), to avoid alisasing, every intermediary frequencies $F_{int}$ must not be smaller than $F_{s_{in}}$.
-	\item[--] if $M > L$ ($F_{s_{in}} > F_{s_{out}}$), $F_{int}$ must not be smaller than $F_{sout}$ to avoid alisasing. 
+	\item[--] if $M > L$ ($F_{s_{in}} > F_{s_{out}}$), $F_{int}$ must not be smaller than $F_{sout}$ to avoid the suppression of important frequency contents for anti-aliasing reasons. 
 \end{itemize}
 The section \ref{section 3.2.2} will delve into how properly organize the stages while considering the above aspect. 
 
@@ -746,13 +745,13 @@ The section \ref{section 3.2.2} will delve into how properly organize the stages
 Just as polyphase, multistage decomposition can improve how to decrease the number of Multiplications Per Output Sample which is crucial if we want to process data in real-time. Evidently, we can combine these advancements. 
 
 \begin{itemize}
-	\item For \hyperlink{FIR}{FIR} filters, the final structure would be a combination of figures \ref{Figure 3.12} and \ref{Figure 3.8} for evey stage $i$. Moreover we can use the property that these filters can be implemented as a symetric structure called \textit{folded structure} which will divide the direct \hyperlink{MPOS}{MPOS} (cf. equation \ref{eqn:mpos_direct}) by 2. Thus, the final number of multiplications is 
+	\item For \hyperlink{FIR}{FIR} filters, the final structure would be a combination of figures \ref{Figure 3.12} and \ref{Figure 3.8} for every stage $i$. Thus, the number of multiplications is 
 	
 	\begin{align}
-		MPOS = \frac{(N_1 + 1)M_1}{2L_1} \frac{L_2}{M_2}\dots\frac{L_N}{M_N} + \frac{(N_2 + 1)M_2}{2L_2} \frac{L_3}{M_3}\dots \frac{L_N}{M_N} + \dots +\frac{(N_N + 1)M_N}{2L_N} 
+		MPOS = \frac{(N_1 + 1)M_1}{L_1} \frac{L_2}{M_2}\dots\frac{L_N}{M_N} + \frac{(N_2 + 1)M_2}{L_2} \frac{L_3}{M_3}\dots \frac{L_N}{M_N} + \dots +\frac{(N_N + 1)M_N}{L_N} 
 		\label{eqn:3.32}
 	\end{align}
-	\item For \hyperlink{IIR}{IIR} filters, the final structure would be a combination of figures \ref{Figure 3.12} and \ref{Figure 3.11} for evey stage $i$. Therefore, we have
+	\item For \hyperlink{IIR}{IIR} filters, the final structure would be a combination of figures \ref{Figure 3.12} and \ref{Figure 3.11} for every stage $i$. Therefore, we have
 	
 	\begin{align}\label{eqn:3.33}
 	MPOS =& \Big (\frac{1}{L_1} (N_{z_1} +1) + \frac{L_1+M_1-1}{L_1} N_{p_1} \Big ) \frac{L_2}{M_2}\dots\frac{L_N}{M_N} +  \nonumber\\ 
@@ -760,7 +759,7 @@ Just as polyphase, multistage decomposition can improve how to decrease the numb
 	&\dots +\Big (\frac{1}{L_N} (N_{z_N} +1) + \frac{L_N+M_N-1}{L_N} N_{p_N} \Big ) 
 	\end{align}
 	
-	In this case, if we apply the same folded structure principle  to the resulting FIR part $H_N(z)$ in equation \ref{eqn:3.22}, the number of MPOS would depend on $N_M$ and $N_L$ since
+	
 	
 	 
 \end{itemize}
@@ -768,37 +767,25 @@ Just as polyphase, multistage decomposition can improve how to decrease the numb
 
 \end{itemize}
 
-\newpage
-
-\begin{small}
-
-\begin{align}
-MPOS = &\Bigg (\frac{ (N_{z_1} +1) }{2L_1}+ \frac{N_{M_1}(2L_1+M_1-1)+N_{L_1}(2M_1+L_1-1)}{2L_1}  \Bigg ) \frac{L_2}{M_2}\dots\frac{L_N}{M_N} + \nonumber\\ 
-&\Bigg (\frac{ (N_{z_2} +1)}{2L_2} + \frac{N_{M_2}(2L_2+M_2-1)+N_{L_2}(2M_2+L_2-1)}{2L_2} \Bigg ) \frac{L_3}{M_3}\dots \frac{L_N}{M_N} +\nonumber\\
-&\vdots \nonumber\\ 
-&+\Bigg (\frac{ (N_{z_N} +1)}{2L_N} + \frac{N_{M_N}(2L_N+M_N-1)+N_{L_N}(2M_N+L_N-1)}{2L_N} \Bigg) 
-\end{align}
-
-\end{small}
-Minimizing this last equation might be more difficult than minimizing equation \ref{eqn:3.33}. Thus, the latter should be the one to consider. 
+In \cite{bruekers}, the author suggests a method to restore the symmetry in polyphase filters. Investigating his propositions could be worth it since it would allow to divide the MPOS formulas related to a FIR filter by 2.
 
 \subsection{Conclusion}
 
 
-The common methods to realize a sample-rate conversion by a rational factor $L/M$ have been studied through this part. The classical principle would be to select an expander $L$, a low-pass filter and a decimator $M$. Multiple filters could be used and usually FIR ones because of their linear phase. Nevertheless, the choice has been made to utilize a FIR Parks-McClellan filter and an IIR Elliptic one to compare the  quality of the conversion and their efficiency in terms of MPOS. Some improvements have to be considered such as polyphase and multistage decompositions if real-time performance is required. The next part will now focus on a real case: implementing and comparing the previous statements  in order to confirm or disconfirm them. 
+The common methods to realize a sample-rate conversion by a rational factor $L/M$ have been studied through this part. The classical principle would be to select an expander $L$, a low-pass filter and a decimator $M$. Multiple filters could be used and usually FIR ones because of their linear phase. Nevertheless, the choice has been made to utilize a FIR Parks-McClellan filter and an IIR Elliptic one to compare the  quality of the conversion and their efficiency in terms of MPOS. Some improvements have to be considered such as polyphase and multistage decompositions if real-time performance is required. The next part will now focus on a real case: implementing and comparing the previous statements  in order to confirm or dis-confirm them. 
 
-%\newpage
+\newpage
 
 \section{Study Case}
 
-In this section, we will apply the theory described earlier to a tangible example. We decided to study the case of converting from 44.1 kHz to 48 kHz and vice versa. The methods explained in this part are applicable to any rational sampling rate conversion ratio. However, for illustration and practical purposes, we will focus on this particular case.
+In this section, we will apply the theory described earlier to a tangible example. We decided to study the case of converting from 44.1 kHz to 48 kHz. The methods explained in this part are applicable to the opposite conversion (48 kHz to 44.1 kHz) and any rational sampling rate conversion ratio. However, for illustration and practical purposes, we will focus on this particular case.
 
 \subsection{Filter Specifications}\label{section 3.2.1}
 As already stated, this conversion requires a ratio of $160$ over $147$ and if we use filters with low error tolerances (with regard to an ideal lowpass filter), the order is in general high thus imposing increasing the computational complexity and making it more challenging to develop implementations suited for real-time operation. Therefore, reducing this complexity is paramount. In this way, some simplifications have to be made. However, it is desirable to have a good approximation of an ideal low-pass filter because it determines the quality of the conversion. 
 
 %As already stated, this conversion requires a ratio of $160$ over $147$ which involves a too strenuous filter with a lot of coefficients and thus it is practically impossible to process data in real time. Thus, 
 
-Hence, a first concern was the effect of the different parameters $R_p$, $R_s$ and $TW$ on the order of the filters, or in other terms, on the \hyperlink{MPOS}{MPOS}. The following graphs have been made for both Parks-McClellan and Elliptic filters implemented with the polyphase configurations \ref{3.7.b} (type 2) and \ref{Figure 3.9} respectively. These implementations have been chosen for the sake of simplification. What really matters here is the effect of the parameters on the  MPOS, not their values strickly speaking.
+Hence, a first concern was the effect of the different parameters $R_p$, $R_s$ and $TW$ on the order of the filters, or in other terms, on the \hyperlink{MPOS}{MPOS}. The following graphs have been made for both Parks-McClellan and Elliptic filters implemented with the polyphase configurations \ref{3.7.b} (type 2) and \ref{Figure 3.9} respectively. These implementations have been chosen for the sake of simplification. What really matters here is the effect of the parameters on the  MPOS, not their values strictly speaking.
 
 %\vspace*{1cm}
 
@@ -833,17 +820,17 @@ Hence, a first concern was the effect of the different parameters $R_p$, $R_s$ a
 
 First and foremost, as already stated in section \ref{section 3.1.3}, the number of MPOS is definitely more important for \hyperlink{FIR}{FIR} Parks-McClellan than \hyperlink{IIR}{IIR} Elliptic. However, we observe quite the same behavior: in figure \ref{3.21.a}, the amount of multiplications is divided by $2$ if $R_p$ is within the range $[0.01 - 10]$ dB for the FIR case and slightly less for the IIR one. We can observe the opposite behavior when considering the attenuation $R_s$ within the range $[50 - 140]$ dB. Finally, in figure \ref{3.21.c}, important differences between the two filters can be noticed about the effect of the transition width. It multiplies the MPOS by approximatively $2$ for the Elliptic case and by nearly $20$ for the Parks-McClellan filter.
 
-Here again, we have another example that is Elliptic filters should be prefered over Parks-McClellan because of the smaller number of MPOS in general. One may want a good approximation of an ideal low-pass filter 	and then choose strong parameters therefore resulting in a slow process. In this case, we should opt for increasing the transition bandwidth, giving more freedom to change the other paramters without impacting too much the MPOS, at least for the FIR case.   
+Here again, we have another example that Elliptic filters should be preferred over Parks-McClellan because of the smaller number of MPOS in general. One may want a good approximation of an ideal low-pass filter 	and then choose strong parameters therefore resulting in a computationally heavy process. In this case, we should opt for increasing the transition bandwidth, giving more freedom to change the other parameters without impacting too much the MPOS, at least for the FIR case.   
 
 
 \subsection{Multistage Combinations}\label{section 3.2.2}
 A major investigation made in this part was the effect of multistage and how to develop it in the most efficient way. In \cite{Proakis}, \cite{vaidyanathan} and \cite{Oppenheim}, it is claimed that multistage allows reduction of the overall number of MPOS by separating $L$ and $M$ into several smaller factors $L_i$ and $M_i$ and thereby putting less constraints on the design of the ones corresponding to the multistage implementation. However, as demonstrated in \cite{turek}, the order of the stage factors plays an important role as well as the number of stages. 
 
-The goal of this study case is to minimize the equations \ref{eqn:3.32} and \ref{eqn:3.33}. If we consider the first equation, one could think about minimizing the first factor of the sum $\frac{(N_1 + 1)M_1}{2L_1} \frac{L_2}{M_2}\dots\frac{L_N}{M_N}$  because the cumulative product of the $L_i/M_i$ is most important in this factor. We already know from the examples in \ref{example1} that some combinations are not possible and especially for a conversion from $44.1$ kHz to $48$ kHz, $M_1$ cannot be higher then $L_1$. Therefore, we could choose the smallest $M_1$ factor possible and the biggest $L_1$. However, since the stage factors are related ($L = \prod_{i=1}^{N}L_i$; $M = \prod_{i=1}^{M}M_i$), minimizing one summation factor in \ref{eqn:3.32} might increase another, resulting in an suboptimal number of MPOS. 
+The goal of this study case is to minimize the MPOS as given by the equations \ref{eqn:3.32} and \ref{eqn:3.33}. If we consider the first equation, one could think about minimizing the first factor of the sum $\frac{(N_1 + 1)M_1}{L_1} \frac{L_2}{M_2}\dots\frac{L_N}{M_N}$  because the cumulative product of the $L_i/M_i$ is most important in this factor. We already know from the examples in \ref{example1} that some combinations are not possible and especially for a conversion from $44.1$ kHz to $48$ kHz, $M_1$ cannot be higher then $L_1$. Therefore, we could choose the smallest $M_1$ factor possible and the biggest $L_1$. However, since the stage factors are related ($L = \prod_{i=1}^{N}L_i$; $M = \prod_{i=1}^{M}M_i$), minimizing one summation factor in \ref{eqn:3.32} might increase another, resulting in an suboptimal number of MPOS. 
 
-For the second equation (\ref{eqn:3.33}), the weight of the $L_i$ and $M_i$ is harder to determine. However, in the case of the Elliptic filter, we have $N_{z_1} = N_{p_1}$, we could then think of choosing $L_1 \gg M_1$. As stated previously, this decison might impact the other factors and end with poor efficiency.\\
+For the second equation (\ref{eqn:3.33}), the weight of the $L_i$ and $M_i$ is harder to determine. However, in the case of the Elliptic filter, we have $N_{z_1} = N_{p_1}$, we could then think of choosing $L_1 \gg M_1$. As stated previously, this decision might impact the other factors and end with poor efficiency.\\
 
-In the interest of clarfying the above observations, the graphs herein (cf. figure \ref{Figure 3.22}) present the different combinations possible for 2 stages. Each combination of $((L_1,M_1), (L_2,M_2))$ has been optimized with \MATLAB, that is, there is no better arrangement (or permutation) for these specific values of $L_i$ and$ M_i$. \footnote{Combination $((160,147),(1,1))$ is irrelevant because it adds a extra stage to the direct conversion i.e. $MPOS((160,147),(1,1)) > MPOS((160,147))$. It is present in the graphs just to ensure that every combination has been taken into account.}
+In the interest of clarifying the above observations, the graphs herein (cf. figure \ref{Figure 3.22}) present the different combinations possible for 2 stages. Each combination of $((L_1,M_1), (L_2,M_2))$ has been optimized with \MATLAB, that is, there is no better arrangement (or permutation) for these specific values of $L_i$ and$ M_i$. \footnote{These graphs have been made for $(R_p, R_s, TW) = (0.1, 140, 0.85)$}
 
 \vspace*{1cm}
 
@@ -866,14 +853,14 @@ In the interest of clarfying the above observations, the graphs herein (cf. figu
 		\label{Figure 22.b}
 	\end{subfigure}
 \captionsetup{width=0.95\linewidth}%
-\caption{Implication of Stage Combinations on the Number of MPOS}
+\caption{Implication of Stage Combinations on the Number of MPOS}\label{Figure 3.22}
 \end{figure}
 
 \newpage
-First of all, the two curves may have an exponential growth, in other words, some combinations make the number of MPOS grow drastically and suddenly. Morevover, as predicted in the theoritical section, the number of MPOS of the Elliptic filter is lower than the one of the Parks-McClellan filter. There is only one combination ($((10,7),(16,21))$) that is located at the same postiion on both graphs. The contrast is again due to the difference of the MPOS equations.
+First of all, the two curves may have an exponential growth, in other words, some combinations make the number of MPOS grow drastically and suddenly. Moreover, as predicted in the theoretical section, the number of MPOS of the Elliptic filter is lower than the one of the Parks-McClellan filter.
 
 \begin{itemize}
-	\item \underline{Parks-McClellan Filter}:  the combination that minimizes the number of MPOS is, as suspected, not the one with the smallest $M_1$ and highest $L_1$, but the combination $((40,21),(4,7))$, which gives a number of MPOS of $738.6$. The combination with such factors is $((160,21),(1,7))$ with $MPOS = 1326.4688$. It seems rather intricate to extract a method on how to minimize the cost of computation by simply exploiting this first graph. But if we take a look at some combinations made for four stages in Appendix \ref{AppendixA}, we should be able to extract a pattern. What appears to reduce the cost of computation is when the factors $L$ and $M$ are well distributed over the different stages, thus giving stage combinations with small $L_i$ and $M_i$. For instance, the difference between the first and second lines in table \ref{tab:PM_4_stages} is factor $8$ who is not split in $8 = 4.4$ in the second combination. 
+	\item \underline{Parks-McClellan Filter}:  the combination that minimizes the number of MPOS is, as suspected, not the one with the smallest $M_1$ and highest $L_1$, but the combination $((4,3),(40,49))$, which gives a number of MPOS of $119.8687$. The combination with such factors is $((160,21),(1,7))$ with $MPOS = 358.3304$. It seems rather intricate to extract a method on how to minimize the cost of computation by simply exploiting this first graph. But if we take a look at some combinations made for four stages in Appendix \ref{AppendixA}, we should be able to extract a pattern. What appears to reduce the cost of computation is when the factors $L$ and $M$ are well distributed over the different stages, thus giving stage combinations with small $L_i$ and $M_i$. For instance, the difference between the first and second lines in table \ref{tab:PM_4_stages} is factor $10$ who is not split in $10 = 5.2$ in the second combination. 
 	
 	To sum up, what should be advocated while designing a multistage implementation of Parks-McClellan filters is that the element $L$ and $M$ should be divided into close numbers. If it is not possible (as in a two-stage implementation), what is important is to pair the $L_i$ and $M_i$ which are in the same order of magnitude. Then, among the pairs we have made, select the one with a relatively high $L_1$ and low $M_1$ while still respecting $M_1 < L_1$. \footnote{It explains why the combination ((8,7),(20,21)) which has really similar factors in each stage is not the most efficient combination. This arrangement forces us to select a suboptimal $L_1$.}
 	
@@ -881,47 +868,49 @@ First of all, the two curves may have an exponential growth, in other words, som
 	\item \underline{Elliptic filter}: the same reasoning can be applied here. The pairs have to be similar numbers. However, it is more complex to find a pattern in this case. Indeed, the pair that minimize the equation \ref{eqn:3.33} is $((2,1),(80,147))$. It seems that this combination tries to completely avoid lending weight to the second factor of the equation. The next sections will confirm or refute this theory. 
 \end{itemize}
 
+\newpage
+
 \subsection{Number of Stages}
 
 Hence, we are able to order the stage factors in such a way that decreases the cost of computation as much as possible. However, there are certainly a number of stages that are more advantageous than the others. 
 
-The following table illustrates the effect of the number of stages on the efficiency. The combinations used are those with respect to what has been previously detailed.\footnote{The use of polyphase decomposition was also used.} The filter's specifications are $(R_p, R_s, TW) = (0.1, 140, 0.85)$.\\
+The following table illustrates the effect of the number of stages on the efficiency. The combinations used are those with respect to what has been previously detailed. The filter's specifications are $(R_p, R_s, TW) = (0.1, 140, 0.85)$.\\
 
 
 \begin{table}[ht]
 	\hspace*{-0.7cm}
 	\begin{tabular}{|l||*{5}{c|}||}\hline \backslashbox{\textbf{Number of Stages}}{\textbf{Filter Structure}}
-		& \makebox[12em]{Parks-McClellan Folded} &  \makebox[8em]{Elliptic Russell} \\ \hline
+		& \makebox[12em]{Parks-McClellan Polyphase} &  \makebox[8em]{Elliptic Russell} \\ \hline
 
-		\makebox[16em][c]{1} & \makebox[12em][c]{5048.9906}&\makebox[8em][c]{\textcolor{red}{30.7063}} \\\hline
-		\makebox[16em][c]{2} & \makebox[12em][c]{738.6}&\makebox[8em][c]{52.2545} \\\hline
-		\makebox[16em][c]{3} & \makebox[12em][c]{310.4333}&\makebox[8em][c]{60.1405} \\\hline
-		\makebox[16em][c]{4} & \makebox[12em][c]{\textcolor{red}{255.9408}}&\makebox[8em][c]{64.5922} \\\hline
-		\makebox[16em][c]{5} & \makebox[12em][c]{261.3568}&\makebox[8em][c]{\textit{N/A}} \\\hline
-		\makebox[16em][c]{6} & \makebox[12em][c]{265.9228}&\makebox[8em][c]{\textit{N/A}} \\\hline
+		\makebox[16em][c]{1} & \makebox[12em][c]{\textcolor{red}{68.6937}}&\makebox[8em][c]{\textcolor{red}{30.7063}} \\\hline
+		\makebox[16em][c]{2} & \makebox[12em][c]{119.8587}&\makebox[8em][c]{52.2545} \\\hline
+		\makebox[16em][c]{3} & \makebox[12em][c]{132.6952}&\makebox[8em][c]{60.1405} \\\hline
+		\makebox[16em][c]{4} & \makebox[12em][c]{133.7347}&\makebox[8em][c]{64.5922} \\\hline
+		\makebox[16em][c]{5} & \makebox[12em][c]{137.8633}&\makebox[8em][c]{\textit{N/A}} \\\hline
+		\makebox[16em][c]{6} & \makebox[12em][c]{141.6864}&\makebox[8em][c]{\textit{N/A}} \\\hline
 	\end{tabular}
 	\captionsetup{width=0.95\linewidth}
 	\caption{Difference of MPOS in the Number of Stages}
 	\label{tab:nbr_stages}
 \end{table}
 
-It is clear from the above table that spreading the implementation over multiple stages considerably reduces the complexity of the design. In the case of the use of a Parks-McClellan filter, four stages is the best option; dividing the number of MPOS by almost $20$ if we consider one stage as a reference. 
+Surprisingly, it appears that spreading over multiple stages does not reduce the complexity, rather it increases it. A single stage implementation gives the lowest complexity and for a number of stages larger than four, the design is even not possible for the Elliptic case. This is due to a too large large attenuation ($R_s$) combined with a too small ripple ($R_p$) (divided by 5 or 6 in these cases). We could reduce the attenuation in the stopband and it would work this time. However, a single stage will always have the lowest computational cost, whatever the filter's specifications may be. On the other hand, the design for 5 and 6 stages is possible for the Parks-McClellan case. Moreover, it needs basically twice the amount of MPOS required for Elliptic one. 
 
-Surprisingly, this result is not applicable for the case of an Elliptic filter implemented as described in \cite{russell}. A single stage implementation gives the lowest complexity and for a number of stages larger than four, the design is even not possible. This is due to a too large large attenuation ($R_s$) combined with a too small ripple ($R_p$) (divided by 5 or 6 in these cases). We could reduce the attenuation in the stopband and it would work this time. However, a single stage will always have the lowest computational cost, whatever the filter's specifications may be.
-
- Nonetheless, this outcome serves our interests because a single-stage implementation is definitely simpler than a multistage one. Moreover, it explains why the combination $((2,1),(80,147))$ was the best one for two stages. Indeed, the "heavy" second pair is trying to minimize the effect of the second factor of the equation.
+ Nonetheless, this outcome serves our interests because a single-stage implementation is definitely simpler than a multistage one. Moreover, it explains why the combination $((2,1),(80,147))$ was the best one for two stages in the Elliptic case. Indeed, the "heavy" second pair is trying to minimize the effect of the second factor of the equation. 
+ 
+ However, in terms of delay (introduced by the retained polyphase structure; cf. \ref{Figure 3.8}), one stage might be the worst case scenario. The delay coefficients $a$ and $b$ will enlarge, thus increasing the overall latency of the system. Moreover, the maximum intermediary frequency will be extremely big, i.e. if we consider one stage, this frequency is $L*F_{s_{in}} = 160*44100 = 7.056 \text{ MHz}$, and only 882 kHz for 3 or more stages. This would directly impact the hardware complexity. 
 
 
 \subsection{Use of Minimum-Phase Filters}
 
 This study provides guidelines on how many stages to choose and on how to pair the factors. It is useful to mention that an extra comparison has been made. Indeed, in \cite{turek}, the author claims that he obtained the lowest cost by combining an elliptic filter as a first stage and three \textit{Schuessler} filters in three consecutive stages. We tried to recreate this result. 
 
-The first stage is an elliptic filter designed in the same way as in figure \ref{Figure 3.11}. The rest of the three stages (name Schuessler filters) are minimum-phase filters, that is Parks-McClellan filters where all the zeros are within the unit circle. This method allows to transform FIR low-pass filters with linear-phase into minimum-phase FIR filters of half the degree, while maintaining the same passband and stopband edge frequency characteristics. Halving the degree will reduce the complexity. The technique utilized is detailed in \cite{turek} and is possible because the zeros of linear-phase FIR filters appear on the unit circle or in symmetric pairs about the unit circle. The overall MPOS of this approach are \textbf{129.2269}. Thus, this new combination allows to have a cost lower than simply combining Parks-McClellan filters. Nevertheless, it is not the most efficient one since the one-stage elliptic filter implemented as A. Russell described it (\cite{russell}) is more efficient. This divergence might be explained by the fact that in the case of \cite{turek}, the author implemented a multistage interpolator (use of expander factors $L_i$ only) and not a full synchronous sample-rate converter. Moreover, he also did not use the method suggested in \cite{russell}.
+The first stage is an elliptic filter designed in the same way as in figure \ref{Figure 3.11}. The rest of the three stages (name Schuessler filters) are minimum-phase filters, that is Parks-McClellan filters where all the zeros are within the unit circle. This method allows to transform FIR low-pass filters with linear-phase into minimum-phase FIR filters of half the degree, while maintaining the same passband and stopband edge frequency characteristics. Halving the degree will reduce the complexity. The technique utilized is detailed in \cite{turek} and is possible because the zeros of linear-phase FIR filters appear on the unit circle or in symmetric pairs around the unit circle. The overall MPOS of this approach are \textbf{63.2469} \footnote{Still performed for the specifications $(R_p, R_s, TW) = (0.1, 140, 0.85)$}. Thus, this new combination allows to have a cost lower than simply combining Parks-McClellan filters. Nevertheless, it is not the most efficient one since the one-stage elliptic filter implemented as A. Russell described it (\cite{russell}) is more efficient (cf. \ref{tab:nbr_stages}). This divergence might be explained by the fact that in the case of \cite{turek}, the author implemented a multistage interpolator (use of expander factors $L_i$ only) and not a full synchronous sample-rate converter. Moreover, he also did not use the method suggested in \cite{russell}. However, it is more efficient then 4-stage Elliptic filters (MPOS of 64.5922) which can be relevant if we consider the delay and hardware complexity aspects.
 
 
 \subsection{Assessment of the Quality of the Conversion}
 
-Heretofore, the emphasis was put on the efficiency of the conversion and more particularly, on how to reduce as much as possible the number of MPOS. What remains from now on is to assess what we defined as the quality of the conversion, i.e. detecting any artifacts at the output. In order to do so, we decided to use a common method of sweep frequency response analysis. A frequency sweep is sent through the system and the output is then compare to the original input. A similar response will provide evidence that no aliasing occured. However, this kind of measurement cannot be sufficient. Indeed, this method does not provide any information about the impulse response of the overall system as well as its phase response. There could be some ringing, which is undesirable in audio applications. 
+Heretofore, the emphasis was put on the efficiency of the conversion and more particularly, on how to reduce as much as possible the number of MPOS. What remains from now on is to assess what we defined as the quality of the conversion, i.e. detecting any artifacts at the output. In order to do so, we decided to use a common method of sweep frequency response analysis. A frequency sweep is sent through the system and the output is then compared to the original input. A similar response will provide evidence that no aliasing occurred. However, this kind of measurement cannot be sufficient. Indeed, this method does not provide any information about the impulse response of the overall system as well as its phase response. There could be some ringing, which is undesirable in audio applications. 
 
 
  The systems evaluated here are a four-stage Parks-McClellan filter, a single stage \textit{Russell} Elliptic filter and the combination of the former filter with three Schuessler filters. 
@@ -940,7 +929,7 @@ For instance, the following outputs (figure \ref{Figure 3.24}) are those of the 
 \begin{figure}[ht]
 	\begin{subfigure}[b]{0.5\textwidth}
 		\includegraphics[height = 0.7\textwidth, width = 1\textwidth]{/home/gabriel/Documents/End-of-study-Project/Quality_Evaluation/PM_Multistage_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.pdf}
-		\caption{Folded Parks-McClellan Filter}
+		\caption{Parks-McClellan Filter}
 		
 	\end{subfigure}
 	\hfill
@@ -954,15 +943,13 @@ For instance, the following outputs (figure \ref{Figure 3.24}) are those of the 
 \end{figure}
 
 As we can observe, the two graphs are identical to the input (cf. figure \ref{Figure 3.23}) which implies that the conversions processed the signal as expected without generating any aliasing or other artifacts. This procedure cannot be used to make a go/no-go
- decision about the usability of a device. It can only provide a "no-go" - or indications of simple errors in an audio transmission system. The windowing function in the analysis means that we do not have precision at low frequencies. Consequently, it results in the spreading in the low frequencies. This is an artefact of the analysis, not the system under test. A colored scale is displayed on the right which gives the level of attenuation of the \hyperlink{SNR}{SNR} in \si{dB}. Thus, without considering the artifacts of the analysis, the yellow straight line indicates that there is no attenuation of the signal while going through the system. 
+ decision about the usability of a device. It can only provide a "no-go" - or indications of simple errors in an audio transmission system. The windowing function in the analysis means that we do not have precision at low frequencies. Consequently, it results in the spreading in the low frequencies. This is an artifact of the analysis, not the system under test. A colored scale is displayed on the right which gives the level of attenuation of the input signal in \si{dB}. Thus, without considering the artifacts of the analysis, the yellow straight line indicates that there is no attenuation of the signal while going through the system. 
  
-
 
 These analyses have been made with certain parameters:
 \begin{itemize}
-	\item[--] Bit depth: it is the resolution of the sample, that is how many bits are used for each sample. In our case, $16$ bits have been chosen. Testing with 24 bits does not bring any differences to the output graph.
+	\item[--] Bit depth: it is the resolution of the sample, that is how many bits are used for each sample. In our case, $16$ bits have been chosen (floating-point). Testing with 24 bits does not bring any differences to the output graph.
 	\item[--] \hyperlink{dB FS}{dBFS}: It is used for amplitude levels in digital systems. The level of 0 dB FS is assigned to the maximum possible level. A signal that reaches 50 percent of the maximum level would, for example, have a value of -6 dB FS. In our case, there is no differences at the output between a signal of 0 dBFS and $-1$ dBFS.
-	\item[--] Bitrate: it is the number of bits transmited per second. We tested for 128, 256 and 320 kbits per second and did not noctice any difference. 
 \end{itemize}
 
 If we apply the same procedure to the method involving the three Schuessler filters, what is shown in figure \ref{Figure 3.25} is the output of this precise system.
@@ -980,9 +967,9 @@ Even by refining the filter specifications (reducing the transition width for in
 
 
 
-\subsection{Comparison Multistage Design}\label{section 3.2.6}
+\subsection{Comparison of Multistage Designs}\label{section 3.2.6}
 
-One major investigation completed was the way to design the filters in a multistage configuration. As explained in the section \ref{3.1.4.2}, several approaches exist and two were considered. The first one was the classic way detailed in \ref{section 3.1.2} and the second, described in \cite{paristech} and utilized in the open-source project called \textit{Smarc}. The project took consideration of this method because it implements Parks-McClellan folded filters in a polyphase and four-stage configuration, which is one of the method retained by this project. Moreover, it is one of the few available plugins on internet that use this method. The others are using classic windowed sinc filter methods which are not optimal. The next graph (figure \ref{Figure 3.26}) is the quality evaluation of the plugin. 
+One major investigation completed was the way to design the filters in a multistage configuration. As explained in the section \ref{3.1.4.2}, several approaches exist and two were considered. The first one was the classic way detailed in \ref{section 3.1.2} and the second, described in \cite{paristech} and utilized in the open-source project called \textit{Smarc}. The project took consideration of this method because it implements Parks-McClellan  filters in a polyphase and four-stage configuration, which is one of the method retained by this project. Moreover, it is one of the few available plugins on Internet that use this method. The others are using classic windowed sinc filter methods which are not optimal. The next graph (figure \ref{Figure 3.26}) is the quality evaluation of the plugin. 
 
 
 \begin{figure}[ht!]
@@ -991,11 +978,11 @@ One major investigation completed was the way to design the filters in a multist
 	\caption{Quality Evaluation of The Smarc Project}\label{Figure 3.26}
 \end{figure}
 
-It has been realized with the following specifications: ($\text{R}_\text{p}, \text{R}_\text{s}, \text{TW}$) $= (0.1, 140, 0.95)$. We can notice some artifacts: Other lines parallel to the fundamental indicate harmonics generated by periodic distortion
+It has been realized with the following specifications: ($\text{R}_\text{p}, \text{R}_\text{s}, \text{TW}$) $= (0.1, 140, 0.85)$. We can notice some artifacts: Other lines parallel to the fundamental indicate harmonics generated by periodic distortion
 and additional noise (vertical stains at the end of the sequence). Indeed, there are numerous errors but their effect is low in terms of decibel if we take a look at the scale (between -90 and -100 \si{dB}). Therefore, it is still worth considering this plugin. It has been achieved in C language. Implementing it in \MATLAB should give better insight into whether or not it is a viable technique since the precision is better. 
 
 
-We already know that the first multistage method is performing as desired since the above quality assessements were measured on systems constructed with it. Regarding the second manner, a simple comparison was effected: recreating in \MATLAB the implementation of a four-stage folded Parks-McClellan filter in the same way as the plugin (and as \cite{crochiere}). The comparative results are given in the table below.
+We already know that the first multistage method is performing as desired since the above quality assessments were measured on systems constructed with it. Regarding the second manner, a simple comparison was effected: recreating in \MATLAB the implementation of a four-stage Parks-McClellan filter in the same way as the plugin (and as \cite{crochiere}). The comparative results are given in the table below.
 
 
 
@@ -1007,7 +994,7 @@ We already know that the first multistage method is performing as desired since 
 		& \multicolumn{2}{c}{Classic Method} & \multicolumn{2}{c|}{Second Method} \\ \ChangeRT{1.2pt}
 		Specifications ($\text{R}_\text{p}, \text{R}_\text{s}, \text{TW}$) & \multicolumn{2}{c|}{(0.1, 140, 0.85)}               & \multicolumn{2}{c|}{(0.1, 140, 0.85)}              \\ \hline
 		Best Combination & \multicolumn{2}{c|}{((4,1), (5,7), (4,7), (2,3))}               & \multicolumn{2}{c|}{((4,1), (4,7), (5,7), (2,3))}              \\ \hline
-		MPOS & \multicolumn{2}{c|}{255.9408}               & \multicolumn{2}{c|}{\textcolor{red}{172.4075}}              \\ \hline
+		MPOS & \multicolumn{2}{c|}{133.7347}               & \multicolumn{2}{c|}{\textcolor{red}{94.6633}}              \\ \hline
 	\end{tabular}
 \captionsetup{width=0.95\linewidth}
 \caption{Comparison of Multistage Methods}
@@ -1015,10 +1002,7 @@ We already know that the first multistage method is performing as desired since 
 \end{table}
 
 
-
-
-
-This comparison suggests that the second method enables a better efficiency. To see why, we can apply the theory described in section \ref{3.1.4.2} to this pratical case (see figure \ref{Figure 3.27}). 
+This comparison suggests that the second method enables a better efficiency. To see why, we can apply the theory described in section \ref{3.1.4.2} to this practical case (see figure \ref{Figure 3.27}). 
 
 \begin{figure}[ht!]
 	\hspace*{-1cm}
@@ -1053,12 +1037,12 @@ For the specifications given in the above table, the output takes the following 
 \end{figure}
 
 
-Only a barely visible artifact is displayed on the graph. It is located at the very top of the figure, from 0 to 30 sec. We can still retain this second method since this artifact is very low in decibel, and outside of the range of the human hearing.  Moreover, we could slightly increase the filter's specifications to remove it if we absolutely want it.
+Only a barely visible artifact is displayed on the graph. It is located at the very top of the figure, from 0 to 30 sec. We can still retain this second method since this artifact is very low in decibel, and outside of the range of the human hearing.  Moreover, we could slightly increase the filter's specifications to remove it if we absolutely want it. However, if one decides to downsample after using this method, this slight artifact would fall back within the human hearing which would be a problem. 
 
  
 \subsection{Final Choice}\label{section 3.2.7}
 
-If we gather all the informations collected so far, we can suggest a final configuration for the conversion from $44100$ Hz to $48000$ Hz. Keeping in mind that we are not wholly sure about the effect of the non-linear phase of an \hyperlink{IIR}{IIR} filter on the audio perception, we decided to give two solutions for this study case. %He also refined the specifications of the filters (with respect to the advise of section \ref{section 3.2.1}) in order to further decrease their complexity. 
+If we gather all the informations collected so far, we can suggest a final configuration for the conversion from $44100$ Hz to $48000$ Hz in terms of \textcolor{red}{efficiency} only (i.e. MPOS). That is what we were mainly concerned about during this project. Keeping in mind that we are not wholly sure about the effect of the non-linear phase of an \hyperlink{IIR}{IIR} filter on the audio perception, we decided to give two solutions for this study case. %He also refined the specifications of the filters (with respect to the advise of section \ref{section 3.2.1}) in order to further decrease their complexity. 
 The results are summarized below.
 
 
@@ -1067,13 +1051,13 @@ The results are summarized below.
 	\begin{tabular}{|c|c|l|c|l|}
 		\hline
 		\multirow{2}{*}{\textbf{Features}} & \multicolumn{4}{c|}{\textbf{Filter Structure}}                                                     \\ %\cline{2-5} 
-		& \multicolumn{2}{c}{Parks-McClellan Folded}       & \multicolumn{2}{c|}{Elliptic Russell} \\ \ChangeRT{1.5pt}
+		& \multicolumn{2}{c}{Parks-McClellan}       & \multicolumn{2}{c|}{Elliptic Russell} \\ \ChangeRT{1.5pt}
 		Polyphase Decomposition   & \multicolumn{2}{c|}{Yes}                          & \multicolumn{2}{c|}{Yes}              \\ \hline
-		Multistage Method         & \multicolumn{2}{c|}{Second}                       & \multicolumn{2}{c|}{None}             \\ \hline
+		Multistage Method         & \multicolumn{2}{c|}{None}                       & \multicolumn{2}{c|}{None}             \\ \hline
 		Number of Stages          & \multicolumn{2}{c|}{4}                            & \multicolumn{2}{c|}{1}                \\ \hline
 		Specifications ($\text{R}_\text{p}, \text{R}_\text{s}, \text{TW}$)   & \multicolumn{2}{c|}{(0.1, 140, 0.85)}             & \multicolumn{2}{c|}{(0.1, 140, 0.85)} \\ \hline
-		Best Combination          & \multicolumn{2}{c|}{((4,1), (4,7), (5,7), (2,3))} & \multicolumn{2}{c|}{(160, 147)}       \\ \hline
-		MPOS                      & \multicolumn{2}{c|}{172.4075}                     & \multicolumn{2}{c|}{30.7063}          \\ \hline
+		Best Combination          & \multicolumn{2}{c|}{(160,147)} & \multicolumn{2}{c|}{(160, 147)}       \\ \hline
+		MPOS                      & \multicolumn{2}{c|}{68.6937}                     & \multicolumn{2}{c|}{30.7063}          \\ \hline
 	\end{tabular}
 	\captionsetup{width=0.95\linewidth}
 	\caption{Best Configuration}
@@ -1084,7 +1068,7 @@ For the conversion from 48 kHz to 44.1 kHz ($M > L$), the filter remains the sam
 
 \subsection{Conclusion}
 
-In this chapter, we have presented a way to optimized a synchronous sampling rate conversion through an example. If the choice falls on a FIR Parks-Mclellan filter, a folded four-stage polyphase implementation is the most optimized way. On the other hand, if one decides to use an IIR Elliptic filter, a single stage is enough if we use a particular approach allowing a polyphase decomposition of the FIR part. 
+In this chapter, we have presented a way to optimized a synchronous sampling rate conversion through an example. If the choice falls on a FIR Parks-Mclellan filter, a single-stage polyphase implementation is the most optimized way. On the other hand, if one decides to use an IIR Elliptic filter, a single-stage is enough too if we use a particular approach allowing a polyphase decomposition of the FIR part. 
 
 
 
@@ -1169,6 +1153,9 @@ Whatever it be, the output from the plugin is extremely poor in all cases. Thus,
 We detail in this last section some thoughts that might be worth exploring to further enhance the converter.
 \begin{itemize}
 
+\item Consider the effect of the polyphase structures on the overall delay of the systems.
+\item Consider the effect of multistage on the hardware complexity.
+\item Look into symmetric implementation of polyphase filters. 
 \item Investigate the effect of the ripple in the passband on the auditory perception. Indeed, if the impact is negligible, increasing its value would lower the complexity of the filter even more and then the overall number of MPOS. Keeping in mind that a too important ripple would create a \textit{blip} or pre-echo in the filter's impulse response, thus deteriorating the quality of the conversion. \cite{ripple1} and \cite{ripple2} could be a start. 
 \item There might be a filter implementation faster then the others. In \cite{Oppenheim}, the techniques of block convolution overlap-add/save are said to be highly efficient for FIR impulse responses of even modest length (on the order of 25 or 30), other algorithms could also be considered as (cf. \cite{ffa}). We could use these algorithms for the non-recursive polyphase components. The recursive part (IIR) can be implemented using the other structures, like a second order sections to avoid potential numerical problems caused by coefficient quantization.
 \item Continuing the evaluation of the audio quality by confirming that the effect of the phase distortion created by the \hyperlink{IIR}{IIR} filters is negligible and that the overall impulse response of the system is the one expected. 

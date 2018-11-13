@@ -410,6 +410,24 @@
   \field{year}{Sept. 2009}
 \endentry
 
+\entry{bruekers}{thesis}{}
+  \name{author}{1}{}{%
+    {{}%
+     {Bruekers}{B.}%
+     {A.~A. M.~L.}{A.~A. M.~L.}%
+     {}{}%
+     {}{}}%
+  }
+  \strng{namehash}{BAAML1}
+  \strng{fullhash}{BAAML1}
+  \field{title}{Symmetry and efficiency in complex FIR filters}
+  \list{institution}{1}{%
+    {Technische Universiteit Eindhoven}%
+  }
+  \field{type}{phdthesis}
+  \field{year}{2009}
+\endentry
+
 \entry{ripple1}{article}{}
   \name{author}{1}{}{%
     {{}%

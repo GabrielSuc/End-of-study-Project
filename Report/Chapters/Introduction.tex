@@ -1,7 +1,7 @@
 % Chapter Template
 
 
-\chapter{IntroTFTduction} \label{gen_intro}% Main chapter title
+\chapter{Introduction} \label{gen_intro}% Main chapter title
 
 \label{Chapter1} % Change X to a consecutive number; for referencing this chapter elsewhere, use \ref{ChapterX}
 
@@ -12,7 +12,7 @@ Most of the modern signal processing chains consist of an interconnection of dig
 First and foremost, we can distinguish two categories of conversions: synchronous and asynchronous. When a system has only one single internal clock, i.e. when the system has a constant output sampling rate, we will use a synchronous converter (for example, we can think about a system accepting the following set of input sampling rates: $ F_\mathrm{s_{in}} = \{\SI{32}{\kilo \Hz}, \;  \SI{44.1}{\kilo \Hz}, \; \SI{48}{\kilo \Hz}  \}  $ with as only output sampling rate: $ F_\mathrm{s_{out}} = \{\SI{48}{\kilo \Hz} \}$). On the other hand, when a system has multiple clocks, we will choose an asynchronous sample rate converter (in this case, we can imagine a USB device receiving data from a PC and converting them to an analog signal, operating at two different rates. Another example would be when two systems are said to have the same clock, but they slightly drift over time). 
 
 
-The purpose of this report is to investigate and document different methods to create a real-time synchronous converter that can be implemented in the platforms of Bang\&Olufsen. It is an important project for the company since the current converters are responsible of audible artifacts that do not meet the quality standards of B\&O. Moreover, available solutions used cannot be fully applied within this context. Indeed, they are either not fully adapted to the cases required by the firm or they are suboptimal. 
+The purpose of this report is to investigate and document different methods to create a real-time synchronous converter that can be implemented in the platforms of Bang \& Olufsen. It is an important project for the company since the current converters are responsible of audible artifacts that do not meet the quality standards of B\&O. Moreover, available solutions used cannot be fully applied within this context. Indeed, they are either not fully adapted to the cases required by the firm or they are suboptimal. 
 
 
 The idea was to use either a \hyperlink{FIR}{FIR} or \hyperlink{IIR}{IIR} filter implemented in a multi-stage separation and exploring the polyphase decomposition of the non-recursive part. 
@@ -25,6 +25,6 @@ The report is composed of two sections:
 
 \item Bang \& Olufsen. This first part presents an overview of the company and the context in which the internship took place.
 
-\item End-of-study Project. This second part describes the work done by the student during the internship in a theortical approach first and in a practical case thereafter.
+\item End-of-study Project. This second part describes the work done by the student during the internship in a theoretical approach first and in a practical case thereafter.
 
 \end{itemize}

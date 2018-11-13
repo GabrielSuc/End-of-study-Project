@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.18)  19 OCT 2018 13:36
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2018.10.18)  13 NOV 2018 14:58
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -2585,216 +2585,205 @@ Package pdftex.def Info: polyphase_direct_M.pdf used on input line 305.
 File: polyphase_direct_L.pdf Graphic file (type pdf)
 
 <use polyphase_direct_L.pdf>
-Package pdftex.def Info: polyphase_direct_L.pdf used on input line 318.
+Package pdftex.def Info: polyphase_direct_L.pdf used on input line 315.
 (pdftex.def)             Requested size: 398.53056pt x 122.24059pt.
  [15 <./polyphase_direct_M.pdf> <./polyphase_direct_L.pdf
 
 pdfTeX warning: /usr/bin/pdflatex (file ./polyphase_direct_L.pdf): PDF inclusio
 n: multiple pdfs with page group included in a single page
->] <polyphase_direct_efficient.pdf, id=631, 434.56467pt x 177.8902pt>
+>] <polyphase_direct_efficient.pdf, id=630, 434.56467pt x 177.8902pt>
 File: polyphase_direct_efficient.pdf Graphic file (type pdf)
 
 <use polyphase_direct_efficient.pdf>
-Package pdftex.def Info: polyphase_direct_efficient.pdf used on input line 341.
+Package pdftex.def Info: polyphase_direct_efficient.pdf used on input line 338.
 
 (pdftex.def)             Requested size: 412.83409pt x 168.9947pt.
 
-Overfull \hbox (8.80501pt too wide) in paragraph at lines 341--343
+Overfull \hbox (8.80501pt too wide) in paragraph at lines 338--340
  [][] 
  []
 
 [16 <./polyphase_direct_efficient.pdf>]
-<iir_direct_poly.pdf, id=645, 421.77423pt x 121.06825pt>
-File: iir_direct_poly.pdf Graphic file (type pdf)
+<iir_direct_poly.png, id=644, 421.8159pt x 37.5804pt>
+File: iir_direct_poly.png Graphic file (type png)
 
-<use iir_direct_poly.pdf>
-Package pdftex.def Info: iir_direct_poly.pdf used on input line 373.
-(pdftex.def)             Requested size: 337.41983pt x 96.85472pt.
+<use iir_direct_poly.png>
+Package pdftex.def Info: iir_direct_poly.png used on input line 370.
+(pdftex.def)             Requested size: 337.45317pt x 30.06435pt.
 
-Underfull \hbox (badness 10000) in paragraph at lines 390--391
-
- []
-
-[17 <./iir_direct_poly.pdf>] [18]
-Underfull \hbox (badness 10000) in paragraph at lines 449--450
+Underfull \hbox (badness 10000) in paragraph at lines 387--388
 
  []
 
-[19] <russell.pdf, id=676, 492.91182pt x 30.87596pt>
+[17 <./iir_direct_poly.png>] [18]
+Underfull \hbox (badness 10000) in paragraph at lines 446--447
+
+ []
+
+<russell.pdf, id=667, 492.91182pt x 30.87596pt>
 File: russell.pdf Graphic file (type pdf)
  <use russell.pdf>
-Package pdftex.def Info: russell.pdf used on input line 466.
+Package pdftex.def Info: russell.pdf used on input line 463.
 (pdftex.def)             Requested size: 394.32999pt x 24.70078pt.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 467.
+(Font)              scaled to size 10.42007pt on input line 464.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 467.
+(Font)              scaled to size 7.91925pt on input line 464.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 10.42007pt on input line 467.
+(Font)              scaled to size 10.42007pt on input line 464.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.91925pt on input line 467.
+(Font)              scaled to size 7.91925pt on input line 464.
 
-<russell_final.pdf, id=678, 559.53181pt x 177.90439pt>
+<russell_final.pdf, id=669, 559.53181pt x 177.90439pt>
 File: russell_final.pdf Graphic file (type pdf)
  <use russell_final.pdf>
-Package pdftex.def Info: russell_final.pdf used on input line 475.
+Package pdftex.def Info: russell_final.pdf used on input line 472.
 (pdftex.def)             Requested size: 391.66959pt x 124.53221pt.
 
-<multistage.pdf, id=685, 593.69656pt x 59.41629pt>
-File: multistage.pdf Graphic file (type pdf)
- <use multistage.pdf>
-Package pdftex.def Info: multistage.pdf used on input line 500.
-(pdftex.def)             Requested size: 415.58476pt x 41.59111pt.
-
-Overfull \hbox (11.55568pt too wide) in paragraph at lines 500--501
- [][] 
- []
-
-[20 <./russell.pdf> <./russell_final.pdf
+[19 <./russell.pdf> <./russell_final.pdf
 
 pdfTeX warning: /usr/bin/pdflatex (file ./russell_final.pdf): PDF inclusion: mu
 ltiple pdfs with page group included in a single page
-> <./multistage.pdf
+>] <multistage.pdf, id=688, 593.69656pt x 59.41629pt>
+File: multistage.pdf Graphic file (type pdf)
+ <use multistage.pdf>
+Package pdftex.def Info: multistage.pdf used on input line 497.
+(pdftex.def)             Requested size: 415.58476pt x 41.59111pt.
 
-pdfTeX warning: /usr/bin/pdflatex (file ./multistage.pdf): PDF inclusion: multi
-ple pdfs with page group included in a single page
->]
-Underfull \hbox (badness 10000) in paragraph at lines 513--514
+Overfull \hbox (11.55568pt too wide) in paragraph at lines 497--498
+ [][] 
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 510--511
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 523--524
+Underfull \hbox (badness 10000) in paragraph at lines 520--521
 
  []
 
-<multistage_sup1_1.pdf, id=706, 550.18268pt x 64.48114pt>
+[20 <./multistage.pdf>]
+<multistage_sup1_1.pdf, id=710, 550.18268pt x 64.48114pt>
 File: multistage_sup1_1.pdf Graphic file (type pdf)
 
 <use multistage_sup1_1.pdf>
-Package pdftex.def Info: multistage_sup1_1.pdf used on input line 556.
+Package pdftex.def Info: multistage_sup1_1.pdf used on input line 553.
 (pdftex.def)             Requested size: 374.11928pt x 43.84659pt.
 
-Overfull \hbox (0.62344pt too wide) in paragraph at lines 555--557
+Overfull \hbox (0.62344pt too wide) in paragraph at lines 552--554
  []|  [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 560--561
+Underfull \hbox (badness 10000) in paragraph at lines 557--558
 
  []
 
-[21] <multistage_sup1_2.pdf, id=724, 385.93504pt x 329.47435pt>
+<multistage_sup1_2.pdf, id=713, 385.93504pt x 329.47435pt>
 File: multistage_sup1_2.pdf Graphic file (type pdf)
 
 <use multistage_sup1_2.pdf>
-Package pdftex.def Info: multistage_sup1_2.pdf used on input line 565.
+Package pdftex.def Info: multistage_sup1_2.pdf used on input line 562.
 (pdftex.def)             Requested size: 385.93408pt x 329.47353pt.
 
-Overfull \hbox (26.66463pt too wide) in paragraph at lines 564--566
+Overfull \hbox (26.66463pt too wide) in paragraph at lines 561--563
  []|  [] 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 573--575
+Underfull \hbox (badness 10000) in paragraph at lines 570--572
 
  []
 
-[22 <./multistage_sup1_1.pdf> <./multistage_sup1_2.pdf
-
-pdfTeX warning: /usr/bin/pdflatex (file ./multistage_sup1_2.pdf): PDF inclusion
-: multiple pdfs with page group included in a single page
->] <multistage_down_1.pdf, id=741, 569.51295pt x 64.49889pt>
+[21 <./multistage_sup1_1.pdf>]
+<multistage_down_1.pdf, id=731, 569.51295pt x 64.49889pt>
 File: multistage_down_1.pdf Graphic file (type pdf)
 
 <use multistage_down_1.pdf>
-Package pdftex.def Info: multistage_down_1.pdf used on input line 590.
+Package pdftex.def Info: multistage_down_1.pdf used on input line 587.
 (pdftex.def)             Requested size: 341.7104pt x 38.6996pt.
+ [22 <./multistage_sup1_2.pdf> <./multistage_down_1.pdf
 
-<multistage_down_2.pdf, id=742, 375.37178pt x 325.40015pt>
+pdfTeX warning: /usr/bin/pdflatex (file ./multistage_down_1.pdf): PDF inclusion
+: multiple pdfs with page group included in a single page
+>] <multistage_down_2.pdf, id=747, 375.37178pt x 325.40015pt>
 File: multistage_down_2.pdf Graphic file (type pdf)
 
 <use multistage_down_2.pdf>
-Package pdftex.def Info: multistage_down_2.pdf used on input line 599.
+Package pdftex.def Info: multistage_down_2.pdf used on input line 598.
 (pdftex.def)             Requested size: 289.03716pt x 250.55887pt.
- [23 <./multistage_down_1.pdf> <./multistage_down_2.pdf
 
-pdfTeX warning: /usr/bin/pdflatex (file ./multistage_down_2.pdf): PDF inclusion
-: multiple pdfs with page group included in a single page
->] <multistage_ex_1.pdf, id=762, 433.25046pt x 35.51215pt>
+<multistage_ex_1.pdf, id=752, 433.25046pt x 35.51215pt>
 File: multistage_ex_1.pdf Graphic file (type pdf)
 
 <use multistage_ex_1.pdf>
-Package pdftex.def Info: multistage_ex_1.pdf used on input line 640.
+Package pdftex.def Info: multistage_ex_1.pdf used on input line 639.
 (pdftex.def)             Requested size: 346.60083pt x 28.40973pt.
 Missing character: There is no ) in font nullfont!
 Missing character: There is no ; in font nullfont!
 
-<multistage_ex_2.pdf, id=763, 433.25046pt x 35.74088pt>
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+<multistage_ex_2.pdf, id=753, 433.25046pt x 35.74088pt>
 File: multistage_ex_2.pdf Graphic file (type pdf)
 
 <use multistage_ex_2.pdf>
-Package pdftex.def Info: multistage_ex_2.pdf used on input line 698.
+Package pdftex.def Info: multistage_ex_2.pdf used on input line 697.
 (pdftex.def)             Requested size: 346.60083pt x 28.59271pt.
- [24 <./multistage_ex_1.pdf> <./multistage_ex_2.pdf
+ [23 <./multistage_down_2.pdf> <./multistage_ex_1.pdf
 
-pdfTeX warning: /usr/bin/pdflatex (file ./multistage_ex_2.pdf): PDF inclusion: 
+pdfTeX warning: /usr/bin/pdflatex (file ./multistage_ex_1.pdf): PDF inclusion: 
 multiple pdfs with page group included in a single page
->] [25] <effect_Rp.png, id=791, 1209.318pt x 640.3122pt>
+>] [24 <./multistage_ex_2.pdf>] [25]
+<effect_Rp.png, id=791, 1209.318pt x 640.3122pt>
 File: effect_Rp.png Graphic file (type png)
  <use effect_Rp.png>
-Package pdftex.def Info: effect_Rp.png used on input line 809.
+Package pdftex.def Info: effect_Rp.png used on input line 796.
 (pdftex.def)             Requested size: 332.55424pt x 176.08151pt.
-
-[26] <effect_Rs.png, id=797, 1214.136pt x 751.608pt>
+ [26 <./effect_Rp.png>] <effect_Rs.png, id=798, 1214.136pt x 751.608pt>
 File: effect_Rs.png Graphic file (type png)
- <use effect_Rs.png>
-Package pdftex.def Info: effect_Rs.png used on input line 820.
-(pdftex.def)             Requested size: 333.87917pt x 206.6871pt.
 
-<effect_TW.png, id=798, 1201.1274pt x 678.3744pt>
+<use effect_Rs.png>
+Package pdftex.def Info: effect_Rs.png used on input line 807.
+(pdftex.def)             Requested size: 333.87917pt x 206.6871pt.
+ <effect_TW.png, id=799, 1201.1274pt x 678.3744pt>
 File: effect_TW.png Graphic file (type png)
- <use effect_TW.png>
-Package pdftex.def Info: effect_TW.png used on input line 827.
+
+<use effect_TW.png>
+Package pdftex.def Info: effect_TW.png used on input line 814.
 (pdftex.def)             Requested size: 330.3019pt x 186.54836pt.
- [27 <./effect_Rp.png> <./effect_Rs.png> <./effect_TW.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 844--845
+ [27 <./effect_Rs.png> <./effect_TW.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 831--832
 
  []
-
-
-LaTeX Warning: Reference `Figure 3.22' on page 28 undefined on input line 846.
 
 <2_stages_PM.png, id=823, 1701.2358pt x 579.1236pt>
 File: 2_stages_PM.png Graphic file (type png)
  <use 2_stages_PM.png>
-Package pdftex.def Info: 2_stages_PM.png used on input line 854.
+Package pdftex.def Info: 2_stages_PM.png used on input line 841.
 (pdftex.def)             Requested size: 425.3079pt x 144.78053pt.
 
 <2_stages_ellip.png, id=824, 1708.9446pt x 572.8602pt>
 File: 2_stages_ellip.png Graphic file (type png)
 
 <use 2_stages_ellip.png>
-Package pdftex.def Info: 2_stages_ellip.png used on input line 864.
+Package pdftex.def Info: 2_stages_ellip.png used on input line 851.
 (pdftex.def)             Requested size: 427.2351pt x 143.21469pt.
- [28]
-Overfull \hbox (1.25816pt too wide) in paragraph at lines 873--874
-\T1/ppl/m/n/10.95 com-bi-na-tions make the num-ber of MPOS grow dras-ti-cally a
-nd sud-denly. Morevover,
- []
-
-[29 <./2_stages_PM.png> <./2_stages_ellip.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 888--889
+ [28 <./2_stages_PM.png>] [29 <./2_stages_ellip.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 877--878
 
  []
 
 
-Overfull \hbox (29.19475pt too wide) in paragraph at lines 892--904
+Overfull \hbox (29.19475pt too wide) in paragraph at lines 881--893
 []|  [] 
  []
 
 [30]
-Underfull \hbox (badness 10000) in paragraph at lines 929--930
+Underfull \hbox (badness 10000) in paragraph at lines 918--919
 
  []
 
@@ -2807,7 +2796,7 @@ an1_100dB_snr.pdf Graphic file (type pdf)
 <use /home/gabriel/Documents/End-of-study-Project/Sweeps/44k_16_0dBFS_input_cha
 n1_100dB_snr.pdf>
 Package pdftex.def Info: /home/gabriel/Documents/End-of-study-Project/Sweeps/44
-k_16_0dBFS_input_chan1_100dB_snr.pdf used on input line 934.
+k_16_0dBFS_input_chan1_100dB_snr.pdf used on input line 923.
 (pdftex.def)             Requested size: 317.98898pt x 222.59229pt.
 
 </home/gabriel/Documents/End-of-study-Project/Quality_Evaluation/PM_Multistage_
@@ -2822,7 +2811,7 @@ age_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.
 pdf>
 Package pdftex.def Info: /home/gabriel/Documents/End-of-study-Project/Quality_E
 valuation/PM_Multistage_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitr
-ate_chan1_100dB_snr.pdf used on input line 942.
+ate_chan1_100dB_snr.pdf used on input line 931.
 (pdftex.def)             Requested size: 202.00174pt x 141.40121pt.
 
 </home/gabriel/Documents/End-of-study-Project/Quality_Evaluation/Russell_Multis
@@ -2837,10 +2826,10 @@ ltistage_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB
 _snr.pdf>
 Package pdftex.def Info: /home/gabriel/Documents/End-of-study-Project/Quality_E
 valuation/Russell_Multistage_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_25
-6bitrate_chan1_100dB_snr.pdf used on input line 948.
+6bitrate_chan1_100dB_snr.pdf used on input line 937.
 (pdftex.def)             Requested size: 202.00174pt x 141.40121pt.
 
-Overfull \hbox (2.0805pt too wide) in paragraph at lines 941--953
+Overfull \hbox (2.0805pt too wide) in paragraph at lines 930--942
 [][]  [] 
  []
 
@@ -2857,7 +2846,7 @@ huessler_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB
 _snr.pdf>
 Package pdftex.def Info: /home/gabriel/Documents/End-of-study-Project/Quality_E
 valuation/Russell_Schuessler_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_25
-6bitrate_chan1_100dB_snr.pdf used on input line 972.
+6bitrate_chan1_100dB_snr.pdf used on input line 959.
 (pdftex.def)             Requested size: 317.98898pt x 222.59229pt.
  [32 </home/gabriel/Documents/End-of-study-Project/Sweeps/44k_16_0dBFS_input_ch
 an1_100dB_snr.pdf> </home/gabriel/Documents/End-of-study-Project/Quality_Evalua
@@ -2873,33 +2862,32 @@ _chan1_100dB_snr.pdf Graphic file (type pdf)
 <use /home/gabriel/Documents/End-of-study-Project/Smarc/smarc/output_smarc_48k_
 chan1_100dB_snr.pdf>
 Package pdftex.def Info: /home/gabriel/Documents/End-of-study-Project/Smarc/sma
-rc/output_smarc_48k_chan1_100dB_snr.pdf used on input line 990.
+rc/output_smarc_48k_chan1_100dB_snr.pdf used on input line 977.
 (pdftex.def)             Requested size: 289.07487pt x 202.35242pt.
 
-Overfull \hbox (10.77597pt too wide) in paragraph at lines 994--996
+Overfull \hbox (10.77597pt too wide) in paragraph at lines 981--983
 []\T1/ppl/m/n/10.95 It has been re-al-ized with the fol-low-ing spec-i-fi-ca-ti
 ons: ($[][]\OT1/ppl/m/n/10.95 , [][], []$\T1/ppl/m/n/10.95 ) $\OT1/zplm/m/n/10.
-95 = (\OT1/ppl/m/n/10.95 0.1, 140, 0.95\OT1/zplm/m/n/10.95 )$\T1/ppl/m/n/10.95 
+95 = (\OT1/ppl/m/n/10.95 0.1, 140, 0.85\OT1/zplm/m/n/10.95 )$\T1/ppl/m/n/10.95 
 .
+ []
+
+<smarc.pdf, id=946, 569.73503pt x 199.56636pt>
+File: smarc.pdf Graphic file (type pdf)
+ <use smarc.pdf>
+Package pdftex.def Info: smarc.pdf used on input line 1010.
+(pdftex.def)             Requested size: 455.78864pt x 159.6533pt.
+
+Overfull \hbox (25.38731pt too wide) in paragraph at lines 1008--1011
+ []|  [] 
  []
 
 [33 </home/gabriel/Documents/End-of-study-Project/Quality_Evaluation/Russell_Sc
 huessler_Polyphase_140_0.1_0.85_L=160_M=147/48k_16_0dBFS_256bitrate_chan1_100dB
-_snr.pdf>] <smarc.pdf, id=973, 569.73503pt x 199.56636pt>
-File: smarc.pdf Graphic file (type pdf)
- <use smarc.pdf>
-Package pdftex.def Info: smarc.pdf used on input line 1026.
-(pdftex.def)             Requested size: 455.78864pt x 159.6533pt.
-
-Overfull \hbox (25.38731pt too wide) in paragraph at lines 1024--1027
- []|  [] 
- []
-
-[34 </home/gabriel/Documents/End-of-study-Project/Smarc/smarc/output_smarc_48k_
-chan1_100dB_snr.pdf> <./smarc.pdf>]
+_snr.pdf>]
 </home/gabriel/Documents/End-of-study-Project/Smarc/Quality_Evaluation/PM_Multi
 stage_Polyphase_Smarc_140_0.1_0.85_160_147/48k_16_0dBFS_256bitrate_chan1_100dB_
-snr.pdf, id=1002, 1445.4pt x 1011.78pt>
+snr.pdf, id=975, 1445.4pt x 1011.78pt>
 File: /home/gabriel/Documents/End-of-study-Project/Smarc/Quality_Evaluation/PM_
 Multistage_Polyphase_Smarc_140_0.1_0.85_160_147/48k_16_0dBFS_256bitrate_chan1_1
 00dB_snr.pdf Graphic file (type pdf)
@@ -2909,12 +2897,13 @@ ultistage_Polyphase_Smarc_140_0.1_0.85_160_147/48k_16_0dBFS_256bitrate_chan1_10
 0dB_snr.pdf>
 Package pdftex.def Info: /home/gabriel/Documents/End-of-study-Project/Smarc/Qua
 lity_Evaluation/PM_Multistage_Polyphase_Smarc_140_0.1_0.85_160_147/48k_16_0dBFS
-_256bitrate_chan1_100dB_snr.pdf used on input line 1050.
+_256bitrate_chan1_100dB_snr.pdf used on input line 1034.
 (pdftex.def)             Requested size: 317.98898pt x 222.59229pt.
- [35 </home/gabriel/Documents/End-of-study-Project/Smarc/Quality_Evaluation/PM_
-Multistage_Polyphase_Smarc_140_0.1_0.85_160_147/48k_16_0dBFS_256bitrate_chan1_1
-00dB_snr.pdf>]
-Underfull \hbox (badness 10000) in paragraph at lines 1099--1100
+ [34 </home/gabriel/Documents/End-of-study-Project/Smarc/smarc/output_smarc_48k
+_chan1_100dB_snr.pdf> <./smarc.pdf>] [35 </home/gabriel/Documents/End-of-study-
+Project/Smarc/Quality_Evaluation/PM_Multistage_Polyphase_Smarc_140_0.1_0.85_160
+_147/48k_16_0dBFS_256bitrate_chan1_100dB_snr.pdf>]
+Underfull \hbox (badness 10000) in paragraph at lines 1083--1084
 
  []
 
@@ -2922,23 +2911,23 @@ Underfull \hbox (badness 10000) in paragraph at lines 1099--1100
 File: gstreamer_q0.png Graphic file (type png)
 
 <use gstreamer_q0.png>
-Package pdftex.def Info: gstreamer_q0.png used on input line 1135.
+Package pdftex.def Info: gstreamer_q0.png used on input line 1119.
 (pdftex.def)             Requested size: 151.51219pt x 131.31694pt.
  <gstreamer_q4.png, id=1042, 402.303pt x 268.8444pt>
 File: gstreamer_q4.png Graphic file (type png)
 
 <use gstreamer_q4.png>
-Package pdftex.def Info: gstreamer_q4.png used on input line 1141.
+Package pdftex.def Info: gstreamer_q4.png used on input line 1125.
 (pdftex.def)             Requested size: 151.5078pt x 131.30417pt.
 
-Overfull \hbox (27.58105pt too wide) in paragraph at lines 1132--1144
+Overfull \hbox (27.58105pt too wide) in paragraph at lines 1116--1128
 []|  [] |  [] 
  []
 
 <gstreamer_q10.png, id=1043, 319.9152pt x 213.4374pt>
 File: gstreamer_q10.png Graphic file (type png)
  <use gstreamer_q10.png>
-Package pdftex.def Info: gstreamer_q10.png used on input line 1149.
+Package pdftex.def Info: gstreamer_q10.png used on input line 1133.
 (pdftex.def)             Requested size: 161.61203pt x 141.4195pt.
 
 [37 <./gstreamer_q0.png> <./gstreamer_q4.png> <./gstreamer_q10.png>]) [38]
@@ -2988,33 +2977,29 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 430.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 430.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 430.
 Package rerunfilecheck Info: File `Gabriel_SUC_B&O.out' has not changed.
-(rerunfilecheck)             Checksum: C4F2A7D38E336BF27E7075BA431457DA;5598.
-
-
-LaTeX Warning: There were undefined references.
-
+(rerunfilecheck)             Checksum: 9F1EF8618F9A4C907DFB8E4C907678C2;5606.
 Package logreq Info: Writing requests to 'Gabriel_SUC_B&O.run.xml'.
 \openout1 = `Gabriel_SUC_B&O.run.xml'.
 
  )
 (\end occurred when \iftrue on line 171 was incomplete) 
 Here is how much of TeX's memory you used:
- 44909 strings out of 493029
- 915440 string characters out of 6136233
- 984927 words of memory out of 5000000
+ 44907 strings out of 493029
+ 915432 string characters out of 6136233
+ 985014 words of memory out of 5000000
  47436 multiletter control sequences out of 15000+600000
- 103444 words of font info for 231 fonts, out of 8000000 for 9000
+ 103783 words of font info for 230 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 64i,20n,77p,10388b,2231s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 64i,20n,82p,10388b,2231s stack positions out of 5000i,500n,10000p,200000b,80000s
 pdfTeX warning (dest): n
 ame{Hfootnote.105} has been referenced but does not exist, replaced by a fixed 
 one
 
-pdfTeX warning (dest): name{Hfootnote.103} has been referenced but does not exi
+pdfTeX warning (dest): name{Hfootnote.101} has been referenced but does not exi
 st, replaced by a fixed one
 
-pdfTeX warning (dest): name{Hfootnote.100} has been referenced but does not exi
-st, replaced by a fixed one
+pdfTeX warning (dest): name{Hfootnote.98} has been referenced but does not exis
+t, replaced by a fixed one
 
 pdfTeX warning (dest): name{Hfootnote.38} has been referenced but does not exis
 t, replaced by a fixed one
@@ -3035,10 +3020,10 @@ atino/uplb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplbi8
 a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/
 share/texlive/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texliv
 e/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on Gabriel_SUC_B&O.pdf (60 pages, 6999046 bytes).
+Output written on Gabriel_SUC_B&O.pdf (60 pages, 7010738 bytes).
 PDF statistics:
  1202 PDF objects out of 1440 (max. 8388607)
- 989 compressed objects within 10 object streams
- 231 named destinations out of 1000 (max. 500000)
+ 988 compressed objects within 10 object streams
+ 230 named destinations out of 1000 (max. 500000)
  540 words of extra memory for PDF output out of 10000 (max. 10000000)
 
