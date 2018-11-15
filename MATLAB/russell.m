@@ -1,4 +1,4 @@
-function [output_russell, flag, gd_overall, f_overall] =  russell(z1,p1,k1,L,M,b_fir,Nl,Nm,xin,Fmax, gd, f)
+function [output_russell, flag, delay_current_stage] =  russell(z1,p1,k1,L,M,b_fir,Nl,Nm,xin,Fmax, delay_previous_stage)
 
 %Takes an IIR filter under the zero-pole-gain form (z,p,k) as input and 
 %returns a decomposed version of it according to Russell's method
@@ -34,6 +34,9 @@ gd_ap1 = gd_ap1./(Fmax/L); %divide by Fsin
 % Have to relate them to the frequency at the output of the stage
 f_ap1 = w_ap1.*((Fmax/L)/(2*pi)); 
 
+% Making a single array
+delay_ap1 = [f_ap1,gd_ap1];
+
 %--------------------------------------------------------------------------
                             %Third Filter
 %--------------------------------------------------------------------------
@@ -63,6 +66,9 @@ gd_ap2 = gd_ap2./(Fmax/M); %divide by F_intermediary1
 % We can convert the digital frequencies to the analog ones
 % Have to relate them to the frequency at the output of the stage
 f_ap2 = w_ap2.*((Fmax/M)/(2*pi)); 
+
+% Making a single array
+delay_ap2 = [f_ap2,gd_ap2];
 %--------------------------------------------------------------------------
                             %Second Filter
 %--------------------------------------------------------------------------
@@ -126,6 +132,9 @@ gd_fir = gd_fir./(Fmax/(L*M)); %divide by Fsin/M
 % Have to relate them to the frequency at the output of the stage
 f_fir = w_fir.*((Fmax/(L*M))/(2*pi)); 
 
+% Making a single array
+delay_fir = [f_fir,gd_fir];
+
 % --------------------------------------------------------------------------
 % --------------------------------------------------------------------------
 %                       Filtering the signal
@@ -134,6 +143,8 @@ f_fir = w_fir.*((Fmax/(L*M))/(2*pi));
 % 
 %  %Plots
 nbr_samples = 10000;
+
+
 subplot(9,1,1)
 plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),xin(1:nbr_samples))
 title(['Input Signal for Stage ', num2str(i)])
@@ -236,17 +247,23 @@ subplot(9,1,9)
 plot((0:1/(Fmax/M):(nbr_samples-1)/(Fmax/M)),output_russell(1:nbr_samples))
 title('Output Signal (After second All-Pole Filter)')
 
+% --------------------------------------------------------------------------
+%                           Overall Delay
+% --------------------------------------------------------------------------
 
-% Passing to the next stage the group delay and the frequencies
-if isempty(gd) == 1 && isempty(f)
-    gd = zeros(size(gd_ap1,1),1); % all the different group delay array are the same size
-    f = zeros(size(gd_ap1,1),1);
-end
 
-gd_overall = sum([gd,gd_ap1,gd_fir,gd_ap2],2); 
+% Adapting the frequencies of each filter to match each other
+delay_ap1(:,1) = delay_ap1(:,1).*(L/M);
+delay_fir(:,1) = delay_fir(:,1).*(L);
+%Nothing to do for the second all-pole filter
 
-% Need to adapt the previous frequencies to the new stage
-f = f*(L/M);
-f_overall = sum([f,f_ap1,f_fir,f_ap2],2);
+% Taking into account the delays from the previous stages and adapting the
+% frequencies to the current stage
+delay_previous_stage(:,1) = delay_previous_stage(:,1).*(L/M);
+
+% Combining the previous stage delays with the current ones
+delay_3_filters = linkArray(linkArray(delay_ap1,delay_ap2),delay_fir);
+delay_current_stage = linkArray(delay_3_filters, delay_previous_stage);
+
 
 end

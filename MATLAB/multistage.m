@@ -114,7 +114,8 @@ if filter_choice == 1
                 gd = grpdelay(FL(1,i)*firpm(Order,fo,ao),1);
            
                 % The delay for each stage is computed as follow:
-    % (Delay introduced by the previous stage (in samples)/Mi + gd/LiMi)*Li
+                % (Delay introduced by the previous stage (in samples)/Mi +
+                % (gd-p)/LiMi)*Li with p = 0
                 delay(1,i+1) = (delay(1,i)/FM(1,i) + gd(1)/(FL(1,i)*FM(1,i)))*FL(1,i);
                 
                                 
@@ -353,14 +354,16 @@ elseif filter_choice == 2
                     signal = input_signal; %true only for the first input
                     
                     % Need to set the group delay and related frequencies
-                    % to 0 before the first stage
-                    gd_russell = [];
-                    f_russell = [];
+                    % to 0 before the first stage. This array contains the
+                    % frequencies in the first columns and the related
+                    % delays in the second. Let's create a random-sized
+                    % zero array
+                    delay_russell = zeros(10,2);
                     
                 end
                 
-                [signal, flag, gd_russell, f_russell] = russell(z_ellip,p_ellip,FL(1,i)*k_ellip,...
-                    FL(1,i),FM(1,i),b_ellip,Nl,Nm,signal,Fmax(1,i),gd_russell, f_russell);
+                [signal, flag, delay_russell] = russell(z_ellip,p_ellip,FL(1,i)*k_ellip,...
+                    FL(1,i),FM(1,i),b_ellip,Nl,Nm,signal,Fmax(1,i),delay_russell);
 
                 
                 %In case the above technique is not feasible 
@@ -625,8 +628,7 @@ elseif filter_choice == 1 && ispolyphase == 1
     disp([num2str(overall_delay), ' s']);
     disp('-------------------------------------------------------------------')
 elseif filter_choice == 2 && ispolyphase == 0
-    overall_delay = 0;
-    
+        
     disp(['Overall delay between input and output signal, for both channel, is'...
         ' displayed by the group delay plot']);
     disp('-------------------------------------------------------------------')
@@ -642,15 +644,14 @@ elseif filter_choice == 2 && ispolyphase == 0
     grid on;
     
 elseif filter_choice == 2 && ispolyphase == 1
-    overall_delay = 0;
-    
+       
     disp(['Overall delay between input and output signal, for both channel, is'...
         ' displayed by the group delay plot']);
     disp('-------------------------------------------------------------------')
     
     % Ploting the overall delay
     figure
-    plot(f_russell,gd_russell);
+    plot(delay_russell(:,1),delay_russell(:,2));
     title('Overall Delay using Elliptic filters without Polyphase')
     ylabel('Delay (in s)')
     xlabel('Frequency (in Hz)')
