@@ -121,237 +121,7 @@ end
 
        
 
-%% Parks-McClellan Direct & Folded Implementation
 
-
-%firpmord uses the algorithm suggested in  Rabiner, Lawrence R., and 
-%Otto Herrmann. “The Predictability of Certain Optimum Finite-Impulse-Response 
-%Digital Filters.” IEEE® Transactions on Circuit Theory. Vol.  20, Number 4, 
-%1973, pp. 401–408. This method is inaccurate for band edges close to 
-%either 0 or the Nyquist frequency, fs/2.
-
-% cutoff frequencies
-f = [Fp Fc];   
-% desired amplitudes
-a = [1 0];    
-
-% compute deviations
-dev = [(10^(Rp/20)-1)/(10^(Rp/20)+1)  10^(-Rs/20)];  
-
-% Find required order to meet the specs
-[n_pm_direct,fo,ao,w] = firpmord(f,a,dev,Fe);
-
-% Need to adapt the gain
-PM_direct = L*firpm(n_pm_direct,fo,ao,w); %Direct Implementation
-
-
-fvtool(PM_direct) %Uncomment to see graphs
-
-fvtool(schuessler(PM_direct, 10^(-Rs/20)))
-
-%Folded Implentation FIR
-%PM_folded = dfilt.dfsymfir(PM_direct);
-
-%fvtool(PM_folded)
-
-
-
-
-
-
-%% Filtering Part
-
-for i = 1:length(cosine_sweeps)
-    
-    %Upsampling
-    input_uped = upsample(cosine_sweeps(i).sweep,L);
-    %Filtering
-    input_filtered = filter(PM_folded,input_uped);
-    %Downsampling
-    signal = downsample(input_filtered,M);
-    
-    signal = signal/max(signal); %_To prevent data from clipping when writing file
-    
-    %Writting the resulting signal as an audio file
-    audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
-        num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
-        signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
-end    
-    
-%Then we can use Geoff's cosine sweep evaluation tool with tool = 3 and
-%process those files
-
-%This part can be not relevant since there's too many coefficients for some
-%cases of L and M
-
-
-
-
-%% Elliptic Direct & Cascaded Filters
-
-
-%firpmord uses the algorithm suggested in Rabiner, Lawrence R., and B. Gold. 
-%Theory and Application of Digital Signal Processing. Englewood Cliffs,
-%NJ: Prentice-Hall, 1975.
-
-
-[n_ellip_direct,Wp_ellip_direct] = ellipord(Fp/(Fe/2),Fc/(Fe/2),Rp,Rs);
-
-[z_ellip_direct,p_ellip_direct,k_ellip_direct] = ellip(n_ellip_direct,Rp,Rs,Wp_ellip_direct);
-
-[b_ellip_direct,a_ellip_direct] = ellip(n_ellip_direct,Rp,Rs,Wp_ellip_direct);
-
-
-Ellip_direct = zp2sos(z_ellip_direct,p_ellip_direct,L*k_ellip_direct); %Have to compensate for he gain
-
-fvtool(Ellip_direct) %Uncomment to see graphs
-
-% Direct-form II SOS 
-
-%Ellip_cascaded = dfilt.df2sos(Ellip_direct);
-% 
-% Ellip_cascaded.persistentmemory = true;
-
-%fvtool(Ellip_cascaded)
-
-%Other way to implement
-% Hlp1 = design(filtSpecs, 'ellip', 'FilterStructure', 'df2sos', ...
-%     'MatchExactly', 'both','SOSScaleNorm', 'Linf', ...
-%     'SystemObject', true);
-
-
-
-
-
-%% Filtering Part
-
-for i = 1:length(cosine_sweeps)
-    
-    %Upsampling
-    input_uped = upsample(cosine_sweeps(i).sweep,L);
-    %Filtering
-    input_filtered = filter(Ellip_cascaded,input_uped); %filter works only with cascaded for some small M and L, sosfilt otherwise
-    %Downsampling
-    signal = downsample(input_filtered,M);
-    
-    signal = signal/max(signal); %_To prevent data from clipping when writing file
-    
-    %Writting the resulting signal as an audio file
-    audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
-        num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
-        signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
-end      
-
-%Then we can use Geoff's cosine sweep evaluation tool with tool = 3 and
-%process those files
-
-%If any problem occurs, go to SNR part down here to have a deeper look into
-%what's going on
-
-
-
-
-%% Polystage implementation
-
-%% FIR Polyphase
-%I decided to use the same polyphase decomposition given in Russell's
-%technique. Even if it is suboptimal it is rather simple to implement and
-%still gives a good result in terms of efficiency regarding other
-%techniques cf. "Generalized Rational Sampling Rate Conversion Polyphase FIR Filter".
-
-
-%We need to have the coefficient a and b of the delays
-
-a = 0;
-b = 0.1;
-
-while(rem(b,1)~=0)
-    a = a + 1;
-    b = (L*a - 1)/M;
-end   
-
-
-disp('----------------------- Delay Coefficients ------------------------')
-disp( ['a = ', num2str(a), ' and b = ', num2str(b)]);
-disp('-------------------------------------------------------------------')
-
-%Now need the LM polyphase components ek of hn
-
-%ATTENTION! POLYPHASE WON'T WORK HERE FOR CERTAIN VALUE OF L AND M.
-%THE LENGTH OF THE FILTER HAS TO BE BIGGER THAN L*M ...
-
-ek = myPolyphase(PM_direct,1,L,M,'2');
-
-%Have to filter xin through each branch 
-
-sumBranch = 0;
-
-for k = 1:length(cosine_sweeps)
-
-    for i = (L*M):-1:1 %Starting from the LM-1 branch
-        %Creating the other branches before summation
-        delayedBy_a = delayseq(cosine_sweeps(k).sweep,(i-1)*a); 
-        downsamp = downsample(delayedBy_a,M);
-        %Implement polyphase components as folded structures
-        filter_polyphase = filter(ek(i,:),1,downsamp);
-        upsamp = upsample(filter_polyphase,L); 
-
-        %Sum 
-
-        sumBranch = sumBranch + upsamp;
-
-        if i > 1
-            sumBranch = delayseq(sumBranch,-b);
-        end
-    end
-    
-    sumBranch = sumBranch/max(sumBranch); %_To prevent data from clipping when writing file
-    
-    %Writting the resulting signal as an audio file
-    audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(k).fs/1000)) 'k_' ...
-        num2str(cosine_sweeps(k).bit_depth) '_' num2str(cosine_sweeps(k).level_dBFS) 'dBFS.wav'],...
-        sumBranch, cosine_sweeps(k).fs, 'BitsperSample', cosine_sweeps(k).bit_depth)
-    
-end
-
-
-%% IIR Polyphase
-
-%This part consist of implementing the above filters as a polyphase
-%implementation. This can be better explained in "Discrete-Time Signal 
-%Processing" by Alan V. Oppenheim& Ronald W. Schafer.
-
-%We split the nonrecursive part (the zeros) and commute it across the
-%expander. only if EXPANSION RATE IS HIGHER THAN THE DECIMATION RATE (L > M)
-
-
-
-for i = 1:length(cosine_sweeps)
-    
-    %Polyphase of the nonrecursive part 
-    poly_comp = myPolyphase(z_ellip_direct,1,L,M,'1');
-    %Filter by the polyphase components
-    input_filtered_1st = filter(dfilt.dfsymfir(poly_comp),cosine_sweeps(i).sweep);
-    %Upsampling
-    input_uped = upsample(input_filtered_1st,L);
-    %Filter by the poles as folded structure
-    input_filtered_2nd = filter(1,p_ellip_direct,input_uped);
-    %Downsampling
-    signal = downsample(input_filtered_2nd,M);
-
-    signal = signal/max(signal); %_To prevent data from clipping when writing file
-    
-    %Writting the resulting signal as an audio file
-    audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
-        num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
-        signal, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)
-end      
-
-%Then we can use Geoff's cosine sweep evaluation tool with tool = 3 and
-%process those files
-
-%If any problem occurs, go to SNR part down here to have a deeper look into
-%what's going on
 
 
 
@@ -371,57 +141,68 @@ clc
 
 [bestPerm,filter_choice,multistage_method] = multi_stage(L,M,Fsin,Fsout,Fp,Rp,Rs); 
 
-IR = input('Choose the input you desire: [1] cosine sweep, [2] impulse, [3] cosine');
+Input = input('Choose the input you desire: [1] cosine sweep, [2] impulse, [3] sine: ');
 
-if isempty(IR)
-    IR = '1';
+if isempty(Input)
+    Input = '1';
 end
 
+if Input == 1
+    
+    %Choose how many samples to plot
+    nbr_samples = 10000;
+    
+    for i = 1:length(cosine_sweeps)
+       
+        input = cosine_sweeps(i).sweep;
 
-for i = 1:length(cosine_sweeps)
+        signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,Input);
+        signal = signal/max(abs(signal(:))); 
+
+
+        %Writting the resulting signal as an audio file
+        audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
+        num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
+        signal, floor(cosine_sweeps(i).fs*(L/M)), 'BitsperSample', cosine_sweeps(i).bit_depth)
     
-if IR == 1
+    end
     
-    input = cosine_sweeps(i).sweep;
     
-elseif IR == 2 
+elseif Input == 2 
     
     %Choose how many samples to plot
     nbr_samples = 10000;
     %Creating Impulse
-    t = (-1:(1/nbr_samples):1)';
+    t = (-1:(1/Fsin):1)';
     impulse = t==0;
     input = impulse; 
+    
+    signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,Input);
+    signal = signal/max(abs(signal(:))); 
     
 else
     
     %Choose how many samples to plot
-    nbr_samples = 10000;
+    nbr_samples = 1000;
     %Creating Impulse
-    t = (-1:(1/nbr_samples):1)';
-    f_desired = input('Choose the frequency of the cosine');
-    input = sin(2*pi*f_desired*t); %
-end    
+    t = (0:(1/Fsin):1/nbr_samples)';
+    f_desired = input('Choose the frequency of the cosine [Hz]: ');
+    input = sind(2*pi*f_desired.*t); 
+    
+    signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,Input);
+    signal = signal/max(abs(signal(:))); 
+    
+end 
 
-signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method);
-
-signal = signal/max(abs(signal(:))); 
 
 
-end
+
 %% Plots and Saving
 
 figure
 %Input and Output
 
-if IR == 'Y'
-    plot(t,impulse)
-    hold on
-    plot(signal)
-    legend(['Input at ', num2str(Fsin)], ['Output at ', num2str(Fsout)])
-    title('Input and Output signals');
-    grid on;
-else
+if Input == 1
     plot((0:1/Fsin:(nbr_samples-1)/Fsin),cosine_sweeps(i).sweep(1:nbr_samples))
     hold on
     %Have to compensate for difference in sample rates (to have same
@@ -431,16 +212,32 @@ else
     legend(['Input at ', num2str(Fsin)], ['Output at ', num2str(Fsout)])
     title('Input and Output signals');
     grid on;
+    
+elseif Input == 2
+    
+    plot(t,impulse)
+    hold on
+    plot(signal)
+    legend(['Input at ', num2str(Fsin)], ['Output at ', num2str(Fsout)])
+    title('Input and Output signals');
+    grid on;
+    
+else 
+    
+    plot(t,input)
+    hold on
+    plot((0:1/(10*Fsout):1/((Fsout/Fsin)*nbr_samples)), signal(1:length((0:1/(10*Fsin):1/nbr_samples))))
+    legend(['Input at ', num2str(Fsin)], ['Output at ', num2str(Fsout)])
+    title('Input and Output signals');
+    grid on;
+    
 end
 
 
 
 %snr(signal(:,1), Fsin)
 
-%Writting the resulting signal as an audio file
-audiowrite(['~/Documents/End-of-study-Project/Sweeps/' num2str(round(Fsout/1000)) 'k_' ...
-    num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS.wav'],...
-    signal, floor(cosine_sweeps(i).fs*(L/M)), 'BitsperSample', cosine_sweeps(i).bit_depth)
+
 
 
 

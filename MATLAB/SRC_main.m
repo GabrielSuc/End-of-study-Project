@@ -141,13 +141,13 @@ clc
 
 [bestPerm,filter_choice,multistage_method] = multi_stage(L,M,Fsin,Fsout,Fp,Rp,Rs); 
 
-IR = input('Choose the input you desire: [1] cosine sweep, [2] impulse, [3] sine: ');
+Input = input('Choose the input you desire: [1] cosine sweep, [2] impulse, [3] sine: ');
 
-if isempty(IR)
-    IR = '1';
+if isempty(Input)
+    Input = '1';
 end
 
-if IR == 1
+if Input == 1
     
     %Choose how many samples to plot
     nbr_samples = 10000;
@@ -156,7 +156,7 @@ if IR == 1
        
         input = cosine_sweeps(i).sweep;
 
-        signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method);
+        signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,Input);
         signal = signal/max(abs(signal(:))); 
 
 
@@ -168,28 +168,28 @@ if IR == 1
     end
     
     
-elseif IR == 2 
+elseif Input == 2 
     
     %Choose how many samples to plot
     nbr_samples = 10000;
     %Creating Impulse
-    t = (-1:(1/nbr_samples):1)';
+    t = (-1:(1/Fsin):1)';
     impulse = t==0;
     input = impulse; 
     
-    signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method);
+    signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,Input);
     signal = signal/max(abs(signal(:))); 
     
 else
     
     %Choose how many samples to plot
-    nbr_samples = 10000;
+    nbr_samples = 6;
     %Creating Impulse
-    t = (-1:(1/nbr_samples):1)';
+    t = (0:(1/(Fsin)):1/nbr_samples)';
     f_desired = input('Choose the frequency of the cosine [Hz]: ');
-    input = sin(2*pi*f_desired.*t); 
+    input = sind(2*pi*f_desired.*t); 
     
-    signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method);
+    signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,Input);
     signal = signal/max(abs(signal(:))); 
     
 end 
@@ -202,18 +202,18 @@ end
 figure
 %Input and Output
 
-if IR == 1
+if Input == 1
     plot((0:1/Fsin:(nbr_samples-1)/Fsin),cosine_sweeps(i).sweep(1:nbr_samples))
     hold on
     %Have to compensate for difference in sample rates (to have same
     %ending)
-    plot((0/Fsout:1/Fsout:((nbr_samples-1)/Fsout) + (nbr_samples/Fsin - nbr_samples/Fsout))...
+    plot((0:1/Fsout:((nbr_samples-1)/Fsout) + (nbr_samples/Fsin - nbr_samples/Fsout))...
         ,signal(1:(nbr_samples + (nbr_samples/Fsin - nbr_samples/Fsout)*Fsout)))
     legend(['Input at ', num2str(Fsin)], ['Output at ', num2str(Fsout)])
     title('Input and Output signals');
     grid on;
     
-elseif IR == 2
+elseif Input == 2
     
     plot(t,impulse)
     hold on
@@ -226,8 +226,7 @@ else
     
     plot(t,input)
     hold on
-    plot((0/Fsout:1/Fsout:((nbr_samples-1)/Fsout) + (nbr_samples/Fsin - nbr_samples/Fsout))...
-        ,signal(1:(nbr_samples + (nbr_samples/Fsin - nbr_samples/Fsout)*Fsout)))
+    plot((0:1/(Fsout):1/((Fsout/Fsin)*nbr_samples)), signal(1:length((0:1/(Fsin):1/nbr_samples))))
     legend(['Input at ', num2str(Fsin)], ['Output at ', num2str(Fsout)])
     title('Input and Output signals');
     grid on;

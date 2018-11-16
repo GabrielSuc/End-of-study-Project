@@ -1,4 +1,4 @@
-function [output_russell, flag, delay_current_stage] =  russell(z1,p1,k1,L,M,b_fir,Nl,Nm,xin,Fmax, delay_previous_stage)
+function [output_russell, flag, delay_current_stage] =  russell(z1,p1,k1,L,M,b_fir,Nl,Nm,xin,Fmax, delay_previous_stage,nbr_samples)
 
 %Takes an IIR filter under the zero-pole-gain form (z,p,k) as input and 
 %returns a decomposed version of it according to Russell's method
@@ -142,9 +142,6 @@ delay_fir = [f_fir,gd_fir];
 % --------------------------------------------------------------------------
 % 
 %  %Plots
-nbr_samples = 10000;
-
-
 subplot(9,1,1)
 plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),xin(1:nbr_samples))
 title(['Input Signal for Stage ', num2str(i)])

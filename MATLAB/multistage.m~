@@ -20,6 +20,10 @@ end
 % Measuring the delay introduced by each stage:
 delay = zeros(1,length(bestPerm)/2 + 1);
 
+
+% Adapting the number of samples according to the input
+
+
 % Filtering through the different kind of filters:
 
 % Parks-McClellan
@@ -407,30 +411,30 @@ elseif filter_choice == 2
                 end
                 
                 %Plots
-%                 subplot(4,1,1)
-%                 plot((0:1/(Fmax(1,i)/FL(1,i)):(nbr_samples-1)/(Fmax(1,i)/FL(1,i))),signal(1:nbr_samples))
-%                 title(['Input Signal for Stage ', num2str(i)])
-%                 
-%                 %fvtool(Filter)
-%                 
-%                 %Upsampling
-%                 signal = upsample(signal,FL(1,i));
-%                 
-%                 subplot(4,1,2)
-%                 plot((0:1/(Fmax(1,i)):(nbr_samples-1)/(Fmax(1,i))),signal(1:nbr_samples))
-%                 title('Signal Upsampled')
-%                 %Filtering
-%                 input_filtered = filter(Filter,signal);
-%                 
-%                 subplot(4,1,3)
-%                 plot((0:1/(Fmax(1,i)):(nbr_samples-1)/(Fmax(1,i))),input_filtered(1:nbr_samples))
-%                 title('Signal Filtered')
-%                 %Downsampling
-%                 signal = downsample(input_filtered,FM(1,i));
-%                 
-%                 subplot(4,1,4)
-%                 plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),signal(1:nbr_samples))
-%                 title('Signal Downsampled')
+                subplot(4,1,1)
+                plot((0:1/(Fmax(1,i)/FL(1,i)):(nbr_samples-1)/(Fmax(1,i)/FL(1,i))),signal(1:nbr_samples))
+                title(['Input Signal for Stage ', num2str(i)])
+                
+                %fvtool(Filter)
+                
+                %Upsampling
+                signal = upsample(signal,FL(1,i));
+                
+                subplot(4,1,2)
+                plot((0:1/(Fmax(1,i)):(nbr_samples-1)/(Fmax(1,i))),signal(1:nbr_samples))
+                title('Signal Upsampled')
+                %Filtering
+                input_filtered = filter(Filter,signal);
+                
+                subplot(4,1,3)
+                plot((0:1/(Fmax(1,i)):(nbr_samples-1)/(Fmax(1,i))),input_filtered(1:nbr_samples))
+                title('Signal Filtered')
+                %Downsampling
+                signal = downsample(input_filtered,FM(1,i));
+                
+                subplot(4,1,4)
+                plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),signal(1:nbr_samples))
+                title('Signal Downsampled')
 %                 output = signal;
 %                 return
                 
@@ -636,7 +640,7 @@ elseif filter_choice == 2 && ispolyphase == 0
     gd_overall = sum(gd_direct,2);
     f_overall = f_direct(:,1); % all the columns are the same
     plot(f_overall,gd_overall);
-    title('Overall Delay using Elliptic filters without Polyphase')
+    title('Overall Delay using Elliptic filters with Polyphase (Russell)')
     ylabel('Delay (in s)')
     xlabel('Frequency (in Hz)')
     grid on;
@@ -650,7 +654,7 @@ elseif filter_choice == 2 && ispolyphase == 1
     % Ploting the overall delay
     figure
     plot(delay_russell(:,1),delay_russell(:,2));
-    title('Overall Delay using Elliptic filters with Polyphase (Russell)')
+    title('Overall Delay using Elliptic filters without Polyphase')
     ylabel('Delay (in s)')
     xlabel('Frequency (in Hz)')
     grid on;
