@@ -28,7 +28,7 @@ clear
 %Input frequency
 Fsin = 44.1e3; 
 %Output frequency
-Fsout =  48e3; %2*Fsin; %
+Fsout = 2*Fsin; %48e3; %
 
 % Resampling Factors L/M
 [L,M] = getSRFactors(Fsin,Fsout); % Fsout = (L/M)*Fsin
@@ -65,7 +65,7 @@ Fp = Fc*TW;
 
 %% Sweeps
 
-%Here we generate the cosine sweep as our input signal
+%Here we generate the cosine sweep (actually a sine now) as our input signal
 %This code has be taken from the cosine sweep evaluation tool made by Geoff
 %Martin
 
@@ -107,10 +107,12 @@ for bit_depth = 16 %[16 24], no difference between the two
                                     level_dBFS, fs, bit_depth, zero_padding, dirac_on);
     
         
-%        audiowrite(['~/Documents/Bang_Olufsen/End-of-study-Project/Sweeps/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
-%     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS_input.wav'],...
-%     cosine_sweeps(i).sweep, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)                             
-                                
+       audiowrite(['~/Documents/End-of-study-Project/MATLAB/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
+    num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS_input.wav'],...
+    cosine_sweeps(i).sweep, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)                             
+         
+          
+
         i = i + 1;
     end
     %end

@@ -38,12 +38,12 @@ struct getFilter* get_matlab_filter(int stage_no){
 
 else{*/
 
-  snprintf(buffer, sizeof(char*) * SIZE, "/home/gabriel/Documents/End-of-study-Project/SRC_files/PM_Multistage_24_bits/PM_filter%d.txt", stage_no+1);
+  snprintf(buffer, sizeof(char*) * SIZE, "/home/gabriel/Documents/End-of-study-Project/SRC_files/PM_Multistage_16_bits/PM_filter%d.txt", stage_no+1);
 
 //}
 fp = fopen(buffer, "r");
 if (fp == NULL){
-  printf("Could not open file %s",buffer);
+  printf("Could not open file %s\n",buffer);
   exit(1);
 }
 

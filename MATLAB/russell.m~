@@ -1,4 +1,4 @@
-function [output_russell, flag, delay_current_stage] =  russell(z1,p1,k1,L,M,b_fir,Nl,Nm,xin,Fmax, delay_previous_stage)
+function [output_russell, flag, delay_current_stage] =  russell(z1,p1,k1,L,M,b_fir,Nl,Nm,xin,Fmax, delay_previous_stage,nbr_samples)
 
 %Takes an IIR filter under the zero-pole-gain form (z,p,k) as input and 
 %returns a decomposed version of it according to Russell's method
@@ -142,21 +142,20 @@ delay_fir = [f_fir,gd_fir];
 % --------------------------------------------------------------------------
 % 
 %  %Plots
-nbr_samples = 10000;
-subplot(9,1,1)
-plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),xin(1:nbr_samples))
-title(['Input Signal for Stage ', num2str(i)])
+% subplot(9,1,1)
+% plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),xin(1:nbr_samples))
+% title(['Input Signal for Stage ', num2str(i)])
 %
 % --------------------------------------------------------------------------
 %                           Through Hl(z)
 % --------------------------------------------------------------------------
 
 
-xout_filterL = filter(Hl,xin);
+xout_filterL = filter(Hl,xin(1));
 
-subplot(9,1,2)
-plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),xout_filterL(1:nbr_samples))
-title('Signal After First All-Pole filter')
+% subplot(9,1,2)
+% plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),xout_filterL(1:nbr_samples))
+% title('Signal After First All-Pole filter')
 
 
 % --------------------------------------------------------------------------
@@ -260,8 +259,8 @@ delay_fir(:,1) = delay_fir(:,1).*(L);
 delay_previous_stage(:,1) = delay_previous_stage(:,1).*(L/M);
 
 % Combining the previous stage delays with the current ones
-delay_3_filters = linkarray()
-delay_current_stage = linkArray(linked_delays, delay_previous_stage);
+delay_3_filters = linkArray(linkArray(delay_ap1,delay_ap2),delay_fir);
+delay_current_stage = linkArray(delay_3_filters, delay_previous_stage);
 
 
 end

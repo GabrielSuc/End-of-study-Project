@@ -142,20 +142,20 @@ delay_fir = [f_fir,gd_fir];
 % --------------------------------------------------------------------------
 % 
 %  %Plots
-subplot(9,1,1)
-plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),xin(1:nbr_samples))
-title(['Input Signal for Stage ', num2str(i)])
+% subplot(9,1,1)
+% plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),xin(1:nbr_samples))
+% title(['Input Signal for Stage ', num2str(i)])
 %
 % --------------------------------------------------------------------------
 %                           Through Hl(z)
 % --------------------------------------------------------------------------
 
 
-xout_filterL = filter(Hl,xin);
+xout_filterL = filter(Hl,xin(2:6));
 
-subplot(9,1,2)
-plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),xout_filterL(1:nbr_samples))
-title('Signal After First All-Pole filter')
+% subplot(9,1,2)
+% plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),xout_filterL(1:nbr_samples))
+% title('Signal After First All-Pole filter')
 
 
 % --------------------------------------------------------------------------
@@ -190,30 +190,30 @@ for i = (L*M):-1:1 %Starting from the LM-1 branch
 %     Creating the other branches before summation
     delayedBy_a = delayseq(xout_filterL,(i-1)*a);
     
-    subplot(9,1,3)
-    plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),delayedBy_a(1:nbr_samples))
-    title(['Input Signal Delayed by ', num2str(i),' times a (branch nbr ' , num2str(i), ')'])
+%     subplot(9,1,3)
+%     plot((0:1/(Fmax/L):(nbr_samples-1)/(Fmax/L)),delayedBy_a(1:nbr_samples))
+%     title(['Input Signal Delayed by ', num2str(i),' times a (branch nbr ' , num2str(i), ')'])
     %
     %
     downsamp = downsample(delayedBy_a,M);
     
-    subplot(9,1,4)
-    plot((0:1/((Fmax/L)/M):(nbr_samples-1)/((Fmax/L)/M)),downsamp(1:nbr_samples))
-    title('Delayed Signal Downsampled ')
+%     subplot(9,1,4)
+%     plot((0:1/((Fmax/L)/M):(nbr_samples-1)/((Fmax/L)/M)),downsamp(1:nbr_samples))
+%     title('Delayed Signal Downsampled ')
     %
     %
     filter_polyphase = filter(ek(i,:),1,downsamp);
     
-    subplot(9,1,5)
-    plot((0:1/((Fmax/L)/M):(nbr_samples-1)/((Fmax/L)/M)),filter_polyphase(1:nbr_samples))
-    title('Downsampled Signal filtered ')
+%     subplot(9,1,5)
+%     plot((0:1/((Fmax/L)/M):(nbr_samples-1)/((Fmax/L)/M)),filter_polyphase(1:nbr_samples))
+%     title('Downsampled Signal filtered ')
     %
     %
     upsamp = upsample(filter_polyphase,L);
     
-    subplot(9,1,6)
-    plot((0:1/(Fmax/M):(nbr_samples-1)/(Fmax/M)),upsamp(1:nbr_samples))
-    title('Filtered Signal Upsampled ')
+%     subplot(9,1,6)
+%     plot((0:1/(Fmax/M):(nbr_samples-1)/(Fmax/M)),upsamp(1:nbr_samples))
+%     title('Filtered Signal Upsampled ')
 
 %     Sum 
 
@@ -223,15 +223,15 @@ for i = (L*M):-1:1 %Starting from the LM-1 branch
         sumBranch = delayseq(sumBranch,-b);
     end
     
-    subplot(9,1,7)
-    plot((0:1/(Fmax/M):(nbr_samples-1)/(Fmax/M)),sumBranch(1:nbr_samples))
-    title('Sum of signals (different branches) with advanced samples (b)')
+%     subplot(9,1,7)
+%     plot((0:1/(Fmax/M):(nbr_samples-1)/(Fmax/M)),sumBranch(1:nbr_samples))
+%     title('Sum of signals (different branches) with advanced samples (b)')
 
 end
 
-subplot(9,1,8)
-plot((0:1/(Fmax/M):(nbr_samples-1)/(Fmax/M)),sumBranch(1:nbr_samples))
-title('Signal After Polyphase')
+% subplot(9,1,8)
+% plot((0:1/(Fmax/M):(nbr_samples-1)/(Fmax/M)),sumBranch(1:nbr_samples))
+% title('Signal After Polyphase')
 
 % --------------------------------------------------------------------------
 %                           Through Hl(z)
@@ -240,9 +240,9 @@ title('Signal After Polyphase')
 flag = 0; %no problem, no flag needed
 output_russell = filter(Hm,sumBranch);
 
-subplot(9,1,9)
-plot((0:1/(Fmax/M):(nbr_samples-1)/(Fmax/M)),output_russell(1:nbr_samples))
-title('Output Signal (After second All-Pole Filter)')
+% subplot(9,1,9)
+% plot((0:1/(Fmax/M):(nbr_samples-1)/(Fmax/M)),output_russell(1:nbr_samples))
+% title('Output Signal (After second All-Pole Filter)')
 
 % --------------------------------------------------------------------------
 %                           Overall Delay
