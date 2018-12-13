@@ -82,7 +82,7 @@ fs = Fsin; %_Choose Sampling Frequency
 i = 1; %add counter for filling in signal array
     
 
-for bit_depth = 16 %[16 24], no difference between the two
+for bit_depth = 32 %[16 24], no difference between the two
 %        for bitrate = [128 256 320]
     
     audio_channels = 2;         % channels
@@ -103,13 +103,13 @@ for bit_depth = 16 %[16 24], no difference between the two
         zero_padding = 0;           % seconds
         dirac_on = 0;               % 1 = on, 0 = off\
 
-        cosine_sweeps(i).sweep = cosine_sweep(audio_channels, f_start, f_stop, duration_in_seconds,... 
-                                    level_dBFS, fs, bit_depth, zero_padding, dirac_on);
+        cosine_sweeps(i).sweep = single(cosine_sweep(audio_channels, f_start, f_stop, duration_in_seconds,... 
+                                    level_dBFS, fs, bit_depth, zero_padding, dirac_on));
     
         
-       audiowrite(['~/Documents/End-of-study-Project/MATLAB/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
-    num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS_input.wav'],...
-    cosine_sweeps(i).sweep, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)                             
+%        audiowrite(['~/Documents/End-of-study-Project/MATLAB/' num2str(round(cosine_sweeps(i).fs/1000)) 'k_' ...
+%     num2str(cosine_sweeps(i).bit_depth) '_' num2str(cosine_sweeps(i).level_dBFS) 'dBFS_input.wav'],...
+%     cosine_sweeps(i).sweep, cosine_sweeps(i).fs, 'BitsperSample', cosine_sweeps(i).bit_depth)                             
          
           
 
@@ -239,7 +239,8 @@ end
 
 %snr(signal(:,1), Fsin)
 
-
+fin = fopen('PM_filter1.bin','rb');
+I = fread(fin,'single');
 
 
 
