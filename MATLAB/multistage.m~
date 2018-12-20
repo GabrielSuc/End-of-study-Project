@@ -217,7 +217,7 @@ if filter_choice == 1
                 input_filtered = filter(Filter,signal);
                 
                 %Comparason wiith fft
-                comp = fftfilt(Filter.Numerator, double(signal(862:1862,1)));
+                comp = fftfilt(Filter.Numerator, double(signal(299863:399862,1)));
                 
                 subplot(4,1,3)
                 plot((0:1/(Fmax(1,i)):(nbr_samples-1)/(Fmax(1,i))),input_filtered(1:nbr_samples))

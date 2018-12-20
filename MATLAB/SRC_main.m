@@ -28,7 +28,7 @@ clear
 %Input frequency
 Fsin = 44.1e3; 
 %Output frequency
-Fsout = 2*Fsin; %48e3; %
+Fsout = 48e3; %2*Fsin; %
 
 % Resampling Factors L/M
 [L,M] = getSRFactors(Fsin,Fsout); % Fsout = (L/M)*Fsin
@@ -156,7 +156,7 @@ if Input == 1
     
     for i = 1:length(cosine_sweeps)
        
-        input = cosine_sweeps(i).sweep;
+        input = cosine_sweeps(i).sweep(99919:199918,1);
 
         signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,Input);
         signal = signal/max(abs(signal(:))); 
@@ -239,8 +239,8 @@ end
 
 %snr(signal(:,1), Fsin)
 
-fin = fopen('PM_filter1.bin','rb');
-I = fread(fin,'single');
+% fin = fopen('PM_filter1.bin','rb');
+% I = fread(fin,'single');
 
 
 

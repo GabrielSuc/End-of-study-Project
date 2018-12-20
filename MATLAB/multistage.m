@@ -191,12 +191,12 @@ if filter_choice == 1
                 
                 %Saving file to use it in a C code file
                 %Move it to the appropriate directory
-%                 file = fopen(['PM_filter',num2str(i),'.txt'],'w');
-%                 fprintf(file,'%.40f\n',vpa((Filter.Numerator)));
-%                 fclose(file);
-                  file = fopen(['PM_filter',num2str(i),'.bin'],'w');
-                  fwrite(file,Filter.Numerator,'double');
-                  fclose(file);
+                file = fopen(['PM_filter',num2str(i),'.txt'],'w');
+                fprintf(file,'%.40f\n',vpa((Filter.Numerator)));
+                fclose(file);
+%                   file = fopen(['PM_filter',num2str(i),'.bin'],'w');
+%                   fwrite(file,Filter.Numerator,'double');
+%                   fclose(file);
                   
                 if i == 1 
                     signal = input_signal; %true only for the first input
@@ -217,7 +217,7 @@ if filter_choice == 1
                 input_filtered = filter(Filter,signal);
                 
                 %Comparason wiith fft
-                comp = fftfilt(Filter.Numerator, double(signal(199863:399862,1)));
+                comp = fftfilt(Filter.Numerator, double(signal),1024);
                 
                 subplot(4,1,3)
                 plot((0:1/(Fmax(1,i)):(nbr_samples-1)/(Fmax(1,i))),input_filtered(1:nbr_samples))
