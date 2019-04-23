@@ -103,7 +103,7 @@ for bit_depth = 32 %[16 24], no difference between the two
         zero_padding = 0;           % seconds
         dirac_on = 0;               % 1 = on, 0 = off\
 
-        cosine_sweeps(i).sweep = single(cosine_sweep(audio_channels, f_start, f_stop, duration_in_seconds,... 
+        cosine_sweeps(i).sweep = (cosine_sweep(audio_channels, f_start, f_stop, duration_in_seconds,... 
                                     level_dBFS, fs, bit_depth, zero_padding, dirac_on));
     
         
@@ -156,9 +156,9 @@ if Input == 1
     
     for i = 1:length(cosine_sweeps)
        
-        input = cosine_sweeps(i).sweep(99919:199918,1);
+        input = cosine_sweeps(i).sweep();
 
-        signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,Input);
+        signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,1);
         signal = signal/max(abs(signal(:))); 
 
 
@@ -179,7 +179,7 @@ elseif Input == 2
     impulse = t==0;
     input = impulse; 
     
-    signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,Input);
+    signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,0);
     signal = signal/max(abs(signal(:))); 
     
 else
@@ -191,14 +191,13 @@ else
     f_desired = input('Choose the frequency of the cosine [Hz]: ');
     input = sind(2*pi*f_desired.*t); 
     
-    signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,Input);
+    signal = multistage(Fsin,Fsout,Fp,Rp,Rs,input,bestPerm,filter_choice,multistage_method,nbr_samples,0);
     signal = signal/max(abs(signal(:))); 
     
 end 
 
 
-
-
+    
 %% Plots and Saving
 
 figure

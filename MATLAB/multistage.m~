@@ -1,4 +1,4 @@
-function output = multistage(Fsin,Fsout,Fp,Rp,Rs,input_signal,bestPerm,filter_choice, multistage_method,nbr_samples, Input)
+function output = multistage(Fsin,Fsout,Fp,Rp,Rs,input_signal,bestPerm,filter_choice, multistage_method,nbr_samples, buffer_processing)
 
 %Get the list of factors L & M for the different stages
 FL = bestPerm(1:length(bestPerm)/2);
@@ -23,7 +23,7 @@ delay = zeros(1,length(bestPerm)/2 + 1);
 % Filtering through the different kind of filters:
 
 % Parks-McClellan
-if filter_choice == 1
+if filter_choice == 1 
     
     % ---------------------------------------------------------------------
     %                          Filters' parameters
@@ -44,196 +44,326 @@ if filter_choice == 1
     % Ask if we want to use polyphase
     ispolyphase = input('1 if you want to use polyphase decomposition, 0 otherwise [1]: ');
     
-     
-    for i = 1:length(FL)
+    
+    
+    if buffer_processing == 1
+        
+        %Choose size of buffer to process
+        size_buffer = 1024;
+        
+        end_forloop = length(input_signal)/size_buffer;
+        
+        delay_coefficient = [1 4; 2 1; 2 1; 2 1];
+    
+        %Memorized buffer set to 0 at the begining 
+        mem_len = 0;
+        for i = 1:length(FL)
+            mem_len = mem_len + delay_coefficient(i,1)*(FL(1,i)*FM(1,i) - 1);
+        end
+    
+        memorized_buffer = zeros(1, mem_len); %Random size (big enough)
+        memorized_buffer_output = zeros(1, mem_len);
 
-            % Frequency bands
-            Fmax(1,i) = Fs*FL(1,i);
 
-            if (multistage_method == 1)
-                
-                Fcutoff = (Fmax(1,i)/2) * min(1/FL(1,i),1/FM(1,i));
 
-                f = [Fpass Fcutoff];
-            
-                [Order,fo,ao,w] = firpmord(f,A,dev,Fmax(1,i)); 
-                
-                    
-            else
-                
-                pass_bands = Fpass/(Fmax(1,i)/2);
-                
-                if FL(1,i) > FM(1,i)
-                    stop_bands = (Fs - Fstop)/(Fmax(1,i)/2);
+        %Downsampling structures 
+        num_down_structures = 0;
+        for i = 1:length(FL)
+            num_down_structures = num_down_structures + FL(1,i)*FM(1,i);
+        end
+
+        for i = 1:num_down_structures
+            downsampling_struct(i) = struct('last_position', 0, 'length_downsampled_buffer', 0, 'downsampled_buffer', 0.0);
+            convolution_struct(i) = struct('buffer', 0.0, 'tail', 0.0);
+        end
+        
+        
+        
+    else 
+        end_forloop = 0;
+    end
+    
+    for m = 0:end_forloop
+        
+        %The samples needed for the first delay a are not 0s after the
+        %first buffer
+        if m > 0
+            memorized_buffer(1,1:(delay_coefficient(1,1)*(FL(1,1)*FM(1,1) - 1))) = input_signal(1,(end - (delay_coefficient(1,1)*(FL(1,1)*FM(1,1) - 1) + 1)):end);
+        end
+        
+        for i = 1:length(FL)
+
+                % Frequency bands
+                Fmax(1,i) = Fs*FL(1,i);
+
+                if (multistage_method == 1)
+
+                    Fcutoff = (Fmax(1,i)/2) * min(1/FL(1,i),1/FM(1,i));
+
+                    f = [Fpass Fcutoff];
+
+                    [Order,fo,ao,w] = firpmord(f,A,dev,Fmax(1,i)); 
+
+
                 else
-                    stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax(1,i)/2);
+
+                    pass_bands = Fpass/(Fmax(1,i)/2);
+
+                    if FL(1,i) > FM(1,i)
+                        stop_bands = (Fs - Fstop)/(Fmax(1,i)/2);
+                    else
+                        stop_bands = (Fs*(FL(1,i)/FM(1,i)) - Fstop)/(Fmax(1,i)/2);
+                    end
+
+
+                    f = [pass_bands stop_bands];
+
+
+                    [Order,fo,ao,w] = firpmord(f,A,dev);
+
+
                 end
 
 
-                f = [pass_bands stop_bands];
-
-
-                [Order,fo,ao,w] = firpmord(f,A,dev);
-
-
-            end
-            
-  
-            % Polyphase decomposition    
-            if isempty(ispolyphase)
-                 ispolyphase = 1;
-            end
-            
-            if ispolyphase
-                
-                %We need to have the coefficient a and b of the delays
-                a = 0;
-                b = 0.1;
-
-                while(rem(b,1)~=0)
-                    a = a + 1;
-                    b = (FL(1,i)*a - 1)/FM(1,i);
-                end   
-                
-                disp('----------------------- Delay Coefficients ------------------------')
-                X = ['a = ', num2str(a), ' and b = ', num2str(b)];
-                disp(X)
-                disp('-------------------------------------------------------------------')
-                
-                % Get polyphase components and compensate gain
-                ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),FL(1,i),FM(1,i)); %,w
-                
-                %Have to filter xin through each branch 
-                sumBranch = 0.0;
-                
-                % Delay introduced by the filter
-                
-                % Group Delay
-                gd = grpdelay(FL(1,i)*firpm(Order,fo,ao),1);
-           
-                % The delay for each stage is computed as follow:
-                % (Delay introduced by the previous stage (in samples)/Mi +
-                % (gd-p)/LiMi)*Li with p = 0
-                delay(1,i+1) = (delay(1,i)/FM(1,i) + gd(1)/(FL(1,i)*FM(1,i)))*FL(1,i);
-                
-                                
-                if i == 1 
-                    signal = input_signal; %true only for the first input
+                % Polyphase decomposition    
+                if isempty(ispolyphase)
+                     ispolyphase = 1;
                 end
-                
-                %Plots
-                subplot(7,1,1)
-                plot((0:1/(Fmax(1,i)/FL(1,i)):(nbr_samples-1)/(Fmax(1,i)/FL(1,i))),signal(1:nbr_samples))
-                title(['Input Signal for Stage ', num2str(i)])
-                
-                for k = (FL(1,i)*FM(1,i)):-1:1 %Starting from the LM-1 branch
-                    %Creating the other branches before summation
-                    delayedBy_a = delayseq(signal,(k-1)*a); 
+
+                if ispolyphase && buffer_processing == 0
+
+                    %We need to have the coefficient a and b of the delays
+                    a = 0;
+                    b = 0.1;
+
+                    while(rem(b,1)~=0)
+                        a = a + 1;
+                        b = (FL(1,i)*a - 1)/FM(1,i);
+                    end   
+
+                    disp('----------------------- Delay Coefficients ------------------------')
+                    X = ['a = ', num2str(a), ' and b = ', num2str(b)];
+                    disp(X)
+                    disp('-------------------------------------------------------------------')
+
+                    % Get polyphase components and compensate gain
+                    ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),FL(1,i),FM(1,i)); %,w
+
+                    %Have to filter xin through each branch 
+                    sumBranch = 0.0;
+
+                    % Delay introduced by the filter
+
+                    % Group Delay
+                    gd = grpdelay(FL(1,i)*firpm(Order,fo,ao),1);
+
+                    % The delay for each stage is computed as follow:
+                    % (Delay introduced by the previous stage (in samples)/Mi +
+                    % (gd-p)/LiMi)*Li with p = 0
+                    delay(1,i+1) = (delay(1,i)/FM(1,i) + gd(1)/(FL(1,i)*FM(1,i)))*FL(1,i);
+
+
+                    if i == 1 
+                        signal = input_signal; %true only for the first input
+                    end
+
                     %Plots
-                    subplot(7,1,2)
-                    plot((0:1/(Fmax(1,i)/FL(1,i)):(nbr_samples-1)/(Fmax(1,i)/FL(1,i))),delayedBy_a(1:nbr_samples))
-                    title(['Input Signal Delayed by ', num2str(k-1),' times a (branch nbr ' , num2str(k), ')'])
-                    %
-                    %
-                    downsamp = downsample(delayedBy_a,FM(1,i));
-                    
-                    subplot(7,1,3)
-                    plot((0:1/(Fmax(1,i)/(FL(1,i)*FM(1,i))):(nbr_samples-1)/(Fmax(1,i)/(FL(1,i)*FM(1,i)))),downsamp(1:nbr_samples))
-                    title('Delayed Signal Downsampled ')
-                    %
-                    %
-                    filter_polyphase = filter(dfilt.dffir(ek(k,:)),downsamp);
-                    
-                    subplot(7,1,4)
-                    plot((0:1/(Fmax(1,i)/(FL(1,i)*FM(1,i))):(nbr_samples-1)/(Fmax(1,i)/(FL(1,i)*FM(1,i)))),filter_polyphase(1:nbr_samples))
-                    title('Downsampled Signal filtered ')
-                    %
-                    %
-                    upsamp = upsample(filter_polyphase,FL(1,i)); 
-                    
-                    subplot(7,1,5)
-                    plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),upsamp(1:nbr_samples))
-                    title('Filtered Signal Upsampled ')
-                    %
-                    %
-                    sumBranch = sumBranch + upsamp;
+                    subplot(7,1,1)
+                    plot((0:1/(Fmax(1,i)/FL(1,i)):(nbr_samples-1)/(Fmax(1,i)/FL(1,i))),signal(1:nbr_samples))
+                    title(['Input Signal for Stage ', num2str(i)])
 
-                    if k > 1
-                        sumBranch = delayseq(sumBranch,-b);
+                    for k = (FL(1,i)*FM(1,i)):-1:1 %Starting from the LM-1 branch
+                        %Creating the other branches before summation
+                        delayedBy_a = delayseq(signal,(k-1)*a); 
+                        %Plots
+                        subplot(7,1,2)
+                        plot((0:1/(Fmax(1,i)/FL(1,i)):(nbr_samples-1)/(Fmax(1,i)/FL(1,i))),delayedBy_a(1:nbr_samples))
+                        title(['Input Signal Delayed by ', num2str(k-1),' times a (branch nbr ' , num2str(k), ')'])
+                        %
+                        %
+                        downsamp = downsample(delayedBy_a,FM(1,i));
+
+                        subplot(7,1,3)
+                        plot((0:1/(Fmax(1,i)/(FL(1,i)*FM(1,i))):(nbr_samples-1)/(Fmax(1,i)/(FL(1,i)*FM(1,i)))),downsamp(1:nbr_samples))
+                        title('Delayed Signal Downsampled ')
+                        %
+                        %
+                        filter_polyphase = filter(dfilt.dffir(ek(k,:)),downsamp);
+
+                        subplot(7,1,4)
+                        plot((0:1/(Fmax(1,i)/(FL(1,i)*FM(1,i))):(nbr_samples-1)/(Fmax(1,i)/(FL(1,i)*FM(1,i)))),filter_polyphase(1:nbr_samples))
+                        title('Downsampled Signal filtered ')
+                        %
+                        %
+                        upsamp = upsample(filter_polyphase,FL(1,i)); 
+
+                        subplot(7,1,5)
+                        plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),upsamp(1:nbr_samples))
+                        title('Filtered Signal Upsampled ')
+                        %
+                        %
+                        sumBranch = sumBranch + upsamp;
+
+                        if k > 1
+                            sumBranch = delayseq(sumBranch,-b);
+                        end
+
+                        subplot(7,1,6)
+                        plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),sumBranch(1:nbr_samples))
+                        title('Sum of signals (different branches) with advanced samples (b)')
+
+                    end
+
+
+                    signal = sumBranch;
+
+                    subplot(7,1,7)
+                    plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),signal(1:nbr_samples))
+                    title('Output Signal ')
+
+
+                elseif ispolyphase && buffer_processing == 0
+
+
+                    % Creating the filter
+                    Filter = dfilt.dffir(FL(1,i)*firpm(Order,fo,ao));%,w
+                    fvtool(Filter);
+
+                    % Delay introduced by the filter
+                    % Group Delay
+                    gd = grpdelay(FL(1,i)*firpm(Order,fo,ao),1);
+                    % Since it's a FIR filter, the gd is constant
+                    delay(1,i+1) = gd(1)/Fmax(1,i); %Given in seconds
+
+                    %Saving file to use it in a C code file
+                    %Move it to the appropriate directory
+                    file = fopen(['PM_filter',num2str(i),'.txt'],'w');
+                    fprintf(file,'%.40f\n',vpa((Filter.Numerator)));
+                    fclose(file);
+    %                   file = fopen(['PM_filter',num2str(i),'.bin'],'w');
+    %                   fwrite(file,Filter.Numerator,'double');
+    %                   fclose(file);
+
+                    if i == 1 
+                        signal = input_signal; %true only for the first input
+                    end
+
+                    %Plots
+                    subplot(4,1,1)
+                    plot((0:1/(Fmax(1,i)/FL(1,i)):(nbr_samples-1)/(Fmax(1,i)/FL(1,i))),signal(1:nbr_samples))
+                    title(['Input Signal for Stage ', num2str(i)])
+
+                    %Upsampling
+                    signal = upsample(signal,FL(1,i));
+
+                    subplot(4,1,2)
+                    plot((0:1/Fmax(1,i):(nbr_samples-1)/Fmax(1,i)),signal(1:nbr_samples))
+                    title('Signal Upsampled')
+                    %Filtering
+                    input_filtered = filter(Filter,signal);
+
+                    %Comparason wiith fft
+                    comp = fftfilt(Filter.Numerator, double(signal),1024);
+
+                    subplot(4,1,3)
+                    plot((0:1/(Fmax(1,i)):(nbr_samples-1)/(Fmax(1,i))),input_filtered(1:nbr_samples))
+                    title('Signal Filtered')
+                    %Downsampling
+                    signal = downsample(input_filtered,FM(1,i));
+
+                    subplot(4,1,4)
+                    plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),signal(1:nbr_samples))
+                    title('Signal Downsampled')
+
+                else %ispolyphase && buffer_processing == 1    
+
+                    %We need to have the coefficient a and b of the delays
+                    a = 0;
+                    b = 0.1;
+
+                    while(rem(b,1)~=0)
+                        a = a + 1;
+                        b = (FL(1,i)*a - 1)/FM(1,i);
+                    end   
+
+                    disp('----------------------- Delay Coefficients ------------------------')
+                    X = ['a = ', num2str(a), ' and b = ', num2str(b)];
+                    disp(X)
+                    disp('-------------------------------------------------------------------')
+
+                    
+                    
+                    % Get polyphase components and compensate gain
+                    ek = myPolyphase(FL(1,i)*firpm(Order,fo,ao,w),FL(1,i),FM(1,i)); %,w
+
+                    %Have to filter xin through each branch 
+                    sumBranch = 0.0;
+                    
+                    if i == 1 && m > 0 %Copy all needed output values to memorized_buffer
+                        memorized_buffer((1 + compute_offset_for_memorized_buffer(i, bestPerm, a)):(mem_len + compute_offset_for_memorized_buffer(i, bestPerm, a)) = memorized_buffer_output((1 + compute_offset_for_memorized_buffer(i, bestPerm, a)):(mem_len + compute_offset_for_memorized_buffer(i, bestPerm)));
                     end
                     
-                    subplot(7,1,6)
-                    plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),sumBranch(1:nbr_samples))
-                    title('Sum of signals (different branches) with advanced samples (b)')
+                    current_mem_len = a*(FL(1,i)*FM(1,i) - 1);
                     
-                end
-                
+                    if i == 1 
+%                         signal = input_signal; %true only for the first input
+                        signal = input_signal(m*size_buffer + 1:size_buffer(m + 1));
+                        memorized_buffer_output((1 + compute_offset_for_memorized_buffer(i, FL(1,i), FM(1,i))):(compute_offset_for_memorized_buffer(i, FL(1,i), FM(1,i)) + current_mem_len)) = input_signal((size_buffer - current_mem_len + 1):size_buffer); 
+                    end
 
-                signal = sumBranch;
-                
-                subplot(7,1,7)
-                plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),signal(1:nbr_samples))
-                title('Output Signal ')
-                
-                
-            else
-                
-                           
-                % Creating the filter
-                Filter = dfilt.dffir(FL(1,i)*firpm(Order,fo,ao));%,w
-                fvtool(Filter);
-                
-                % Delay introduced by the filter
-                % Group Delay
-                gd = grpdelay(FL(1,i)*firpm(Order,fo,ao),1);
-                % Since it's a FIR filter, the gd is constant
-                delay(1,i+1) = gd(1)/Fmax(1,i); %Given in seconds
-                
-                %Saving file to use it in a C code file
-                %Move it to the appropriate directory
-%                 file = fopen(['PM_filter',num2str(i),'.txt'],'w');
-%                 fprintf(file,'%.40f\n',vpa((Filter.Numerator)));
-%                 fclose(file);
-                  file = fopen(['PM_filter',num2str(i),'.bin'],'w');
-                  fwrite(file,Filter.Numerator,'double');
-                  fclose(file);
+                    %Need extra values for the first delay
+
+
+
+                    
+
+                    for k = (FL(1,i)*FM(1,i)):-1:1 %Starting from the LM-1 branch
+                    %Creating the other branches before summation
+                    
+                    delayed_buffer = delay_buffer(signal, memorized_buffer, a*(FL(1,i)*FM(1,i) - 1), a, k - 1, i, FL(1,i), FM(1,i));
                   
-                if i == 1 
-                    signal = input_signal; %true only for the first input
+                    
+%                     delayedBy_a = delayseq(transpose([buffer zeros(1,(k-1)*a)]),(k-1)*a); 
+
+                    downsampling_struct(k + compute_offset_for_stage(i,FL,FM)) = resample_buffer(delayed_buffer, FL(1,i), FM(1,i), downsampling_struct(k + compute_offset_for_stage(i,FL,FM)), m/size_buffer + 1, 0);
+
+%                     downsamp = downsample(delayed_buffer,FM(1,i));
+
+%                     filter_polyphase = filter(dfilt.dffir(ek(k,:)),downsamp);
+
+                    convolution_struct(k + compute_offset_for_stage(i,FL,FM)) = overlap_filtering(downsampling_struct(k + compute_offset_for_stage(i,FL,FM)).downsampled_buffer,ek(k,:), convolution_struct(k + compute_offset_for_stage(i,FL,FM)));
+
+                    upsamp = upsample(convolution_struct(k + compute_offset_for_stage(i,FL,FM)).buffer,FL(1,i)); 
+
+                    sumBranch = transpose(sumBranch) + [upsamp zeros(1,length(sumBranch) - length(upsamp))];
+
+                    if k > 1
+                        sumBranch = delayseq(transpose(sumBranch),-b);
+                    end
+
+
+                    end
+                    
+                    %Update size buffer
+                    size_buffer = downsampling_struct(1 + compute_offset_for_stage(i,FL,FM)).length_downsampled_buffer*FL(1,i);
+                    signal = sumBranch(1:size_buffer);
+                    
+                    
+                    %Saving values for next buffer of same stage
+                    if i < length(FL)
+                        memorized_buffer_output((1 + current_mem_len):(delay_coefficient(i + 1,1)*(FL(1,i+1)*FM(1,i+1) - 1) + current_mem_len)) = signal(1,(size_buffer-delay_coefficient(i+1,1)*(FL(1,i+1)*FM(1,i+1) - 1) + 1):size_buffer);
+%                         memorized_buffer(i + 1,1:delay_coefficient(i+1,1)*(FL(1,i+1)*FM(1,i+1) - 1)) = signal(i,(size_buffer-delay_coefficient(i+1,1)*(FL(1,i+1)*FM(1,i+1) - 1) + 1):size_buffer);
+                    end
                 end
                 
-                %Plots
-                subplot(4,1,1)
-                plot((0:1/(Fmax(1,i)/FL(1,i)):(nbr_samples-1)/(Fmax(1,i)/FL(1,i))),signal(1:nbr_samples))
-                title(['Input Signal for Stage ', num2str(i)])
-                
-                %Upsampling
-                signal = upsample(signal,FL(1,i));
-                
-                subplot(4,1,2)
-                plot((0:1/Fmax(1,i):(nbr_samples-1)/Fmax(1,i)),signal(1:nbr_samples))
-                title('Signal Upsampled')
-                %Filtering
-                input_filtered = filter(Filter,signal);
-                
-                %Comparason wiith fft
-                comp = fftfilt(Filter.Numerator, double(signal(299863:399862,1)));
-                
-                subplot(4,1,3)
-                plot((0:1/(Fmax(1,i)):(nbr_samples-1)/(Fmax(1,i))),input_filtered(1:nbr_samples))
-                title('Signal Filtered')
-                %Downsampling
-                signal = downsample(input_filtered,FM(1,i));
-                
-                subplot(4,1,4)
-                plot((0:1/(Fmax(1,i)/FM(1,i)):(nbr_samples-1)/(Fmax(1,i)/FM(1,i))),signal(1:nbr_samples))
-                title('Signal Downsampled')
-                
-            end    
+                %Need to adapt the input frequency after passing through each stage
+                Fs = (Fs * FL(1,i))/FM(1,i);
+        end
+            
+          
             
          
-            %Need to adapt the input frequency after passing through each stage
-            Fs = (Fs * FL(1,i))/FM(1,i);
+            
             
             
     end         
